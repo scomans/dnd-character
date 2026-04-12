@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CharacterService } from '../../services/character.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
@@ -8,10 +8,12 @@ import { FormsModule } from '@angular/forms';
 import { TextareaModule } from 'primeng/textarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import '@googleworkspace/drive-picker-element';
 
 @Component({
   selector: 'app-toolbar',
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule, FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule],
   template: `
     <div class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg mb-4 shadow-md">
@@ -37,7 +39,7 @@ import { TooltipModule } from 'primeng/tooltip';
           icon="pi pi-folder-open"
           size="small"
           severity="secondary"
-          (onClick)="openFromDrive()"
+          (onClick)="openPicker()"
           pTooltip="Datei aus Google Drive öffnen"
           tooltipPosition="bottom"
         />
@@ -55,9 +57,8 @@ import { TooltipModule } from 'primeng/tooltip';
           label="Mit Google anmelden"
           size="small"
           severity="secondary"
-          [loading]="driveConnecting"
-          (onClick)="signInWithGoogle()"
-          pTooltip="Mit Google Drive anmelden"
+          (onClick)="openPicker()"
+          pTooltip="Öffne Google Drive File Picker"
           tooltipPosition="bottom"
         />
       } @else {
@@ -79,20 +80,33 @@ import { TooltipModule } from 'primeng/tooltip';
       <p-button label="Zurücksetzen" icon="pi pi-refresh" size="small" severity="danger" (onClick)="showReset = true" />
     </div>
 
-    <!-- Google Drive Setup Dialog (one-time credential entry) -->
+    <!-- Hidden Drive Picker element -->
+    @if (drive.configured()) {
+      <drive-picker
+        #drivePicker
+        [attr.client-id]="drive.clientId"
+        [attr.app-id]="drive.appId"
+        [attr.oauth-token]="drive.accessToken || null"
+        locale="de"
+        title="JSON-Datei auswählen"
+      >
+        <drive-picker-docs-view
+          mime-types="application/json"
+          mode="LIST"
+        ></drive-picker-docs-view>
+      </drive-picker>
+    }
+
+    <!-- Google Drive Setup Dialog (one-time, only Client ID needed) -->
     <p-dialog header="Google Drive einrichten" [(visible)]="showDriveSetup" [modal]="true" [style]="{ width: '500px' }">
       <div class="space-y-3">
         <p class="text-sm text-gray-600">
-          Einmalige Einrichtung: Gib deine Google Cloud Client ID und API-Key ein.
-          Danach kannst du dich jederzeit mit einem Klick bei Google anmelden.
+          Einmalige Einrichtung: Gib deine Google Cloud OAuth Client ID ein.
+          Danach kannst du dich direkt über den Google Drive Picker anmelden und Dateien öffnen/speichern.
         </p>
         <div class="flex flex-col gap-1">
           <label class="text-sm font-bold">Client ID</label>
           <input pInputText [(ngModel)]="driveClientId" placeholder="xxxx.apps.googleusercontent.com" class="w-full text-sm" />
-        </div>
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-bold">API Key</label>
-          <input pInputText [(ngModel)]="driveApiKey" placeholder="AIza..." class="w-full text-sm" />
         </div>
         @if (driveError) {
           <p class="text-red-600 text-sm">{{ driveError }}</p>
@@ -100,7 +114,7 @@ import { TooltipModule } from 'primeng/tooltip';
       </div>
       <ng-template pTemplate="footer">
         <p-button label="Abbrechen" [text]="true" (onClick)="showDriveSetup = false; driveError = ''" />
-        <p-button label="Speichern & Anmelden" icon="pi pi-google" [loading]="driveConnecting" (onClick)="setupAndSignIn()" />
+        <p-button label="Speichern" icon="pi pi-check" (onClick)="saveClientId()" />
       </ng-template>
     </p-dialog>
 
@@ -149,9 +163,11 @@ import { TooltipModule } from 'primeng/tooltip';
     </p-dialog>
   `,
 })
-export class ToolbarComponent {
+export class ToolbarComponent implements AfterViewInit, OnDestroy {
   cs = inject(CharacterService);
   drive = inject(GoogleDriveService);
+
+  @ViewChild('drivePicker') drivePickerRef?: ElementRef;
 
   showImport = false;
   showReset = false;
@@ -160,18 +176,68 @@ export class ToolbarComponent {
   importText = '';
   importError = '';
   driveClientId = '';
-  driveApiKey = '';
   driveError = '';
-  driveConnecting = false;
   newDriveFileName = '';
 
-  constructor() {
-    // Restore saved file info
-    const savedFileId = localStorage.getItem('gdrive-file-id');
-    const savedFileName = localStorage.getItem('gdrive-file-name');
-    if (savedFileId && savedFileName) {
-      this.drive.currentFile.set({ id: savedFileId, name: savedFileName });
+  private pickerListenersAttached = false;
+
+  // Bound event handlers for cleanup
+  private onOAuthResponse = (e: Event) => {
+    const detail = (e as CustomEvent).detail;
+    if (detail?.access_token) {
+      this.drive.handleOAuthToken(detail.access_token);
     }
+  };
+
+  private onFilePicked = async (e: Event) => {
+    const detail = (e as CustomEvent).detail;
+    if (detail?.docs?.length > 0) {
+      const doc = detail.docs[0];
+      this.drive.handleFilePicked(doc.id, doc.name);
+      try {
+        const content = await this.drive.readFile(doc.id);
+        this.cs.importJSON(content);
+      } catch (err) {
+        console.error('Error reading file from Google Drive:', err);
+      }
+    }
+  };
+
+  ngAfterViewInit(): void {
+    this.attachPickerListeners();
+  }
+
+  ngOnDestroy(): void {
+    this.detachPickerListeners();
+  }
+
+  private attachPickerListeners(): void {
+    const el = this.drivePickerRef?.nativeElement;
+    if (el && !this.pickerListenersAttached) {
+      el.addEventListener('picker-oauth-response', this.onOAuthResponse);
+      el.addEventListener('picker-picked', this.onFilePicked);
+      this.pickerListenersAttached = true;
+    }
+  }
+
+  private detachPickerListeners(): void {
+    const el = this.drivePickerRef?.nativeElement;
+    if (el) {
+      el.removeEventListener('picker-oauth-response', this.onOAuthResponse);
+      el.removeEventListener('picker-picked', this.onFilePicked);
+      this.pickerListenersAttached = false;
+    }
+  }
+
+  openPicker(): void {
+    // Defer to next tick so the picker element is rendered after @if becomes true
+    setTimeout(() => {
+      this.attachPickerListeners();
+      const el = this.drivePickerRef?.nativeElement;
+      if (el) {
+        el.visible = true;
+      }
+    }, 0);
   }
 
   exportJSON(): void {
@@ -207,50 +273,17 @@ export class ToolbarComponent {
 
   // === Google Drive ===
 
-  async signInWithGoogle(): Promise<void> {
-    this.driveConnecting = true;
-    try {
-      await this.drive.signIn();
-    } catch (err: any) {
-      console.error('Google sign-in error:', err);
-    } finally {
-      this.driveConnecting = false;
-    }
-  }
-
-  async setupAndSignIn(): Promise<void> {
+  saveClientId(): void {
     this.driveError = '';
-    if (!this.driveClientId.trim() || !this.driveApiKey.trim()) {
-      this.driveError = 'Bitte Client ID und API Key eingeben.';
+    const id = this.driveClientId.trim();
+    if (!id) {
+      this.driveError = 'Bitte Client ID eingeben.';
       return;
     }
-    this.driveConnecting = true;
-    try {
-      this.drive.setCredentials(this.driveClientId.trim(), this.driveApiKey.trim());
-      await this.drive.signIn();
-      this.showDriveSetup = false;
-    } catch (err: any) {
-      this.driveError = 'Verbindung fehlgeschlagen: ' + (err?.message || err);
-    } finally {
-      this.driveConnecting = false;
-    }
-  }
-
-  async openFromDrive(): Promise<void> {
-    try {
-      const file = await this.drive.pickFile();
-      if (file) {
-        const content = await this.drive.readFile(file.id);
-        const success = this.cs.importJSON(content);
-        if (success) {
-          this.drive.currentFile.set(file);
-          localStorage.setItem('gdrive-file-id', file.id);
-          localStorage.setItem('gdrive-file-name', file.name);
-        }
-      }
-    } catch (err) {
-      console.error('Error opening from Google Drive:', err);
-    }
+    this.drive.setClientId(id);
+    this.showDriveSetup = false;
+    // Open the picker right away so the user can authenticate
+    setTimeout(() => this.openPicker(), 0);
   }
 
   async saveToDrive(): Promise<void> {
@@ -271,9 +304,7 @@ export class ToolbarComponent {
     }
     try {
       const json = this.cs.exportJSON();
-      const file = await this.drive.createFile(json, fileName);
-      localStorage.setItem('gdrive-file-id', file.id);
-      localStorage.setItem('gdrive-file-name', file.name);
+      await this.drive.createFile(json, fileName);
       this.showNewDriveFile = false;
       this.newDriveFileName = '';
     } catch (err) {
