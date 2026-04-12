@@ -46,8 +46,8 @@ import { CheckboxModule } from 'primeng/checkbox';
           <p-inputnumber
             [ngModel]="cs.character().hitPointsMax"
             (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
-            [showButtons]="false"
-            [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.8rem' }"
+            [showButtons]="true"
+            [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '0.8rem' }"
           />
         </div>
         <div class="flex flex-col items-center">
@@ -68,7 +68,7 @@ import { CheckboxModule } from 'primeng/checkbox';
           (ngModelChange)="cs.update({ hitPointsTemp: $event ?? 0 })"
           [showButtons]="true"
           [min]="0"
-          [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold' }"
+          [inputStyle]="{ width: '5rem', textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold' }"
         />
         <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Temporäre Trefferpunkte</span>
       </div>

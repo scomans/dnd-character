@@ -26,6 +26,18 @@ export class CharacterService {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
+        // Migrate old classAndLevel field to className + level
+        if (parsed.classAndLevel && !parsed.className) {
+          const match = parsed.classAndLevel.match(/^(.*?)\s*(\d+)$/);
+          if (match) {
+            parsed.className = match[1].trim();
+            parsed.level = parseInt(match[2], 10);
+          } else {
+            parsed.className = parsed.classAndLevel;
+            parsed.level = 1;
+          }
+          delete parsed.classAndLevel;
+        }
         // Merge with defaults to handle new fields added in future versions
         return { ...createDefaultCharacter(), ...parsed };
       }
@@ -48,15 +60,17 @@ export class CharacterService {
 
   // === Computed Values (DND 2024 5E Rules) ===
 
-  /** Extract numeric level from classAndLevel string like "Fighter 2" or "Kämpfer 2" */
+  /** Extract numeric level from the level field */
   getLevel(): number {
-    const char = this.character();
-    const match = char.classAndLevel.match(/\d+/);
-    return match ? parseInt(match[0], 10) : 1;
+    return this.character().level || 1;
   }
 
-  /** Proficiency bonus based on level (DND 5E 2024) */
+  /** Proficiency bonus based on level (DND 5E 2024), or override */
   getProficiencyBonus(): number {
+    const char = this.character();
+    if (char.proficiencyBonusOverride != null) {
+      return char.proficiencyBonusOverride;
+    }
     const level = this.getLevel();
     return Math.floor((level - 1) / 4) + 2;
   }

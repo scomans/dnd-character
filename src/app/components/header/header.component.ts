@@ -27,8 +27,18 @@ import { InputNumberModule } from 'primeng/inputnumber';
         </div>
         <div class="grid grid-cols-3 gap-2">
           <div class="flex flex-col">
-            <input pInputText [ngModel]="cs.character().classAndLevel" (ngModelChange)="cs.update({ classAndLevel: $event })" class="w-full" />
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">KLASSEN & STUFEN</label>
+            <div class="flex gap-1">
+              <input pInputText [ngModel]="cs.character().className" (ngModelChange)="cs.update({ className: $event })" class="flex-1 min-w-0" placeholder="Klasse" />
+              <p-inputnumber
+                [ngModel]="cs.character().level"
+                (ngModelChange)="cs.update({ level: $event ?? 1 })"
+                [min]="1"
+                [max]="20"
+                [showButtons]="true"
+                [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.85rem' }"
+              />
+            </div>
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">KLASSE & STUFE</label>
           </div>
           <div class="flex flex-col">
             <input pInputText [ngModel]="cs.character().playerName" (ngModelChange)="cs.update({ playerName: $event })" class="w-full" />

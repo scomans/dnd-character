@@ -8,7 +8,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { Attack, ABILITY_SHORT_LABELS } from '../../models/character.model';
+import { Attack, DAMAGE_TYPES } from '../../models/character.model';
 
 @Component({
   selector: 'app-attacks',
@@ -64,7 +64,17 @@ import { Attack, ABILITY_SHORT_LABELS } from '../../models/character.model';
                   {{ cs.getDamageBonus(attack) >= 0 ? '+' : '' }}{{ cs.getDamageBonus(attack) }}
                 </td>
                 <td class="p-1">
-                  <input pInputText [(ngModel)]="attack.damageType" (ngModelChange)="updateAttacks()" class="w-full text-xs" />
+                  <p-select
+                    [(ngModel)]="attack.damageType"
+                    (ngModelChange)="updateAttacks()"
+                    [options]="damageTypes"
+                    optionLabel="label"
+                    optionValue="value"
+                    [style]="{ width: '10rem', fontSize: '0.75rem' }"
+                    [filter]="true"
+                    filterBy="label"
+                    placeholder="Typ wählen"
+                  />
                 </td>
                 <td class="p-1">
                   <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAttack(i)" />
@@ -97,6 +107,8 @@ import { Attack, ABILITY_SHORT_LABELS } from '../../models/character.model';
 })
 export class AttacksComponent {
   cs = inject(CharacterService);
+
+  damageTypes = DAMAGE_TYPES;
 
   abilityOptions = [
     { label: 'Stä', value: 'str' },

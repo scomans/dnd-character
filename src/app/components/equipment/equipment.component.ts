@@ -20,7 +20,7 @@ import { Equipment } from '../../models/character.model';
             <p-inputnumber
               [ngModel]="getCurrency(coin.key)"
               (ngModelChange)="updateCurrency(coin.key, $event)"
-              [showButtons]="false"
+              [showButtons]="true"
               [min]="0"
               [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
             />

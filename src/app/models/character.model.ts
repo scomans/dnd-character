@@ -64,7 +64,10 @@ export interface DndCharacter {
 
   // Header
   characterName: string;
-  classAndLevel: string;
+  className: string;
+  level: number;
+  /** @deprecated Use className + level instead */
+  classAndLevel?: string;
   playerName: string;
   background: string;
   race: string;
@@ -124,6 +127,9 @@ export interface DndCharacter {
   hitDiceTotal: string;
   hitDiceUsed: number;
   deathSaves: DeathSaves;
+
+  // Proficiency bonus override (null = auto-compute from level)
+  proficiencyBonusOverride: number | null;
 
   // Personality
   personalityTraits: string;
@@ -234,11 +240,28 @@ export const SKILL_LABELS: { [key: string]: string } = {
   survival: 'Überlebenskunst',
 };
 
+export const DAMAGE_TYPES: { value: string; label: string }[] = [
+  { value: 'Wucht', label: 'Wuchtschaden (Bludgeoning)' },
+  { value: 'Stich', label: 'Stichschaden (Piercing)' },
+  { value: 'Hieb', label: 'Hiebschaden (Slashing)' },
+  { value: 'Säure', label: 'Säureschaden (Acid)' },
+  { value: 'Kälte', label: 'Kälteschaden (Cold)' },
+  { value: 'Feuer', label: 'Feuerschaden (Fire)' },
+  { value: 'Kraft', label: 'Kraftschaden (Force)' },
+  { value: 'Blitz', label: 'Blitzschaden (Lightning)' },
+  { value: 'Nekrotisch', label: 'Nekrotisch (Necrotic)' },
+  { value: 'Gift', label: 'Gift (Poison)' },
+  { value: 'Psychisch', label: 'Psychisch (Psychic)' },
+  { value: 'Strahlung', label: 'Strahlung (Radiant)' },
+  { value: 'Donner', label: 'Donnerschaden (Thunder)' },
+];
+
 export function createDefaultCharacter(): DndCharacter {
   return {
     version: 1,
     characterName: '',
-    classAndLevel: '',
+    className: '',
+    level: 1,
     playerName: '',
     background: '',
     race: '',
@@ -288,6 +311,7 @@ export function createDefaultCharacter(): DndCharacter {
     hitDiceTotal: '1d10',
     hitDiceUsed: 0,
     deathSaves: { successes: 0, failures: 0 },
+    proficiencyBonusOverride: null,
     personalityTraits: '',
     ideals: '',
     bonds: '',
