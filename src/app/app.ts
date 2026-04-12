@@ -8,4 +8,3 @@ import { RouterOutlet } from '@angular/router';
   styles: [':host { display: block; min-height: 100dvh; background: #f5f5f5; }'],
 })
 export class App {}
-

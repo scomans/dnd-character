@@ -64,4 +64,3 @@ import { InputNumberModule } from 'primeng/inputnumber';
 export class HeaderComponent {
   cs = inject(CharacterService);
 }
-
