@@ -33,11 +33,13 @@ import { TextareaModule } from 'primeng/textarea';
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
         (click)="editing.set(true)"
-        [innerHTML]="renderedHtml()"
-      ></div>
-      @if (!value()) {
-        <span class="text-gray-400 italic text-xs" (click)="editing.set(true)">Klicken zum Bearbeiten...</span>
-      }
+      >
+        @if (value()) {
+          <span [innerHTML]="renderedHtml()"></span>
+        } @else {
+          <span class="text-gray-400 italic text-xs">Klicken zum Bearbeiten...</span>
+        }
+      </div>
     }
   `,
 })
