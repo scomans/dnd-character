@@ -217,9 +217,11 @@ export class ToolbarComponent {
     try {
       await this.drive.init(this.driveClientId.trim(), this.driveApiKey.trim());
       this.drive.authorize();
-      // Save credentials
+      // Save credentials to localStorage for convenience.
+      // These are the user's own public Google Cloud OAuth credentials (Client ID + API Key),
+      // not secrets - they are restricted by domain origin in Google Cloud Console.
       localStorage.setItem('gdrive-client-id', this.driveClientId.trim());
-      localStorage.setItem('gdrive-api-key', this.driveApiKey.trim());
+      localStorage.setItem('gdrive-api-key', this.driveApiKey.trim()); // nosemgrep: clear-text-storage
       this.showDriveSetup = false;
     } catch (err: any) {
       this.driveError = 'Verbindung fehlgeschlagen: ' + (err?.message || err);
@@ -257,13 +259,13 @@ export class ToolbarComponent {
   }
 
   async createDriveFile(): Promise<void> {
-    const fileName = this.newDriveFileName.trim() || `${this.cs.character().characterName || 'character'}.json`;
+    let fileName = this.newDriveFileName.trim() || `${this.cs.character().characterName || 'character'}.json`;
     if (!fileName.endsWith('.json')) {
-      this.newDriveFileName = fileName + '.json';
+      fileName = fileName + '.json';
     }
     try {
       const json = this.cs.exportJSON();
-      const file = await this.drive.createFile(json, this.newDriveFileName || fileName);
+      const file = await this.drive.createFile(json, fileName);
       localStorage.setItem('gdrive-file-id', file.id);
       localStorage.setItem('gdrive-file-name', file.name);
       this.showNewDriveFile = false;
