@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
+import { ALIGNMENTS, DND_CLASSES } from '../../models/character.model';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, TooltipModule],
   template: `
     <div class="bg-white border-2 border-slate-700 rounded-lg p-4 mb-4">
       <div class="flex items-center gap-2 mb-3">
@@ -32,10 +34,18 @@ import { TooltipModule } from 'primeng/tooltip';
             />
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">CHARAKTERNAME</label>
           </div>
-          <div class="grid grid-cols-5 gap-2">
+          <div class="grid grid-cols-6 gap-2">
             <div class="flex flex-col">
               <div class="flex gap-1">
-                <input pInputText [ngModel]="cs.character().className" (ngModelChange)="cs.update({ className: $event })" class="flex-1 min-w-0" placeholder="Klasse" />
+                <p-select
+                  [ngModel]="cs.character().className"
+                  (ngModelChange)="cs.update({ className: $event })"
+                  [options]="classOptions"
+                  [editable]="true"
+                  placeholder="Klasse"
+                  [style]="{ width: '100%', fontSize: '0.85rem' }"
+                  appendTo="body"
+                />
                 <p-inputnumber
                   [ngModel]="cs.character().level"
                   (ngModelChange)="cs.update({ level: $event ?? 1 })"
@@ -54,6 +64,19 @@ import { TooltipModule } from 'primeng/tooltip';
             <div class="flex flex-col">
               <input pInputText [ngModel]="cs.character().race" (ngModelChange)="cs.update({ race: $event })" class="w-full" />
               <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Volk</label>
+            </div>
+            <div class="flex flex-col">
+              <p-select
+                [ngModel]="cs.character().alignment"
+                (ngModelChange)="cs.update({ alignment: $event })"
+                [options]="alignments"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="--"
+                [style]="{ width: '100%', fontSize: '0.85rem' }"
+                appendTo="body"
+              />
+              <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Gesinnung</label>
             </div>
             <div class="flex flex-col">
               <input pInputText [ngModel]="cs.character().playerName" (ngModelChange)="cs.update({ playerName: $event })" class="w-full" />
@@ -76,4 +99,6 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class HeaderComponent {
   cs = inject(CharacterService);
+  alignments = ALIGNMENTS;
+  classOptions = DND_CLASSES;
 }

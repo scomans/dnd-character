@@ -71,6 +71,7 @@ export interface DndCharacter {
   playerName: string;
   background: string;
   race: string;
+  alignment: string;
   experiencePoints: number;
 
   // Ability Scores
@@ -261,6 +262,33 @@ export const DAMAGE_TYPES: { value: string; label: string }[] = [
   { value: 'Donner', label: 'Donnerschaden (Thunder)' },
 ];
 
+export const ALIGNMENTS: { value: string; label: string }[] = [
+  { value: 'LG', label: 'Rechtschaffen Gut' },
+  { value: 'NG', label: 'Neutral Gut' },
+  { value: 'CG', label: 'Chaotisch Gut' },
+  { value: 'LN', label: 'Rechtschaffen Neutral' },
+  { value: 'TN', label: 'Neutral' },
+  { value: 'CN', label: 'Chaotisch Neutral' },
+  { value: 'LE', label: 'Rechtschaffen Böse' },
+  { value: 'NE', label: 'Neutral Böse' },
+  { value: 'CE', label: 'Chaotisch Böse' },
+];
+
+export const DND_CLASSES: string[] = [
+  'Barbar',
+  'Barde',
+  'Druide',
+  'Hexenmeister',
+  'Kämpfer',
+  'Kleriker',
+  'Magier',
+  'Mönch',
+  'Paladin',
+  'Schurke',
+  'Waldläufer',
+  'Zauberer',
+];
+
 export function createDefaultCharacter(): DndCharacter {
   return {
     version: 1,
@@ -270,6 +298,7 @@ export function createDefaultCharacter(): DndCharacter {
     playerName: '',
     background: '',
     race: '',
+    alignment: '',
     experiencePoints: 0,
     abilities: {
       str: { base: 10 },

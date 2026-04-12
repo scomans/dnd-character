@@ -167,7 +167,7 @@ export class SpellcastingComponent {
 
   addSpell(): void {
     const char = this.cs.character();
-    const spells = [...char.spells, {
+    const newSpell: Spell = {
       name: '',
       level: this.newSpellLevel,
       school: '',
@@ -177,18 +177,22 @@ export class SpellcastingComponent {
       duration: '',
       description: '',
       prepared: false,
-    }];
-    this.cs.update({ spells });
+    };
+    this.cs.update({ spells: [...char.spells, newSpell] });
   }
 
   removeSpell(spell: Spell): void {
     const char = this.cs.character();
-    const spells = char.spells.filter(s => s !== spell);
-    this.cs.update({ spells });
+    const idx = char.spells.indexOf(spell);
+    if (idx >= 0) {
+      const spells = [...char.spells];
+      spells.splice(idx, 1);
+      this.cs.update({ spells });
+    }
   }
 
   updateSpells(): void {
     const char = this.cs.character();
-    this.cs.update({ spells: [...char.spells] });
+    this.cs.update({ spells: [...char.spells.map(s => ({ ...s }))] });
   }
 }

@@ -88,6 +88,8 @@ import { ClickOutside } from 'ngxtension/click-outside';
               buttonLayout="horizontal"
               incrementButtonIcon="pi pi-plus"
               decrementButtonIcon="pi pi-minus"
+              [min]="0"
+              [max]="cs.character().hitPointsMax"
               [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
             />
             <span class="text-xl font-bold text-gray-400">/</span>
@@ -97,6 +99,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
                   [ngModel]="cs.character().hitPointsMax"
                   (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
                   [showButtons]="false"
+                  [min]="1"
                   [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
                 />
               </div>
@@ -116,9 +119,12 @@ import { ClickOutside } from 'ngxtension/click-outside';
             <p-inputnumber
               [ngModel]="cs.character().hitPointsTemp"
               (ngModelChange)="cs.update({ hitPointsTemp: $event ?? 0 })"
-              [showButtons]="false"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
               [min]="0"
-              [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
             />
           </div>
         </p-fieldset>
@@ -133,6 +139,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
               [ngModel]="cs.character().hitDiceTotal"
               (ngModelChange)="cs.update({ hitDiceTotal: $event })"
               class="w-20 text-center text-sm font-bold"
+              placeholder="1W10"
             />
           </div>
         </p-fieldset>

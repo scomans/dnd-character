@@ -9,13 +9,15 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { Attack, DAMAGE_TYPES } from '../../models/character.model';
+import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-attacks',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, MarkdownEditorComponent],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, InputGroupModule, InputGroupAddonModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Waffen & Angriffszauber">
       <!-- Attacks Table -->
@@ -54,16 +56,23 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
                     optionValue="value"
                     [style]="{ width: '6rem', fontSize: '0.75rem' }"
                     appendTo="body"
-                  />
+                  >
+                    <ng-template #selectedItem let-selectedOption>
+                      <span>{{ getShortLabel(selectedOption?.value) }}</span>
+                    </ng-template>
+                  </p-select>
                 </td>
                 <td class="p-1">
-                  <input pInputText [(ngModel)]="attack.range" (ngModelChange)="updateAttacks()" class="w-14 text-xs text-center" />
+                  <p-inputgroup>
+                    <input pInputText [(ngModel)]="attack.range" (ngModelChange)="updateAttacks()" class="w-14 text-xs text-center" />
+                    <p-inputgroup-addon class="text-xs">m</p-inputgroup-addon>
+                  </p-inputgroup>
                 </td>
                 <td class="p-1 text-center font-bold text-slate-700">
                   {{ cs.getAttackBonus(attack) >= 0 ? '+' : '' }}{{ cs.getAttackBonus(attack) }}
                 </td>
                 <td class="p-1">
-                  <input pInputText [(ngModel)]="attack.damageDice" (ngModelChange)="updateAttacks()" class="w-14 text-xs text-center" />
+                  <input pInputText [(ngModel)]="attack.damageDice" (ngModelChange)="updateAttacks()" class="w-16 text-xs text-center" placeholder="1W8" />
                 </td>
                 <td class="p-1 text-center font-bold text-slate-700">
                   {{ cs.getDamageBonus(attack) >= 0 ? '+' : '' }}{{ cs.getDamageBonus(attack) }}
@@ -115,13 +124,17 @@ export class AttacksComponent {
   damageTypes = DAMAGE_TYPES;
 
   abilityOptions = [
-    { label: 'Stä', value: 'str' },
-    { label: 'Ges', value: 'dex' },
-    { label: 'Kon', value: 'con' },
-    { label: 'Int', value: 'int' },
-    { label: 'Wei', value: 'wis' },
-    { label: 'Cha', value: 'cha' },
+    { label: 'Stärke', value: 'str' },
+    { label: 'Geschicklichkeit', value: 'dex' },
+    { label: 'Konstitution', value: 'con' },
+    { label: 'Intelligenz', value: 'int' },
+    { label: 'Weisheit', value: 'wis' },
+    { label: 'Charisma', value: 'cha' },
   ];
+
+  getShortLabel(value: string | undefined): string {
+    return value ? (ABILITY_SHORT_LABELS[value] ?? value) : '';
+  }
 
   addAttack(): void {
     const char = this.cs.character();
@@ -129,7 +142,7 @@ export class AttacksComponent {
       name: '',
       proficient: true,
       attribute: 'str',
-      range: '1,5m',
+      range: '1,5',
       damageDice: '1W8',
       damageType: 'Hieb',
       description: '',
