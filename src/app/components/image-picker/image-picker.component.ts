@@ -25,7 +25,7 @@ import { ButtonModule } from 'primeng/button';
         />
       } @else {
         <div
-          class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-amber-600 hover:bg-amber-50 transition-colors"
+          class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-slate-500 hover:bg-slate-50 transition-colors"
           [class]="placeholderClass()"
           (click)="openFilePicker()"
         >
@@ -68,6 +68,8 @@ export class ImagePickerComponent {
         this.ngZone.run(() => this.imageChange.emit(result));
       };
       reader.readAsDataURL(file);
+      // Reset file input so the same file can be re-selected and change event fires again
+      input.value = '';
     }
   }
 

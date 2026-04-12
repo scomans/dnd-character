@@ -8,13 +8,14 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
+import { TooltipModule } from 'primeng/tooltip';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { Attack, DAMAGE_TYPES } from '../../models/character.model';
 
 @Component({
   selector: 'app-attacks',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, MarkdownEditorComponent],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Waffen & Angriffszauber">
       <!-- Attacks Table -->
@@ -23,14 +24,16 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
           <thead>
             <tr class="border-b border-gray-300">
               <th class="text-left p-1">Angriff</th>
-              <th class="p-1">ÜB</th>
-              <th class="p-1">ATTR</th>
+              <th class="p-1" pTooltip="Übungsbonus" tooltipPosition="top">ÜB</th>
+              <th class="p-1" pTooltip="Attribut" tooltipPosition="top">ATTR</th>
               <th class="p-1">Reichweite</th>
               <th class="p-1">Bonus</th>
               <th class="p-1">Schaden</th>
               <th class="p-1">+</th>
               <th class="text-left p-1">Schadentyp</th>
-              <th class="p-1"></th>
+              <th class="p-1 text-right">
+                <p-button icon="pi pi-plus" [rounded]="true" [text]="true" size="small" (onClick)="addAttack()" pTooltip="Angriff hinzufügen" tooltipPosition="top" />
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -49,20 +52,20 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
                     [options]="abilityOptions"
                     optionLabel="label"
                     optionValue="value"
-                    [style]="{ width: '5rem', fontSize: '0.75rem' }"
+                    [style]="{ width: '6rem', fontSize: '0.75rem' }"
                     appendTo="body"
                   />
                 </td>
                 <td class="p-1">
                   <input pInputText [(ngModel)]="attack.range" (ngModelChange)="updateAttacks()" class="w-14 text-xs text-center" />
                 </td>
-                <td class="p-1 text-center font-bold text-amber-900">
+                <td class="p-1 text-center font-bold text-slate-700">
                   {{ cs.getAttackBonus(attack) >= 0 ? '+' : '' }}{{ cs.getAttackBonus(attack) }}
                 </td>
                 <td class="p-1">
                   <input pInputText [(ngModel)]="attack.damageDice" (ngModelChange)="updateAttacks()" class="w-14 text-xs text-center" />
                 </td>
-                <td class="p-1 text-center font-bold text-amber-900">
+                <td class="p-1 text-center font-bold text-slate-700">
                   {{ cs.getDamageBonus(attack) >= 0 ? '+' : '' }}{{ cs.getDamageBonus(attack) }}
                 </td>
                 <td class="p-1">
@@ -77,7 +80,11 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
                     filterBy="label"
                     placeholder="Typ wählen"
                     appendTo="body"
-                  />
+                  >
+                    <ng-template #selectedItem let-selectedOption>
+                      <span>{{ selectedOption?.value }}</span>
+                    </ng-template>
+                  </p-select>
                 </td>
                 <td class="p-1">
                   <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAttack(i)" />
@@ -98,9 +105,6 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
             }
           </tbody>
         </table>
-      </div>
-      <div class="flex gap-2 mt-2">
-        <p-button label="Angriff hinzufügen" icon="pi pi-plus" size="small" [text]="true" (onClick)="addAttack()" />
       </div>
     </p-fieldset>
   `,

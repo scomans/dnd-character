@@ -31,7 +31,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
       </div>
     } @else {
       <div
-        class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-amber-600/30 hover:bg-amber-50 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
         (click)="editing.set(true)"

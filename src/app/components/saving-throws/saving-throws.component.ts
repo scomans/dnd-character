@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FieldsetModule } from 'primeng/fieldset';
+import { TooltipModule } from 'primeng/tooltip';
 import { ABILITY_SHORT_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-saving-throws',
   standalone: true,
-  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule],
+  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule, TooltipModule],
   template: `
     <p-fieldset legend="Rettungswürfe">
       <div class="space-y-0.5">
@@ -20,10 +21,10 @@ import { ABILITY_SHORT_LABELS } from '../../models/character.model';
               (ngModelChange)="toggleProficiency(ability, $event)"
               [binary]="true"
             />
-            <span class="font-bold w-8 text-right text-amber-900">
+            <span class="font-bold w-8 text-right text-slate-700">
               {{ cs.getSavingThrowModifier(ability) >= 0 ? '+' : '' }}{{ cs.getSavingThrowModifier(ability) }}
             </span>
-            <span class="text-xs">{{ getLabel(ability) }} (<span class="font-bold">{{ getShort(ability) }}</span>)</span>
+            <span class="text-xs">{{ getLabel(ability) }} (<span class="font-bold" [pTooltip]="getLabel(ability)" tooltipPosition="right">{{ getShort(ability) }}</span>)</span>
           </div>
         }
       </div>

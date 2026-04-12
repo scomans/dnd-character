@@ -32,11 +32,11 @@ import { Spell, SpellSlot } from '../../models/character.model';
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberattribut</span>
         </div>
         <div class="flex flex-col items-center">
-          <span class="text-2xl font-bold text-amber-900">{{ cs.getSpellSaveDC() || '--' }}</span>
+          <span class="text-2xl font-bold text-slate-700">{{ cs.getSpellSaveDC() || '--' }}</span>
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauber-SG</span>
         </div>
         <div class="flex flex-col items-center">
-          <span class="text-2xl font-bold text-amber-900">
+          <span class="text-2xl font-bold text-slate-700">
             @if (cs.getSpellAttackBonus()) {
               {{ cs.getSpellAttackBonus() >= 0 ? '+' : '' }}{{ cs.getSpellAttackBonus() }}
             } @else {
@@ -53,7 +53,7 @@ import { Spell, SpellSlot } from '../../models/character.model';
         <div class="grid grid-cols-9 gap-1 mt-1">
           @for (level of spellLevels; track level) {
             <div class="flex flex-col items-center text-xs">
-              <span class="font-bold text-amber-900">{{ level }}</span>
+              <span class="font-bold text-slate-700">{{ level }}</span>
               <div class="flex gap-0.5 mt-0.5">
                 <p-inputnumber
                   [ngModel]="getSlotUsed(level)"

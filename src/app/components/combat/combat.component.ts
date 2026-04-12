@@ -8,12 +8,13 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { FieldsetModule } from 'primeng/fieldset';
+import { TooltipModule } from 'primeng/tooltip';
 import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-combat',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputTextModule, FieldsetModule, ClickOutside],
+  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputTextModule, FieldsetModule, TooltipModule, ClickOutside],
   template: `
     <div class="space-y-3">
       <!-- AC / Initiative / Speed Row -->
@@ -39,7 +40,9 @@ import { ClickOutside } from 'ngxtension/click-outside';
               </div>
             } @else {
               <span
-                class="text-2xl font-bold text-amber-900 cursor-pointer hover:text-amber-700"
+                class="text-2xl font-bold text-slate-700 cursor-pointer hover:text-slate-500"
+                pTooltip="Rüstungsklasse (klicken zum Bearbeiten)"
+                tooltipPosition="top"
                 (click)="editingAC.set(true)"
               >{{ cs.getComputedArmorClass() }}</span>
             }
@@ -47,7 +50,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
         </p-fieldset>
         <p-fieldset legend="Initiative" styleClass="text-center">
           <div class="flex flex-col items-center">
-            <span class="text-2xl font-bold text-amber-900">
+            <span class="text-2xl font-bold text-slate-700" pTooltip="Geschicklichkeits-Modifikator" tooltipPosition="top">
               {{ cs.getInitiative() >= 0 ? '+' : '' }}{{ cs.getInitiative() }}
             </span>
           </div>
@@ -66,7 +69,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
               </p-inputgroup>
             } @else {
               <span
-                class="text-2xl font-bold text-amber-900 cursor-pointer hover:text-amber-700"
+                class="text-2xl font-bold text-slate-700 cursor-pointer hover:text-slate-500"
                 (click)="editingSpeed.set(true)"
               >{{ cs.character().speed }} m</span>
             }
@@ -81,20 +84,34 @@ import { ClickOutside } from 'ngxtension/click-outside';
             <p-inputnumber
               [ngModel]="cs.character().hitPointsCurrent"
               (ngModelChange)="cs.update({ hitPointsCurrent: $event ?? 0 })"
-              [showButtons]="false"
-              [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
             />
             <span class="text-xl font-bold text-gray-400">/</span>
-            <p-inputnumber
-              [ngModel]="cs.character().hitPointsMax"
-              (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
-              [showButtons]="false"
-              [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
-            />
+            @if (editingMaxHP()) {
+              <div (clickOutside)="editingMaxHP.set(false)">
+                <p-inputnumber
+                  [ngModel]="cs.character().hitPointsMax"
+                  (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
+                  [showButtons]="false"
+                  [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+                />
+              </div>
+            } @else {
+              <span
+                class="text-2xl font-bold text-slate-700 cursor-pointer hover:text-slate-500"
+                pTooltip="Max. TP (klicken zum Bearbeiten)"
+                tooltipPosition="top"
+                (click)="editingMaxHP.set(true)"
+              >{{ cs.character().hitPointsMax }}</span>
+            }
           </div>
         </p-fieldset>
 
-        <p-fieldset legend="Temporäre TP">
+        <p-fieldset legend="Temporäre TP" pTooltip="Temporäre Trefferpunkte" tooltipPosition="top">
           <div class="flex items-center justify-center">
             <p-inputnumber
               [ngModel]="cs.character().hitPointsTemp"
@@ -151,6 +168,7 @@ export class CombatComponent {
   cs = inject(CharacterService);
   editingAC = signal(false);
   editingSpeed = signal(false);
+  editingMaxHP = signal(false);
 
   updateDeathSaves(type: 'successes' | 'failures', index: number, checked: boolean): void {
     const char = this.cs.character();

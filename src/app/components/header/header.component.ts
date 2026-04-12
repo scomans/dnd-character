@@ -4,15 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule],
   template: `
-    <div class="bg-white border-2 border-amber-800 rounded-lg p-4 mb-4">
+    <div class="bg-white border-2 border-slate-700 rounded-lg p-4 mb-4">
       <div class="flex items-center gap-2 mb-3">
-        <span class="text-2xl font-bold text-amber-900 tracking-wide font-serif">DUNGEONS & DRAGONS</span>
+        <span class="text-2xl font-bold text-slate-800 tracking-wide font-serif">DUNGEONS & DRAGONS</span>
       </div>
       <div class="flex gap-4 items-start">
         @if (cs.character().characterImage) {
@@ -58,8 +59,13 @@ import { InputNumberModule } from 'primeng/inputnumber';
               <input pInputText [ngModel]="cs.character().playerName" (ngModelChange)="cs.update({ playerName: $event })" class="w-full" />
               <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Spieler*in</label>
             </div>
-            <div class="flex flex-col">
-              <p-inputnumber [ngModel]="cs.character().experiencePoints" (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })" [useGrouping]="false" class="w-full" />
+            <div class="flex flex-col" pTooltip="Erfahrungspunkte" tooltipPosition="top">
+              <p-inputnumber
+                [ngModel]="cs.character().experiencePoints"
+                (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
+                [useGrouping]="false"
+                [inputStyle]="{ width: '100%' }"
+              />
               <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">EP</label>
             </div>
           </div>

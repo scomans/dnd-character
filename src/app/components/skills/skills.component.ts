@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FieldsetModule } from 'primeng/fieldset';
-import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS } from '../../models/character.model';
+import { TooltipModule } from 'primeng/tooltip';
+import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-skills',
   standalone: true,
-  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule],
+  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule, TooltipModule],
   template: `
     <p-fieldset legend="Fertigkeiten">
       <div class="space-y-0.5">
@@ -26,17 +27,17 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS } from '../../mod
               (ngModelChange)="toggleProficiency(skill, $event)"
               [binary]="true"
             />
-            <span class="font-bold w-8 text-right text-amber-900">
+            <span class="font-bold w-8 text-right text-slate-700">
               {{ cs.getSkillModifier(skill) >= 0 ? '+' : '' }}{{ cs.getSkillModifier(skill) }}
             </span>
-            <span class="text-xs">{{ getLabel(skill) }} (<span class="font-bold">{{ getAbilityShort(skill) }}</span>)</span>
+            <span class="text-xs">{{ getLabel(skill) }} (<span class="font-bold" [pTooltip]="getAbilityFull(skill)" tooltipPosition="right">{{ getAbilityShort(skill) }}</span>)</span>
           </div>
         }
       </div>
 
       <!-- Passive Perception -->
       <div class="mt-2 flex items-center gap-2 border-t border-gray-200 pt-2">
-        <span class="text-lg font-bold text-amber-900">{{ cs.getPassivePerception() }}</span>
+        <span class="text-lg font-bold text-slate-700">{{ cs.getPassivePerception() }}</span>
         <div class="text-[0.6rem]">
           <div class="font-bold uppercase text-gray-600">Passive Weisheit (Wahrnehmung)</div>
           <div class="text-gray-400">[10 + Wahrnehmung]</div>
@@ -59,6 +60,11 @@ export class SkillsComponent {
   getAbilityShort(skill: string): string {
     const ability = SKILL_ABILITY_MAP[skill];
     return ABILITY_SHORT_LABELS[ability] || ability;
+  }
+
+  getAbilityFull(skill: string): string {
+    const ability = SKILL_ABILITY_MAP[skill];
+    return ABILITY_LABELS[ability] || ability;
   }
 
   isProficient(skill: string): boolean {

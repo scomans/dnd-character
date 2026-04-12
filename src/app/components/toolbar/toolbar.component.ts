@@ -11,7 +11,7 @@ import { TextareaModule } from 'primeng/textarea';
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonModule, DialogModule, TextareaModule],
   template: `
-    <div class="flex items-center gap-2 bg-amber-900 text-white px-4 py-2 rounded-lg mb-4 shadow-md">
+    <div class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg mb-4 shadow-md">
       <span class="text-lg font-bold flex-1">⚔️ D&D Charakterbogen</span>
       <p-button label="Export JSON" icon="pi pi-download" size="small" severity="secondary" (onClick)="exportJSON()" />
       <p-button label="Import JSON" icon="pi pi-upload" size="small" severity="secondary" (onClick)="showImport = true" />

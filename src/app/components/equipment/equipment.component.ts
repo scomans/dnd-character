@@ -6,12 +6,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
+import { TooltipModule } from 'primeng/tooltip';
 import { Equipment } from '../../models/character.model';
 
 @Component({
   selector: 'app-equipment',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, ButtonModule, FieldsetModule],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, ButtonModule, FieldsetModule, TooltipModule],
   template: `
     <p-fieldset legend="Ausrüstung">
       <div class="flex gap-4">
@@ -54,7 +55,7 @@ import { Equipment } from '../../models/character.model';
           <span class="text-[0.65rem] font-bold uppercase text-gray-600 text-center mb-1">Münzen</span>
           @for (coin of coins; track coin.key) {
             <div class="flex items-center gap-1">
-              <span class="text-[0.6rem] font-bold uppercase text-gray-600 w-6 text-right">{{ coin.label }}</span>
+              <span class="text-[0.6rem] font-bold uppercase text-gray-600 w-6 text-right" [pTooltip]="coin.tooltip" tooltipPosition="left">{{ coin.label }}</span>
               <p-inputnumber
                 [ngModel]="getCurrency(coin.key)"
                 (ngModelChange)="updateCurrency(coin.key, $event)"
@@ -73,11 +74,11 @@ export class EquipmentComponent {
   cs = inject(CharacterService);
 
   coins = [
-    { key: 'cp', label: 'KM' },
-    { key: 'sp', label: 'SM' },
-    { key: 'ep', label: 'EM' },
-    { key: 'gp', label: 'GM' },
-    { key: 'pp', label: 'PM' },
+    { key: 'cp', label: 'KM', tooltip: 'Kupfermünzen' },
+    { key: 'sp', label: 'SM', tooltip: 'Silbermünzen' },
+    { key: 'ep', label: 'EM', tooltip: 'Elektrummünzen' },
+    { key: 'gp', label: 'GM', tooltip: 'Goldmünzen' },
+    { key: 'pp', label: 'PM', tooltip: 'Platinmünzen' },
   ];
 
   getCurrency(key: string): number {
