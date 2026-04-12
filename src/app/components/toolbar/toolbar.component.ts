@@ -51,7 +51,7 @@ import '@googleworkspace/drive-picker-element';
           pTooltip="Neue Datei in Google Drive erstellen"
           tooltipPosition="bottom"
         />
-      } @else if (drive.configured()) {
+      } @else {
         <p-button
           icon="pi pi-google"
           label="Mit Google anmelden"
@@ -59,16 +59,6 @@ import '@googleworkspace/drive-picker-element';
           severity="secondary"
           (onClick)="openPicker()"
           pTooltip="Öffne Google Drive File Picker"
-          tooltipPosition="bottom"
-        />
-      } @else {
-        <p-button
-          icon="pi pi-google"
-          label="Google Drive"
-          size="small"
-          severity="secondary"
-          (onClick)="showDriveSetup = true"
-          pTooltip="Google Drive einrichten"
           tooltipPosition="bottom"
         />
       }
@@ -80,43 +70,20 @@ import '@googleworkspace/drive-picker-element';
       <p-button label="Zurücksetzen" icon="pi pi-refresh" size="small" severity="danger" (onClick)="showReset = true" />
     </div>
 
-    <!-- Hidden Drive Picker element -->
-    @if (drive.configured()) {
-      <drive-picker
-        #drivePicker
-        [attr.client-id]="drive.clientId"
-        [attr.app-id]="drive.appId"
-        [attr.oauth-token]="drive.accessToken || null"
-        locale="de"
-        title="JSON-Datei auswählen"
-      >
-        <drive-picker-docs-view
-          mime-types="application/json"
-          mode="LIST"
-        ></drive-picker-docs-view>
-      </drive-picker>
-    }
-
-    <!-- Google Drive Setup Dialog (one-time, only Client ID needed) -->
-    <p-dialog header="Google Drive einrichten" [(visible)]="showDriveSetup" [modal]="true" [style]="{ width: '500px' }">
-      <div class="space-y-3">
-        <p class="text-sm text-gray-600">
-          Einmalige Einrichtung: Gib deine Google Cloud OAuth Client ID ein.
-          Danach kannst du dich direkt über den Google Drive Picker anmelden und Dateien öffnen/speichern.
-        </p>
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-bold">Client ID</label>
-          <input pInputText [(ngModel)]="driveClientId" placeholder="xxxx.apps.googleusercontent.com" class="w-full text-sm" />
-        </div>
-        @if (driveError) {
-          <p class="text-red-600 text-sm">{{ driveError }}</p>
-        }
-      </div>
-      <ng-template pTemplate="footer">
-        <p-button label="Abbrechen" [text]="true" (onClick)="showDriveSetup = false; driveError = ''" />
-        <p-button label="Speichern" icon="pi pi-check" (onClick)="saveClientId()" />
-      </ng-template>
-    </p-dialog>
+    <!-- Drive Picker element (always available since Client ID is embedded) -->
+    <drive-picker
+      #drivePicker
+      [attr.client-id]="drive.clientId"
+      [attr.app-id]="drive.appId"
+      [attr.oauth-token]="drive.accessToken || null"
+      locale="de"
+      title="JSON-Datei auswählen"
+    >
+      <drive-picker-docs-view
+        mime-types="application/json"
+        mode="LIST"
+      ></drive-picker-docs-view>
+    </drive-picker>
 
     <!-- New Drive File Dialog -->
     <p-dialog header="Neue Datei in Google Drive" [(visible)]="showNewDriveFile" [modal]="true" [style]="{ width: '400px' }">
@@ -171,12 +138,9 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
 
   showImport = false;
   showReset = false;
-  showDriveSetup = false;
   showNewDriveFile = false;
   importText = '';
   importError = '';
-  driveClientId = '';
-  driveError = '';
   newDriveFileName = '';
 
   private pickerListenersAttached = false;
@@ -230,14 +194,11 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
   }
 
   openPicker(): void {
-    // Defer to next tick so the picker element is rendered after @if becomes true
-    setTimeout(() => {
-      this.attachPickerListeners();
-      const el = this.drivePickerRef?.nativeElement;
-      if (el) {
-        el.visible = true;
-      }
-    }, 0);
+    this.attachPickerListeners();
+    const el = this.drivePickerRef?.nativeElement;
+    if (el) {
+      el.visible = true;
+    }
   }
 
   exportJSON(): void {
@@ -272,19 +233,6 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
   }
 
   // === Google Drive ===
-
-  saveClientId(): void {
-    this.driveError = '';
-    const id = this.driveClientId.trim();
-    if (!id) {
-      this.driveError = 'Bitte Client ID eingeben.';
-      return;
-    }
-    this.drive.setClientId(id);
-    this.showDriveSetup = false;
-    // Open the picker right away so the user can authenticate
-    setTimeout(() => this.openPicker(), 0);
-  }
 
   async saveToDrive(): Promise<void> {
     const currentFile = this.drive.currentFile();

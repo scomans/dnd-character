@@ -8,7 +8,14 @@ export interface DriveFileInfo {
   name: string;
 }
 
-const STORAGE_CLIENT_ID_KEY = '736326091345-7if9d7vta2l4ove33j4o359sjppavgi2.apps.googleusercontent.com';
+/**
+ * Public OAuth Client ID for the Google Drive Picker.
+ * This is NOT a secret — it is restricted by authorized JavaScript origins
+ * in the Google Cloud Console and is safe to embed in client-side code.
+ */
+const CLIENT_ID = '736326091345-7if9d7vta2l4ove33j4o359sjppavgi2.apps.googleusercontent.com';
+const APP_ID = CLIENT_ID.split('-')[0];
+
 const STORAGE_FILE_ID_KEY = 'gdrive-file-id';
 const STORAGE_FILE_NAME_KEY = 'gdrive-file-name';
 
@@ -16,22 +23,23 @@ const STORAGE_FILE_NAME_KEY = 'gdrive-file-name';
   providedIn: 'root',
 })
 export class GoogleDriveService {
-  private _clientId = '';
   private _accessToken = '';
 
   readonly connected = signal(false);
   readonly currentFile = signal<DriveFileInfo | null>(null);
   readonly loading = signal(false);
-  readonly configured = signal(false);
+
+  /** Always configured since the Client ID is embedded */
+  readonly configured = signal(true);
 
   /** The Client ID for the drive-picker element */
   get clientId(): string {
-    return this._clientId;
+    return CLIENT_ID;
   }
 
   /** The App ID derived from the Client ID (the numeric prefix before the first dash) */
   get appId(): string {
-    return this._clientId.split('-')[0] ?? '';
+    return APP_ID;
   }
 
   get accessToken(): string {
@@ -39,27 +47,11 @@ export class GoogleDriveService {
   }
 
   constructor() {
-    const savedClientId = localStorage.getItem(STORAGE_CLIENT_ID_KEY);
-    if (savedClientId) {
-      this._clientId = savedClientId;
-      this.configured.set(true);
-    }
     const savedFileId = localStorage.getItem(STORAGE_FILE_ID_KEY);
     const savedFileName = localStorage.getItem(STORAGE_FILE_NAME_KEY);
     if (savedFileId && savedFileName) {
       this.currentFile.set({ id: savedFileId, name: savedFileName });
     }
-  }
-
-  /**
-   * Store client ID for future use. Only Client ID is needed —
-   * the App ID is derived from it and the OAuth token comes from the picker element.
-   */
-  setClientId(clientId: string): void {
-    this._clientId = clientId;
-    // The Client ID is a public OAuth credential restricted by domain origin in Google Cloud Console.
-    localStorage.setItem(STORAGE_CLIENT_ID_KEY, clientId); // nosemgrep: clear-text-storage
-    this.configured.set(true);
   }
 
   /**
@@ -170,12 +162,9 @@ export class GoogleDriveService {
   }
 
   clearCredentials(): void {
-    localStorage.removeItem(STORAGE_CLIENT_ID_KEY);
     localStorage.removeItem(STORAGE_FILE_ID_KEY);
     localStorage.removeItem(STORAGE_FILE_NAME_KEY);
-    this._clientId = '';
     this._accessToken = '';
-    this.configured.set(false);
     this.connected.set(false);
     this.currentFile.set(null);
   }

@@ -17,7 +17,18 @@ export class CharacterService {
     // Auto-save to localStorage whenever character changes
     effect(() => {
       const char = this.character();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(char));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(char));
+      } catch (e) {
+        // If quota exceeded (e.g. large images), try saving without images
+        console.warn('localStorage quota exceeded, saving without images:', e);
+        try {
+          const slim = { ...char, characterImage: '', organizationLogo: '' };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(slim));
+        } catch {
+          // Ignore further errors
+        }
+      }
     });
   }
 

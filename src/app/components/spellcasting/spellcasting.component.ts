@@ -10,7 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { TextareaModule } from 'primeng/textarea';
-import { Spell, SpellSlot } from '../../models/character.model';
+import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
@@ -19,7 +19,20 @@ import { Spell, SpellSlot } from '../../models/character.model';
   template: `
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid grid-cols-4 gap-2">
+        <div class="flex flex-col items-center">
+          <p-select
+            [ngModel]="cs.character().spellcastingClass"
+            (ngModelChange)="onSpellcastingClassChange($event)"
+            [options]="spellcastingClasses"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="--"
+            [style]="{ width: '100%' }"
+            appendTo="body"
+          />
+          <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberwirkende Klasse</span>
+        </div>
         <div class="flex flex-col items-center">
           <p-select
             [ngModel]="cs.character().spellcastingAbility"
@@ -146,6 +159,7 @@ import { Spell, SpellSlot } from '../../models/character.model';
 export class SpellcastingComponent {
   cs = inject(CharacterService);
   @ViewChild('spellPopover') spellPopover!: Popover;
+  spellcastingClasses = SPELLCASTING_CLASSES;
   spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   newSpellLevel = 0;
   activeSpell: Spell | null = null;
@@ -197,6 +211,15 @@ export class SpellcastingComponent {
     this.cs.update({ spellSlots: slots });
   }
 
+  onSpellcastingClassChange(value: string): void {
+    const found = this.spellcastingClasses.find(c => c.value === value);
+    const updates: Partial<any> = { spellcastingClass: value };
+    if (found) {
+      updates['spellcastingAbility'] = found.ability;
+    }
+    this.cs.update(updates);
+  }
+
   addSpell(): void {
     const char = this.cs.character();
     const newSpell: Spell = {
@@ -225,7 +248,15 @@ export class SpellcastingComponent {
 
   updateSpells(): void {
     const char = this.cs.character();
-    this.cs.update({ spells: [...char.spells.map(s => ({ ...s }))] });
+    const newSpells = [...char.spells.map(s => ({ ...s }))];
+    this.cs.update({ spells: newSpells });
+    // Update activeSpell reference so it points to the new copy
+    if (this.activeSpell) {
+      const idx = char.spells.indexOf(this.activeSpell);
+      if (idx >= 0 && idx < newSpells.length) {
+        this.activeSpell = newSpells[idx];
+      }
+    }
   }
 
   updateSpellPrepared(indexInLevel: number, level: number, prepared: boolean): void {

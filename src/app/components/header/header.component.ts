@@ -117,56 +117,20 @@ export class HeaderComponent {
   selectedClassNode: any = null;
 
   constructor() {
-    // Initialize selectedClassNode from current className
+    // Initialize selectedClassNode from current className using the key
     const className = this.cs.character().className;
     if (className) {
-      this.selectedClassNode = this.findNodeByData(className);
+      this.selectedClassNode = className;
     }
   }
 
-  private findNodeByData(data: string): any {
-    for (const parent of this.classTree) {
-      if (parent.data === data) {
-        return { [parent.data]: true };
-      }
-      if (parent.children) {
-        for (const child of parent.children) {
-          if (child.data === data) {
-            return { [child.data]: true };
-          }
-        }
-      }
+  onClassNodeSelect(nodeKey: any): void {
+    this.selectedClassNode = nodeKey;
+    // PrimeNG TreeSelect with selectionMode="single" (default) returns the node key directly
+    if (nodeKey && typeof nodeKey === 'string') {
+      this.cs.update({ className: nodeKey });
+    } else {
+      this.cs.update({ className: '' });
     }
-    return null;
-  }
-
-  onClassNodeSelect(node: any): void {
-    this.selectedClassNode = node;
-    if (node) {
-      // TreeSelect returns a key-value map; find the selected key
-      const keys = Object.keys(node);
-      if (keys.length > 0) {
-        // Find the node data from the tree
-        const selectedKey = keys[0];
-        const found = this.findDataByKey(selectedKey);
-        if (found) {
-          this.cs.update({ className: found });
-          return;
-        }
-      }
-    }
-    this.cs.update({ className: '' });
-  }
-
-  private findDataByKey(key: string): string | null {
-    for (const parent of this.classTree) {
-      if (parent.data === key || parent.label === key) return parent.data;
-      if (parent.children) {
-        for (const child of parent.children) {
-          if (child.data === key || child.label === key) return child.data;
-        }
-      }
-    }
-    return key; // Return the key itself as fallback (for custom entries)
   }
 }

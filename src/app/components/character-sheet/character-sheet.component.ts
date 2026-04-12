@@ -11,6 +11,7 @@ import { AttacksComponent } from '../attacks/attacks.component';
 import { ProficienciesLanguagesComponent } from '../proficiencies-languages/proficiencies-languages.component';
 import { EquipmentComponent } from '../equipment/equipment.component';
 import { FeaturesComponent } from '../features/features.component';
+import { LifestyleJumpComponent } from '../lifestyle-jump/lifestyle-jump.component';
 import { SpellcastingComponent } from '../spellcasting/spellcasting.component';
 import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
 import { TabsModule } from 'primeng/tabs';
@@ -32,6 +33,7 @@ import { TabsModule } from 'primeng/tabs';
     ProficienciesLanguagesComponent,
     EquipmentComponent,
     FeaturesComponent,
+    LifestyleJumpComponent,
     SpellcastingComponent,
     AppearanceBackstoryComponent,
   ],
@@ -67,6 +69,7 @@ import { TabsModule } from 'primeng/tabs';
                 <app-combat />
                 <app-attacks />
                 <app-features />
+                <app-lifestyle-jump />
               </div>
 
               <!-- Proficiencies spans columns 1+2 -->

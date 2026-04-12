@@ -6,18 +6,15 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
-import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
-import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
 import { ClickOutside } from 'ngxtension/click-outside';
-import { LIFESTYLES } from '../../models/character.model';
 
 @Component({
   selector: 'app-combat',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputTextModule, InputMaskModule, SelectModule, FieldsetModule, TooltipModule, ClickOutside],
+  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputMaskModule, FieldsetModule, TooltipModule, ClickOutside],
   template: `
     <div class="space-y-3">
       <!-- AC / Initiative / Speed Row -->
@@ -174,113 +171,19 @@ import { LIFESTYLES } from '../../models/character.model';
         </p-fieldset>
       </div>
 
-      <!-- Lifestyle & Jump Section -->
-      <div class="grid grid-cols-2 gap-2">
-        <p-fieldset legend="Lebensstil">
-          <div class="flex items-center gap-2">
-            <p-select
-              [ngModel]="cs.character().lifestyle"
-              (ngModelChange)="cs.update({ lifestyle: $event })"
-              [options]="lifestyles"
-              optionLabel="label"
-              optionValue="value"
-              [style]="{ width: '100%', fontSize: '0.8rem' }"
-              appendTo="body"
-            />
-            <div class="shrink-0 text-right">
-              <span class="text-xs text-gray-500">Tägliche Kosten</span>
-              <div class="text-sm font-bold text-slate-700">{{ getLifestyleCost() }}</div>
-            </div>
-          </div>
-        </p-fieldset>
-
-        <p-fieldset legend="Hoch- & Weitsprung">
-          <div class="text-xs">
-            <table class="w-full">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th class="text-center text-[0.6rem] text-gray-500">Ohne Anlauf</th>
-                  <th class="text-center text-[0.6rem] text-gray-500">Mit Anlauf</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-[0.65rem] font-bold">Hoch</td>
-                  <td class="text-center">
-                    <span class="font-bold text-slate-700" pTooltip="(Stärke-Mod + 3) / 2 ft → m" tooltipPosition="top">
-                      {{ getHighJumpStanding() | number:'1.2-2' }} m
-                    </span>
-                  </td>
-                  <td class="text-center">
-                    <span class="font-bold text-slate-700" pTooltip="Stärke-Mod + 3 ft → m" tooltipPosition="top">
-                      {{ getHighJumpRunning() | number:'1.2-2' }} m
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-[0.65rem] font-bold">Weit</td>
-                  <td class="text-center">
-                    <span class="font-bold text-slate-700" pTooltip="Stärke-Wert / 2 ft → m" tooltipPosition="top">
-                      {{ getLongJumpStanding() | number:'1.2-2' }} m
-                    </span>
-                  </td>
-                  <td class="text-center">
-                    <span class="font-bold text-slate-700" pTooltip="Stärke-Wert ft → m" tooltipPosition="top">
-                      {{ getLongJumpRunning() | number:'1.2-2' }} m
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </p-fieldset>
-      </div>
     </div>
   `,
 })
 export class CombatComponent {
   cs = inject(CharacterService);
-  lifestyles = LIFESTYLES;
   editingAC = signal(false);
   editingSpeed = signal(false);
   editingMaxHP = signal(false);
-
-  private readonly FT_TO_M = 0.3048;
 
   updateDeathSaves(type: 'successes' | 'failures', index: number, checked: boolean): void {
     const char = this.cs.character();
     const deathSaves = { ...char.deathSaves };
     deathSaves[type] = checked ? index + 1 : index;
     this.cs.update({ deathSaves });
-  }
-
-  getLifestyleCost(): string {
-    const lifestyle = this.cs.character().lifestyle;
-    const found = this.lifestyles.find(l => l.value === lifestyle);
-    return found?.cost ?? '—';
-  }
-
-  // Jump calculations based on DND 5E rules (converted to meters)
-  // High Jump (running) = 3 + STR modifier feet
-  // High Jump (standing) = half of running
-  // Long Jump (running) = STR score feet
-  // Long Jump (standing) = half of running
-  getHighJumpRunning(): number {
-    const strMod = this.cs.getAbilityModifier('str');
-    return (3 + strMod) * this.FT_TO_M;
-  }
-
-  getHighJumpStanding(): number {
-    return this.getHighJumpRunning() / 2;
-  }
-
-  getLongJumpRunning(): number {
-    const strScore = this.cs.character().abilities.str.base;
-    return strScore * this.FT_TO_M;
-  }
-
-  getLongJumpStanding(): number {
-    return this.getLongJumpRunning() / 2;
   }
 }
