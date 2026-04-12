@@ -49,6 +49,17 @@ import { TooltipModule } from 'primeng/tooltip';
           pTooltip="Neue Datei in Google Drive erstellen"
           tooltipPosition="bottom"
         />
+      } @else if (drive.configured()) {
+        <p-button
+          icon="pi pi-google"
+          label="Mit Google anmelden"
+          size="small"
+          severity="secondary"
+          [loading]="driveConnecting"
+          (onClick)="signInWithGoogle()"
+          pTooltip="Mit Google Drive anmelden"
+          tooltipPosition="bottom"
+        />
       } @else {
         <p-button
           icon="pi pi-google"
@@ -56,7 +67,7 @@ import { TooltipModule } from 'primeng/tooltip';
           size="small"
           severity="secondary"
           (onClick)="showDriveSetup = true"
-          pTooltip="Mit Google Drive verbinden"
+          pTooltip="Google Drive einrichten"
           tooltipPosition="bottom"
         />
       }
@@ -68,12 +79,12 @@ import { TooltipModule } from 'primeng/tooltip';
       <p-button label="Zurücksetzen" icon="pi pi-refresh" size="small" severity="danger" (onClick)="showReset = true" />
     </div>
 
-    <!-- Google Drive Setup Dialog -->
-    <p-dialog header="Google Drive verbinden" [(visible)]="showDriveSetup" [modal]="true" [style]="{ width: '500px' }">
+    <!-- Google Drive Setup Dialog (one-time credential entry) -->
+    <p-dialog header="Google Drive einrichten" [(visible)]="showDriveSetup" [modal]="true" [style]="{ width: '500px' }">
       <div class="space-y-3">
         <p class="text-sm text-gray-600">
-          Um Google Drive zu nutzen, benötigst du eine Google Cloud Client ID und einen API-Key mit aktivierter
-          Google Drive API und Google Picker API.
+          Einmalige Einrichtung: Gib deine Google Cloud Client ID und API-Key ein.
+          Danach kannst du dich jederzeit mit einem Klick bei Google anmelden.
         </p>
         <div class="flex flex-col gap-1">
           <label class="text-sm font-bold">Client ID</label>
@@ -89,7 +100,7 @@ import { TooltipModule } from 'primeng/tooltip';
       </div>
       <ng-template pTemplate="footer">
         <p-button label="Abbrechen" [text]="true" (onClick)="showDriveSetup = false; driveError = ''" />
-        <p-button label="Verbinden" icon="pi pi-link" [loading]="driveConnecting" (onClick)="connectDrive()" />
+        <p-button label="Speichern & Anmelden" icon="pi pi-google" [loading]="driveConnecting" (onClick)="setupAndSignIn()" />
       </ng-template>
     </p-dialog>
 
@@ -155,22 +166,11 @@ export class ToolbarComponent {
   newDriveFileName = '';
 
   constructor() {
-    // Restore saved credentials
-    const savedClientId = localStorage.getItem('gdrive-client-id');
-    const savedApiKey = localStorage.getItem('gdrive-api-key');
+    // Restore saved file info
     const savedFileId = localStorage.getItem('gdrive-file-id');
     const savedFileName = localStorage.getItem('gdrive-file-name');
-
-    if (savedClientId && savedApiKey) {
-      this.driveClientId = savedClientId;
-      this.driveApiKey = savedApiKey;
-      this.drive.init(savedClientId, savedApiKey).then(() => {
-        if (savedFileId && savedFileName) {
-          this.drive.currentFile.set({ id: savedFileId, name: savedFileName });
-        }
-      }).catch(() => {
-        // Silently fail on auto-connect
-      });
+    if (savedFileId && savedFileName) {
+      this.drive.currentFile.set({ id: savedFileId, name: savedFileName });
     }
   }
 
@@ -207,7 +207,18 @@ export class ToolbarComponent {
 
   // === Google Drive ===
 
-  async connectDrive(): Promise<void> {
+  async signInWithGoogle(): Promise<void> {
+    this.driveConnecting = true;
+    try {
+      await this.drive.signIn();
+    } catch (err: any) {
+      console.error('Google sign-in error:', err);
+    } finally {
+      this.driveConnecting = false;
+    }
+  }
+
+  async setupAndSignIn(): Promise<void> {
     this.driveError = '';
     if (!this.driveClientId.trim() || !this.driveApiKey.trim()) {
       this.driveError = 'Bitte Client ID und API Key eingeben.';
@@ -215,13 +226,8 @@ export class ToolbarComponent {
     }
     this.driveConnecting = true;
     try {
-      await this.drive.init(this.driveClientId.trim(), this.driveApiKey.trim());
-      this.drive.authorize();
-      // Save credentials to localStorage for convenience.
-      // These are the user's own public Google Cloud OAuth credentials (Client ID + API Key),
-      // not secrets - they are restricted by domain origin in Google Cloud Console.
-      localStorage.setItem('gdrive-client-id', this.driveClientId.trim());
-      localStorage.setItem('gdrive-api-key', this.driveApiKey.trim()); // nosemgrep: clear-text-storage
+      this.drive.setCredentials(this.driveClientId.trim(), this.driveApiKey.trim());
+      await this.drive.signIn();
       this.showDriveSetup = false;
     } catch (err: any) {
       this.driveError = 'Verbindung fehlgeschlagen: ' + (err?.message || err);

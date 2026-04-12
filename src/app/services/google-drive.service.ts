@@ -1,8 +1,5 @@
 import { Injectable, signal } from '@angular/core';
 
-// Google API configuration
-// Users need to set up their own Google Cloud project and OAuth 2.0 credentials
-// with the Google Drive API and Google Picker API enabled.
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'];
 
@@ -14,6 +11,9 @@ export interface DriveFileInfo {
   name: string;
 }
 
+const STORAGE_CLIENT_ID_KEY = 'gdrive-client-id';
+const STORAGE_API_KEY_KEY = 'gdrive-api-key';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,29 +24,62 @@ export class GoogleDriveService {
   private accessToken = '';
   private gapiLoaded = false;
   private gsiLoaded = false;
+  private initPromise: Promise<void> | null = null;
 
   readonly connected = signal(false);
   readonly currentFile = signal<DriveFileInfo | null>(null);
   readonly loading = signal(false);
+  readonly configured = signal(false);
+
+  constructor() {
+    // Check if credentials are saved
+    const savedClientId = localStorage.getItem(STORAGE_CLIENT_ID_KEY);
+    const savedApiKey = localStorage.getItem(STORAGE_API_KEY_KEY);
+    if (savedClientId && savedApiKey) {
+      this.clientId = savedClientId;
+      this.apiKey = savedApiKey;
+      this.configured.set(true);
+    }
+  }
 
   /**
-   * Initialize the Google API libraries by injecting scripts
+   * Store credentials for future use
    */
-  async init(clientId: string, apiKey: string): Promise<void> {
+  setCredentials(clientId: string, apiKey: string): void {
     this.clientId = clientId;
     this.apiKey = apiKey;
+    // These are the user's own public Google Cloud OAuth credentials (Client ID + API Key),
+    // not secrets - they are restricted by domain origin in Google Cloud Console.
+    localStorage.setItem(STORAGE_CLIENT_ID_KEY, clientId); // nosemgrep: clear-text-storage
+    localStorage.setItem(STORAGE_API_KEY_KEY, apiKey); // nosemgrep: clear-text-storage
+    this.configured.set(true);
+    this.initPromise = null; // Reset so next init uses new credentials
+  }
 
+  /**
+   * Initialize the Google API libraries (loads scripts + configures gapi + gsi)
+   */
+  async ensureInitialized(): Promise<void> {
+    if (!this.clientId || !this.apiKey) {
+      throw new Error('Google Drive credentials not configured.');
+    }
+    if (!this.initPromise) {
+      this.initPromise = this.doInit();
+    }
+    return this.initPromise;
+  }
+
+  private async doInit(): Promise<void> {
     await Promise.all([
       this.loadGapiScript(),
       this.loadGsiScript(),
     ]);
-
     await this.initGapi();
     this.initGsi();
   }
 
   private loadGapiScript(): Promise<void> {
-    if (this.gapiLoaded || typeof gapi !== 'undefined') {
+    if (this.gapiLoaded || (typeof gapi !== 'undefined')) {
       this.gapiLoaded = true;
       return Promise.resolve();
     }
@@ -63,7 +96,7 @@ export class GoogleDriveService {
   }
 
   private loadGsiScript(): Promise<void> {
-    if (this.gsiLoaded || typeof google !== 'undefined' && google.accounts) {
+    if (this.gsiLoaded || (typeof google !== 'undefined' && google.accounts)) {
       this.gsiLoaded = true;
       return Promise.resolve();
     }
@@ -107,19 +140,28 @@ export class GoogleDriveService {
   }
 
   /**
-   * Request authorization from the user
+   * Sign in with Google - shows the OAuth consent popup
    */
-  authorize(): void {
-    if (!this.tokenClient) {
-      console.error('Google Drive not initialized. Call init() first.');
-      return;
-    }
-    if (this.accessToken) {
-      // Already authorized, request consent anyway if needed
-      this.tokenClient.requestAccessToken({ prompt: '' });
-    } else {
-      this.tokenClient.requestAccessToken({ prompt: 'consent' });
-    }
+  async signIn(): Promise<void> {
+    await this.ensureInitialized();
+    return new Promise<void>((resolve, reject) => {
+      // Override callback temporarily
+      const origCallback = this.tokenClient.s.callback;
+      this.tokenClient.callback = (response: any) => {
+        if (response.error) {
+          reject(new Error(response.error));
+          return;
+        }
+        this.accessToken = response.access_token;
+        this.connected.set(true);
+        resolve();
+      };
+      if (this.accessToken) {
+        this.tokenClient.requestAccessToken({ prompt: '' });
+      } else {
+        this.tokenClient.requestAccessToken({ prompt: 'consent' });
+      }
+    });
   }
 
   /**
@@ -127,20 +169,8 @@ export class GoogleDriveService {
    */
   async pickFile(): Promise<DriveFileInfo | null> {
     if (!this.accessToken) {
-      this.authorize();
-      // Wait for auth
-      await new Promise<void>((resolve) => {
-        const interval = setInterval(() => {
-          if (this.accessToken) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 200);
-        // Timeout after 30s
-        setTimeout(() => { clearInterval(interval); resolve(); }, 30000);
-      });
+      await this.signIn();
     }
-
     if (!this.accessToken) return null;
 
     return new Promise((resolve) => {
@@ -270,12 +300,26 @@ export class GoogleDriveService {
     }
   }
 
+  clearCredentials(): void {
+    localStorage.removeItem(STORAGE_CLIENT_ID_KEY);
+    localStorage.removeItem(STORAGE_API_KEY_KEY);
+    this.clientId = '';
+    this.apiKey = '';
+    this.configured.set(false);
+    this.disconnect();
+  }
+
   disconnect(): void {
-    if (this.accessToken) {
-      google.accounts.oauth2.revoke(this.accessToken);
+    if (this.accessToken && typeof google !== 'undefined') {
+      try {
+        google.accounts.oauth2.revoke(this.accessToken);
+      } catch {
+        // ignore revoke errors
+      }
     }
     this.accessToken = '';
     this.connected.set(false);
     this.currentFile.set(null);
+    this.initPromise = null;
   }
 }

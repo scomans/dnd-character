@@ -72,6 +72,7 @@ export interface DndCharacter {
   background: string;
   race: string;
   alignment: string;
+  lifestyle: string;
   experiencePoints: number;
 
   // Ability Scores
@@ -289,6 +290,147 @@ export const DND_CLASSES: string[] = [
   'Zauberer',
 ];
 
+export interface ClassTreeNode {
+  label: string;
+  data: string;
+  children?: ClassTreeNode[];
+}
+
+export const DND_CLASS_TREE: ClassTreeNode[] = [
+  { label: 'Barbar', data: 'Barbar', children: [
+    { label: 'Berserker', data: 'Barbar (Berserker)' },
+    { label: 'Totemkrieger', data: 'Barbar (Totemkrieger)' },
+    { label: 'Sturmherold', data: 'Barbar (Sturmherold)' },
+    { label: 'Zelot', data: 'Barbar (Zelot)' },
+    { label: 'Tierherz', data: 'Barbar (Tierherz)' },
+    { label: 'Wilder Magier', data: 'Barbar (Wilder Magier)' },
+  ]},
+  { label: 'Barde', data: 'Barde', children: [
+    { label: 'Kolleg der Kunde', data: 'Barde (Kolleg der Kunde)' },
+    { label: 'Kolleg der Tapferkeit', data: 'Barde (Kolleg der Tapferkeit)' },
+    { label: 'Kolleg der Schwerter', data: 'Barde (Kolleg der Schwerter)' },
+    { label: 'Kolleg der Flüstern', data: 'Barde (Kolleg der Flüstern)' },
+    { label: 'Kolleg der Zauberkunst', data: 'Barde (Kolleg der Zauberkunst)' },
+    { label: 'Kolleg der Geister', data: 'Barde (Kolleg der Geister)' },
+  ]},
+  { label: 'Druide', data: 'Druide', children: [
+    { label: 'Kreis des Landes', data: 'Druide (Kreis des Landes)' },
+    { label: 'Kreis des Mondes', data: 'Druide (Kreis des Mondes)' },
+    { label: 'Kreis der Träume', data: 'Druide (Kreis der Träume)' },
+    { label: 'Kreis des Hirten', data: 'Druide (Kreis des Hirten)' },
+    { label: 'Kreis der Sporen', data: 'Druide (Kreis der Sporen)' },
+    { label: 'Kreis der Sterne', data: 'Druide (Kreis der Sterne)' },
+    { label: 'Kreis des Feuers', data: 'Druide (Kreis des Feuers)' },
+  ]},
+  { label: 'Hexenmeister', data: 'Hexenmeister', children: [
+    { label: 'Der Archfey', data: 'Hexenmeister (Archfey)' },
+    { label: 'Der Einhüller', data: 'Hexenmeister (Einhüller)' },
+    { label: 'Der Untote', data: 'Hexenmeister (Untote)' },
+    { label: 'Das Celestische', data: 'Hexenmeister (Celestisch)' },
+    { label: 'Der Hexenklinge', data: 'Hexenmeister (Hexenklinge)' },
+    { label: 'Der Große Alte', data: 'Hexenmeister (Großer Alter)' },
+  ]},
+  { label: 'Kämpfer', data: 'Kämpfer', children: [
+    { label: 'Champion', data: 'Kämpfer (Champion)' },
+    { label: 'Kampfmeister', data: 'Kämpfer (Kampfmeister)' },
+    { label: 'Eldritch Ritter', data: 'Kämpfer (Eldritch Ritter)' },
+    { label: 'Kavalier', data: 'Kämpfer (Kavalier)' },
+    { label: 'Samurai', data: 'Kämpfer (Samurai)' },
+    { label: 'Psi-Krieger', data: 'Kämpfer (Psi-Krieger)' },
+    { label: 'Runenritter', data: 'Kämpfer (Runenritter)' },
+  ]},
+  { label: 'Kleriker', data: 'Kleriker', children: [
+    { label: 'Lebensdomäne', data: 'Kleriker (Leben)' },
+    { label: 'Lichtdomäne', data: 'Kleriker (Licht)' },
+    { label: 'Naturdomäne', data: 'Kleriker (Natur)' },
+    { label: 'Sturmdomäne', data: 'Kleriker (Sturm)' },
+    { label: 'Wissensdomäne', data: 'Kleriker (Wissen)' },
+    { label: 'Kriegsdomäne', data: 'Kleriker (Krieg)' },
+    { label: 'Tricksdomäne', data: 'Kleriker (Tricks)' },
+    { label: 'Todesdomäne', data: 'Kleriker (Tod)' },
+    { label: 'Schmiededomäne', data: 'Kleriker (Schmiede)' },
+    { label: 'Friedensdomäne', data: 'Kleriker (Frieden)' },
+    { label: 'Zwielichtdomäne', data: 'Kleriker (Zwielicht)' },
+    { label: 'Ordnungsdomäne', data: 'Kleriker (Ordnung)' },
+  ]},
+  { label: 'Magier', data: 'Magier', children: [
+    { label: 'Bannzauberei', data: 'Magier (Bannzauberei)' },
+    { label: 'Beschwörung', data: 'Magier (Beschwörung)' },
+    { label: 'Erkenntnismagie', data: 'Magier (Erkenntnismagie)' },
+    { label: 'Hervorrufung', data: 'Magier (Hervorrufung)' },
+    { label: 'Illusion', data: 'Magier (Illusion)' },
+    { label: 'Nekromantie', data: 'Magier (Nekromantie)' },
+    { label: 'Transmutation', data: 'Magier (Transmutation)' },
+    { label: 'Verzauberung', data: 'Magier (Verzauberung)' },
+    { label: 'Kriegsmagie', data: 'Magier (Kriegsmagie)' },
+    { label: 'Chronurgie', data: 'Magier (Chronurgie)' },
+    { label: 'Graviturgie', data: 'Magier (Graviturgie)' },
+    { label: 'Klingengesang', data: 'Magier (Klingengesang)' },
+  ]},
+  { label: 'Mönch', data: 'Mönch', children: [
+    { label: 'Weg der offenen Hand', data: 'Mönch (Offene Hand)' },
+    { label: 'Weg des Schattens', data: 'Mönch (Schatten)' },
+    { label: 'Weg der vier Elemente', data: 'Mönch (Vier Elemente)' },
+    { label: 'Weg der Trunkenheit', data: 'Mönch (Trunkenheit)' },
+    { label: 'Weg der Sonne', data: 'Mönch (Sonne)' },
+    { label: 'Weg des Kensai', data: 'Mönch (Kensai)' },
+    { label: 'Weg des Astral-Selbst', data: 'Mönch (Astral-Selbst)' },
+    { label: 'Weg der Gnade', data: 'Mönch (Gnade)' },
+  ]},
+  { label: 'Paladin', data: 'Paladin', children: [
+    { label: 'Eid der Hingabe', data: 'Paladin (Hingabe)' },
+    { label: 'Eid der Ahnen', data: 'Paladin (Ahnen)' },
+    { label: 'Eid der Rache', data: 'Paladin (Rache)' },
+    { label: 'Eid der Krone', data: 'Paladin (Krone)' },
+    { label: 'Eid der Eroberung', data: 'Paladin (Eroberung)' },
+    { label: 'Eid der Erlösung', data: 'Paladin (Erlösung)' },
+    { label: 'Eid der Wächter', data: 'Paladin (Wächter)' },
+    { label: 'Eid der Herrlichkeit', data: 'Paladin (Herrlichkeit)' },
+    { label: 'Eidbrecher', data: 'Paladin (Eidbrecher)' },
+  ]},
+  { label: 'Schurke', data: 'Schurke', children: [
+    { label: 'Dieb', data: 'Schurke (Dieb)' },
+    { label: 'Assassine', data: 'Schurke (Assassine)' },
+    { label: 'Arkaner Trickser', data: 'Schurke (Arkaner Trickser)' },
+    { label: 'Meistergeist', data: 'Schurke (Meistergeist)' },
+    { label: 'Inquisiteur', data: 'Schurke (Inquisiteur)' },
+    { label: 'Kundschafter', data: 'Schurke (Kundschafter)' },
+    { label: 'Swashbuckler', data: 'Schurke (Swashbuckler)' },
+    { label: 'Phantom', data: 'Schurke (Phantom)' },
+    { label: 'Seelenklinge', data: 'Schurke (Seelenklinge)' },
+  ]},
+  { label: 'Waldläufer', data: 'Waldläufer', children: [
+    { label: 'Jäger', data: 'Waldläufer (Jäger)' },
+    { label: 'Tiermeister', data: 'Waldläufer (Tiermeister)' },
+    { label: 'Horizontwanderer', data: 'Waldläufer (Horizontwanderer)' },
+    { label: 'Gleiter', data: 'Waldläufer (Gleiter)' },
+    { label: 'Monsterhetzer', data: 'Waldläufer (Monsterhetzer)' },
+    { label: 'Fey-Wanderer', data: 'Waldläufer (Fey-Wanderer)' },
+    { label: 'Schwarmwächter', data: 'Waldläufer (Schwarmwächter)' },
+    { label: 'Drakonischer Wanderer', data: 'Waldläufer (Drakonischer Wanderer)' },
+  ]},
+  { label: 'Zauberer', data: 'Zauberer', children: [
+    { label: 'Drakonisches Blut', data: 'Zauberer (Drakonisches Blut)' },
+    { label: 'Wilde Magie', data: 'Zauberer (Wilde Magie)' },
+    { label: 'Göttliche Seele', data: 'Zauberer (Göttliche Seele)' },
+    { label: 'Schattenmagie', data: 'Zauberer (Schattenmagie)' },
+    { label: 'Sturmzauberei', data: 'Zauberer (Sturmzauberei)' },
+    { label: 'Aberrant Mind', data: 'Zauberer (Aberrant Mind)' },
+    { label: 'Uhrmacher', data: 'Zauberer (Uhrmacher)' },
+    { label: 'Lunarer Zauberer', data: 'Zauberer (Lunarer Zauberer)' },
+  ]},
+];
+
+export const LIFESTYLES: { value: string; label: string; cost: string }[] = [
+  { value: 'elend', label: 'Elend', cost: '—' },
+  { value: 'armselig', label: 'Armselig', cost: '1 SM' },
+  { value: 'arm', label: 'Arm', cost: '2 SM' },
+  { value: 'bescheiden', label: 'Bescheiden', cost: '1 GM' },
+  { value: 'bequem', label: 'Bequem', cost: '2 GM' },
+  { value: 'wohlhabend', label: 'Wohlhabend', cost: '4 GM' },
+  { value: 'aristokratisch', label: 'Aristokratisch', cost: '10 GM min.' },
+];
+
 export function createDefaultCharacter(): DndCharacter {
   return {
     version: 1,
@@ -299,6 +441,7 @@ export function createDefaultCharacter(): DndCharacter {
     background: '',
     race: '',
     alignment: '',
+    lifestyle: 'bescheiden',
     experiencePoints: 0,
     abilities: {
       str: { base: 10 },

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
@@ -8,12 +8,14 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
+import { Popover, PopoverModule } from 'primeng/popover';
+import { TextareaModule } from 'primeng/textarea';
 import { Spell, SpellSlot } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TextareaModule],
   template: `
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
@@ -84,12 +86,23 @@ import { Spell, SpellSlot } from '../../models/character.model';
               <span class="text-xs font-bold text-gray-600">
                 {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
               </span>
-              @for (spell of getSpellsForLevel(levelGroup.level); track $index) {
+              @for (spell of getSpellsForLevel(levelGroup.level); track spell.name + $index) {
                 <div class="flex items-center gap-1 text-xs mt-0.5">
                   @if (levelGroup.level > 0) {
-                    <p-checkbox [(ngModel)]="spell.prepared" (ngModelChange)="updateSpells()" [binary]="true" />
+                    <p-checkbox
+                      [ngModel]="spell.prepared"
+                      (ngModelChange)="updateSpellPrepared($index, levelGroup.level, $event)"
+                      [binary]="true"
+                    />
                   }
                   <input pInputText [(ngModel)]="spell.name" (ngModelChange)="updateSpells()" class="flex-1 text-xs" />
+                  <p-button
+                    icon="pi pi-info-circle"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    (onClick)="toggleSpellInfo(spell, $event)"
+                  />
                   <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeSpell(spell)" />
                 </div>
               }
@@ -103,7 +116,7 @@ import { Spell, SpellSlot } from '../../models/character.model';
             optionLabel="label"
             optionValue="value"
             placeholder="Stufe"
-            [style]="{ width: '6rem', fontSize: '0.75rem' }"
+            [style]="{ width: '10rem', fontSize: '0.75rem' }"
             appendTo="body"
           />
           <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
@@ -111,12 +124,31 @@ import { Spell, SpellSlot } from '../../models/character.model';
       </div>
 
     </p-fieldset>
+
+    <!-- Spell Info Popover -->
+    <p-popover #spellPopover [style]="{ width: '300px' }">
+      @if (activeSpell) {
+        <div class="space-y-2">
+          <span class="text-sm font-bold">{{ activeSpell.name || 'Zauber' }} — Beschreibung</span>
+          <textarea
+            pTextarea
+            [(ngModel)]="activeSpell.description"
+            (ngModelChange)="updateSpells()"
+            [rows]="5"
+            class="w-full text-xs"
+            placeholder="Beschreibung eingeben..."
+          ></textarea>
+        </div>
+      }
+    </p-popover>
   `,
 })
 export class SpellcastingComponent {
   cs = inject(CharacterService);
+  @ViewChild('spellPopover') spellPopover!: Popover;
   spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   newSpellLevel = 0;
+  activeSpell: Spell | null = null;
 
   abilityOptions = [
     { label: 'Keine', value: '' },
@@ -129,7 +161,7 @@ export class SpellcastingComponent {
   ];
 
   spellLevelOptions = [
-    { label: 'Trick', value: 0 },
+    { label: 'Zaubertrick (Stufe 0)', value: 0 },
     ...Array.from({ length: 9 }, (_, i) => ({ label: `Stufe ${i + 1}`, value: i + 1 })),
   ];
 
@@ -194,5 +226,21 @@ export class SpellcastingComponent {
   updateSpells(): void {
     const char = this.cs.character();
     this.cs.update({ spells: [...char.spells.map(s => ({ ...s }))] });
+  }
+
+  updateSpellPrepared(indexInLevel: number, level: number, prepared: boolean): void {
+    const char = this.cs.character();
+    const spellsOfLevel = char.spells.filter(s => s.level === level);
+    if (spellsOfLevel[indexInLevel]) {
+      spellsOfLevel[indexInLevel].prepared = prepared;
+      this.updateSpells();
+    }
+  }
+
+  toggleSpellInfo(spell: Spell, event: Event): void {
+    this.activeSpell = spell;
+    if (this.spellPopover) {
+      this.spellPopover.toggle(event);
+    }
   }
 }

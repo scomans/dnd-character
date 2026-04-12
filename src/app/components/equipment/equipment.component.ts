@@ -59,9 +59,12 @@ import { Equipment } from '../../models/character.model';
               <p-inputnumber
                 [ngModel]="getCurrency(coin.key)"
                 (ngModelChange)="updateCurrency(coin.key, $event)"
-                [showButtons]="false"
+                [showButtons]="true"
+                buttonLayout="horizontal"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
                 [min]="0"
-                [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '0.75rem' }"
+                [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
               />
             </div>
           }

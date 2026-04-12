@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputMaskModule } from 'primeng/inputmask';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -17,7 +18,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/charact
 @Component({
   selector: 'app-attacks',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, InputGroupModule, InputGroupAddonModule, MarkdownEditorComponent],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, InputMaskModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, InputGroupModule, InputGroupAddonModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Waffen & Angriffszauber">
       <!-- Attacks Table -->
@@ -64,7 +65,15 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/charact
                 </td>
                 <td class="p-1">
                   <p-inputgroup>
-                    <input pInputText [(ngModel)]="attack.range" (ngModelChange)="updateAttacks()" class="w-14 text-xs text-center" />
+                    <p-inputnumber
+                      [ngModel]="parseRange(attack.range)"
+                      (ngModelChange)="updateAttackRange(i, $event)"
+                      [showButtons]="false"
+                      [min]="0"
+                      [minFractionDigits]="0"
+                      [maxFractionDigits]="1"
+                      [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
+                    />
                     <p-inputgroup-addon class="text-xs">m</p-inputgroup-addon>
                   </p-inputgroup>
                 </td>
@@ -72,7 +81,15 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/charact
                   {{ cs.getAttackBonus(attack) >= 0 ? '+' : '' }}{{ cs.getAttackBonus(attack) }}
                 </td>
                 <td class="p-1">
-                  <input pInputText [(ngModel)]="attack.damageDice" (ngModelChange)="updateAttacks()" class="w-16 text-xs text-center" placeholder="1W8" />
+                  <p-inputMask
+                    [(ngModel)]="attack.damageDice"
+                    (ngModelChange)="updateAttacks()"
+                    mask="99w99"
+                    placeholder="1W8"
+                    [autoClear]="false"
+                    slotChar=" "
+                    [style]="{ width: '4.5rem', textAlign: 'center', fontSize: '0.75rem' }"
+                  />
                 </td>
                 <td class="p-1 text-center font-bold text-slate-700">
                   {{ cs.getDamageBonus(attack) >= 0 ? '+' : '' }}{{ cs.getDamageBonus(attack) }}
@@ -136,14 +153,19 @@ export class AttacksComponent {
     return value ? (ABILITY_SHORT_LABELS[value] ?? value) : '';
   }
 
+  parseRange(range: string): number {
+    const num = parseFloat(String(range).replace(',', '.'));
+    return isNaN(num) ? 0 : num;
+  }
+
   addAttack(): void {
     const char = this.cs.character();
     const attacks = [...char.attacks, {
       name: '',
       proficient: true,
       attribute: 'str',
-      range: '1,5',
-      damageDice: '1W8',
+      range: '1.5',
+      damageDice: ' 1W8',
       damageType: 'Hieb',
       description: '',
     }];
@@ -159,6 +181,13 @@ export class AttacksComponent {
   updateAttacks(): void {
     const char = this.cs.character();
     this.cs.update({ attacks: [...char.attacks] });
+  }
+
+  updateAttackRange(index: number, value: number | null): void {
+    const char = this.cs.character();
+    const attacks = [...char.attacks];
+    attacks[index] = { ...attacks[index], range: String(value ?? 0) };
+    this.cs.update({ attacks });
   }
 
   updateAttackDescription(index: number, desc: string): void {
