@@ -8,7 +8,7 @@ export interface DriveFileInfo {
   name: string;
 }
 
-const STORAGE_CLIENT_ID_KEY = 'gdrive-client-id';
+const STORAGE_CLIENT_ID_KEY = '736326091345-7if9d7vta2l4ove33j4o359sjppavgi2.apps.googleusercontent.com';
 const STORAGE_FILE_ID_KEY = 'gdrive-file-id';
 const STORAGE_FILE_NAME_KEY = 'gdrive-file-name';
 
