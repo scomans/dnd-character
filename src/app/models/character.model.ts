@@ -180,6 +180,8 @@ export interface DndCharacter {
   backstory: string;
   alliesAndOrganizations: string;
   treasure: string;
+  characterImage: string;
+  organizationLogo: string;
 }
 
 export const ABILITY_LABELS: { [key: string]: string } = {
@@ -312,7 +314,7 @@ export function createDefaultCharacter(): DndCharacter {
     hitPointsMax: 10,
     hitPointsCurrent: 10,
     hitPointsTemp: 0,
-    hitDiceTotal: '1d10',
+    hitDiceTotal: '1W10',
     hitDiceUsed: 0,
     deathSaves: { successes: 0, failures: 0 },
     proficiencyBonusOverride: null,
@@ -350,5 +352,7 @@ export function createDefaultCharacter(): DndCharacter {
     backstory: '',
     alliesAndOrganizations: '',
     treasure: '',
+    characterImage: '',
+    organizationLogo: '',
   };
 }

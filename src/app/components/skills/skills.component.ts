@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FieldsetModule } from 'primeng/fieldset';
 import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-skills',
   standalone: true,
-  imports: [CommonModule, FormsModule, CheckboxModule],
+  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule],
   template: `
-    <div class="bg-white border-2 border-amber-800 rounded-lg p-2">
+    <p-fieldset legend="Fertigkeiten">
       <div class="space-y-0.5">
         @for (skill of skillKeys; track skill) {
           <div class="flex items-center gap-1 text-sm">
@@ -32,9 +33,6 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS } from '../../mod
           </div>
         }
       </div>
-      <div class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-2 border-t border-gray-200 pt-1">
-        Fertigkeiten
-      </div>
 
       <!-- Passive Perception -->
       <div class="mt-2 flex items-center gap-2 border-t border-gray-200 pt-2">
@@ -44,7 +42,7 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS } from '../../mod
           <div class="text-gray-400">[10 + Wahrnehmung]</div>
         </div>
       </div>
-    </div>
+    </p-fieldset>
   `,
 })
 export class SkillsComponent {

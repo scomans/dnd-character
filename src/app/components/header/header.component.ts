@@ -14,7 +14,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
       <div class="flex items-center gap-2 mb-3">
         <span class="text-2xl font-bold text-amber-900 tracking-wide font-serif">DUNGEONS & DRAGONS</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-[auto_1fr_2fr] gap-4">
+        @if (cs.character().characterImage) {
+          <div class="flex items-center">
+            <img [src]="cs.character().characterImage" alt="Charakter" class="w-16 h-16 object-cover rounded-lg border border-gray-300" />
+          </div>
+        }
         <div class="flex flex-col">
           <input
             pInputText

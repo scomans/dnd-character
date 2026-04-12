@@ -5,14 +5,15 @@ import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
+import { FieldsetModule } from 'primeng/fieldset';
 import { Equipment } from '../../models/character.model';
 
 @Component({
   selector: 'app-equipment',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, ButtonModule],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, ButtonModule, FieldsetModule],
   template: `
-    <div class="bg-white border-2 border-amber-800 rounded-lg p-2">
+    <p-fieldset legend="Ausrüstung">
       <!-- Currency -->
       <div class="grid grid-cols-5 gap-1 mb-3">
         @for (coin of coins; track coin.key) {
@@ -60,10 +61,7 @@ import { Equipment } from '../../models/character.model';
           Gewicht: {{ getTotalWeight() | number:'1.1-1' }} kg
         </span>
       </div>
-      <div class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-2 border-t border-gray-200 pt-1">
-        Ausrüstung
-      </div>
-    </div>
+    </p-fieldset>
   `,
 })
 export class EquipmentComponent {

@@ -56,11 +56,10 @@ import { TabsModule } from 'primeng/tabs';
                 <app-ability-scores />
               </div>
 
-              <!-- Column 2: Saving Throws + Skills + Proficiencies -->
+              <!-- Column 2: Saving Throws + Skills -->
               <div class="space-y-3 w-full md:w-64">
                 <app-saving-throws />
                 <app-skills />
-                <app-proficiencies-languages />
               </div>
 
               <!-- Column 3: Combat, Attacks, Features (Klassenmerkmale) -->
@@ -68,6 +67,11 @@ import { TabsModule } from 'primeng/tabs';
                 <app-combat />
                 <app-attacks />
                 <app-features />
+              </div>
+
+              <!-- Proficiencies spans columns 1+2 -->
+              <div class="md:col-span-2 space-y-3">
+                <app-proficiencies-languages />
               </div>
             </div>
           </p-tabpanel>

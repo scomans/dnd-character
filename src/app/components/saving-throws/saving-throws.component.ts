@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FieldsetModule } from 'primeng/fieldset';
 import { ABILITY_SHORT_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-saving-throws',
   standalone: true,
-  imports: [CommonModule, FormsModule, CheckboxModule],
+  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule],
   template: `
-    <div class="bg-white border-2 border-amber-800 rounded-lg p-2">
+    <p-fieldset legend="Rettungswürfe">
       <div class="space-y-0.5">
         @for (ability of abilities; track ability) {
           <div class="flex items-center gap-1.5 text-sm">
@@ -22,14 +23,11 @@ import { ABILITY_SHORT_LABELS } from '../../models/character.model';
             <span class="font-bold w-8 text-right text-amber-900">
               {{ cs.getSavingThrowModifier(ability) >= 0 ? '+' : '' }}{{ cs.getSavingThrowModifier(ability) }}
             </span>
-            <span class="text-xs">{{ getLabel(ability) }} ({{ getShort(ability) }})</span>
+            <span class="text-xs">{{ getLabel(ability) }} (<span class="font-bold">{{ getShort(ability) }}</span>)</span>
           </div>
         }
       </div>
-      <div class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-2 border-t border-gray-200 pt-1">
-        Rettungswürfe
-      </div>
-    </div>
+    </p-fieldset>
   `,
 })
 export class SavingThrowsComponent {

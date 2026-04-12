@@ -7,14 +7,15 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
+import { FieldsetModule } from 'primeng/fieldset';
 import { Spell, SpellSlot } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule],
   template: `
-    <div class="bg-white border-2 border-amber-800 rounded-lg p-3 space-y-3">
+    <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
       <div class="grid grid-cols-3 gap-2">
         <div class="flex flex-col items-center">
@@ -109,10 +110,7 @@ import { Spell, SpellSlot } from '../../models/character.model';
         </div>
       </div>
 
-      <div class="text-[0.6rem] font-bold uppercase text-gray-600 text-center border-t border-gray-200 pt-1">
-        Zauberwirken
-      </div>
-    </div>
+    </p-fieldset>
   `,
 })
 export class SpellcastingComponent {

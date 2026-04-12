@@ -7,15 +7,16 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
+import { FieldsetModule } from 'primeng/fieldset';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { Attack, DAMAGE_TYPES } from '../../models/character.model';
 
 @Component({
   selector: 'app-attacks',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, MarkdownEditorComponent],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, MarkdownEditorComponent],
   template: `
-    <div class="bg-white border-2 border-amber-800 rounded-lg p-2">
+    <p-fieldset legend="Waffen & Angriffszauber">
       <!-- Attacks Table -->
       <div class="overflow-x-auto">
         <table class="w-full text-xs">
@@ -101,10 +102,7 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
       <div class="flex gap-2 mt-2">
         <p-button label="Angriff hinzufügen" icon="pi pi-plus" size="small" [text]="true" (onClick)="addAttack()" />
       </div>
-      <div class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-2 border-t border-gray-200 pt-1">
-        Waffen & Angriffszauber
-      </div>
-    </div>
+    </p-fieldset>
   `,
 })
 export class AttacksComponent {
@@ -128,7 +126,7 @@ export class AttacksComponent {
       proficient: true,
       attribute: 'str',
       range: '1,5m',
-      damageDice: '1d8',
+      damageDice: '1W8',
       damageType: 'Hieb',
       description: '',
     }];
