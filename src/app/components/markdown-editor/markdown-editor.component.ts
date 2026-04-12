@@ -10,23 +10,25 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
 import { TextareaModule } from 'primeng/textarea';
+import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-markdown-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, TextareaModule],
+  imports: [CommonModule, FormsModule, TextareaModule, ClickOutside],
   template: `
     @if (editing()) {
-      <textarea
-        pTextarea
-        [autoResize]="true"
-        [rows]="minRows()"
-        [ngModel]="value()"
-        (ngModelChange)="onValueChange($event)"
-        (blur)="editing.set(false)"
-        class="w-full text-sm"
-        [placeholder]="placeholder()"
-      ></textarea>
+      <div (clickOutside)="editing.set(false)">
+        <textarea
+          pTextarea
+          [autoResize]="true"
+          [rows]="minRows()"
+          [ngModel]="value()"
+          (ngModelChange)="onValueChange($event)"
+          class="w-full text-sm"
+          [placeholder]="placeholder()"
+        ></textarea>
+      </div>
     } @else {
       <div
         class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-amber-600/30 hover:bg-amber-50 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"

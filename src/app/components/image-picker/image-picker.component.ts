@@ -1,4 +1,4 @@
-import { Component, input, output, ElementRef, viewChild } from '@angular/core';
+import { Component, input, output, ElementRef, viewChild, inject, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 
@@ -44,6 +44,7 @@ import { ButtonModule } from 'primeng/button';
   `,
 })
 export class ImagePickerComponent {
+  private ngZone = inject(NgZone);
   imageData = input<string>('');
   alt = input<string>('Bild');
   placeholder = input<string>('Bild auswählen');
@@ -64,7 +65,7 @@ export class ImagePickerComponent {
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
-        this.imageChange.emit(result);
+        this.ngZone.run(() => this.imageChange.emit(result));
       };
       reader.readAsDataURL(file);
     }

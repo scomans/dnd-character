@@ -14,52 +14,57 @@ import { Equipment } from '../../models/character.model';
   imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, ButtonModule, FieldsetModule],
   template: `
     <p-fieldset legend="Ausrüstung">
-      <!-- Currency -->
-      <div class="grid grid-cols-5 gap-1 mb-3">
-        @for (coin of coins; track coin.key) {
-          <div class="flex flex-col items-center">
-            <p-inputnumber
-              [ngModel]="getCurrency(coin.key)"
-              (ngModelChange)="updateCurrency(coin.key, $event)"
-              [showButtons]="true"
-              [min]="0"
-              [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '0.75rem' }"
-            />
-            <span class="text-[0.6rem] font-bold uppercase text-gray-600">{{ coin.label }}</span>
+      <div class="flex gap-4">
+        <!-- Equipment List (left) -->
+        <div class="flex-1 min-w-0">
+          <div class="space-y-1">
+            @for (item of cs.character().equipment; track $index; let i = $index) {
+              <div class="flex items-center gap-1 text-xs">
+                <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
+                <p-inputnumber
+                  [(ngModel)]="item.quantity"
+                  (ngModelChange)="updateEquipment()"
+                  [showButtons]="false"
+                  [min]="0"
+                  [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.75rem' }"
+                />
+                <p-inputnumber
+                  [(ngModel)]="item.weight"
+                  (ngModelChange)="updateEquipment()"
+                  [showButtons]="false"
+                  [min]="0"
+                  [minFractionDigits]="1"
+                  [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
+                />
+                <span class="text-gray-400 text-[0.6rem]">kg</span>
+                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeItem(i)" />
+              </div>
+            }
           </div>
-        }
-      </div>
+          <div class="flex justify-between items-center mt-2">
+            <p-button label="Hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addItem()" />
+            <span class="text-xs text-gray-500">
+              Gewicht: {{ getTotalWeight() | number:'1.1-1' }} kg
+            </span>
+          </div>
+        </div>
 
-      <!-- Equipment List -->
-      <div class="space-y-1">
-        @for (item of cs.character().equipment; track $index; let i = $index) {
-          <div class="flex items-center gap-1 text-xs">
-            <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
-            <p-inputnumber
-              [(ngModel)]="item.quantity"
-              (ngModelChange)="updateEquipment()"
-              [showButtons]="false"
-              [min]="0"
-              [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.75rem' }"
-            />
-            <p-inputnumber
-              [(ngModel)]="item.weight"
-              (ngModelChange)="updateEquipment()"
-              [showButtons]="false"
-              [min]="0"
-              [minFractionDigits]="1"
-              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
-            />
-            <span class="text-gray-400 text-[0.6rem]">kg</span>
-            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeItem(i)" />
-          </div>
-        }
-      </div>
-      <div class="flex justify-between items-center mt-2">
-        <p-button label="Hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addItem()" />
-        <span class="text-xs text-gray-500">
-          Gewicht: {{ getTotalWeight() | number:'1.1-1' }} kg
-        </span>
+        <!-- Currency (right, vertical) -->
+        <div class="shrink-0 flex flex-col gap-1 border-l border-gray-200 pl-4">
+          <span class="text-[0.65rem] font-bold uppercase text-gray-600 text-center mb-1">Münzen</span>
+          @for (coin of coins; track coin.key) {
+            <div class="flex items-center gap-1">
+              <span class="text-[0.6rem] font-bold uppercase text-gray-600 w-6 text-right">{{ coin.label }}</span>
+              <p-inputnumber
+                [ngModel]="getCurrency(coin.key)"
+                (ngModelChange)="updateCurrency(coin.key, $event)"
+                [showButtons]="false"
+                [min]="0"
+                [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '0.75rem' }"
+              />
+            </div>
+          }
+        </div>
       </div>
     </p-fieldset>
   `,

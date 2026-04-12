@@ -9,14 +9,24 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
   standalone: true,
   imports: [CommonModule, FieldsetModule, MarkdownEditorComponent],
   template: `
-    <p-fieldset legend="Klassenmerkmale">
-      <app-markdown-editor
-        [value]="cs.character().featuresAndTraits"
-        (valueChange)="cs.update({ featuresAndTraits: $event })"
-        placeholder="Klassenmerkmale, Fähigkeiten und Talente..."
-        [minRows]="10"
-      />
-    </p-fieldset>
+    <div class="space-y-3">
+      <p-fieldset legend="Klassenmerkmale">
+        <app-markdown-editor
+          [value]="cs.character().featuresAndTraits"
+          (valueChange)="cs.update({ featuresAndTraits: $event })"
+          placeholder="Klassenmerkmale, Fähigkeiten und Talente..."
+          [minRows]="10"
+        />
+      </p-fieldset>
+      <p-fieldset legend="Volksmerkmale">
+        <app-markdown-editor
+          [value]="cs.character().racialTraits"
+          (valueChange)="cs.update({ racialTraits: $event })"
+          placeholder="Volksmerkmale und rassische Fähigkeiten..."
+          [minRows]="6"
+        />
+      </p-fieldset>
+    </div>
   `,
 })
 export class FeaturesComponent {

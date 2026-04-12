@@ -5,11 +5,12 @@ import { CharacterService } from '../../services/character.service';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ABILITY_LABELS } from '../../models/character.model';
+import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-ability-scores',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputNumberModule, CheckboxModule],
+  imports: [CommonModule, FormsModule, InputNumberModule, CheckboxModule, ClickOutside],
   template: `
     <div class="space-y-2">
       <!-- Inspiration -->
@@ -32,7 +33,7 @@ import { ABILITY_LABELS } from '../../models/character.model';
             [max]="10"
             [showButtons]="false"
             [inputStyle]="{ width: '2rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
-            (onBlur)="editingProficiency.set(false)"
+            (clickOutside)="editingProficiency.set(false)"
           />
         } @else {
           <span
@@ -59,7 +60,7 @@ import { ABILITY_LABELS } from '../../models/character.model';
                 [max]="30"
                 [showButtons]="true"
                 [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.85rem' }"
-                (onBlur)="editingAbility.set(null)"
+                (clickOutside)="editingAbility.set(null)"
               />
             } @else {
               <span

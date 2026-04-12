@@ -8,11 +8,12 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { FieldsetModule } from 'primeng/fieldset';
+import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-combat',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputTextModule, FieldsetModule],
+  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputTextModule, FieldsetModule, ClickOutside],
   template: `
     <div class="space-y-3">
       <!-- AC / Initiative / Speed Row -->
@@ -20,13 +21,12 @@ import { FieldsetModule } from 'primeng/fieldset';
         <p-fieldset legend="Rüstungsklasse" styleClass="text-center">
           <div class="flex flex-col items-center">
             @if (editingAC()) {
-              <div class="flex flex-col items-center gap-1">
+              <div class="flex flex-col items-center gap-1" (clickOutside)="editingAC.set(false)">
                 <p-inputnumber
                   [ngModel]="cs.character().armorValue"
                   (ngModelChange)="cs.update({ armorValue: $event ?? 10 })"
                   [showButtons]="false"
                   [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
-                  (onBlur)="onACBlur()"
                 />
                 <label class="flex items-center gap-1 text-xs">
                   <p-checkbox
@@ -55,13 +55,12 @@ import { FieldsetModule } from 'primeng/fieldset';
         <p-fieldset legend="Bewegungsrate" styleClass="text-center">
           <div class="flex flex-col items-center">
             @if (editingSpeed()) {
-              <p-inputgroup styleClass="justify-center">
+              <p-inputgroup styleClass="justify-center" (clickOutside)="editingSpeed.set(false)">
                 <p-inputnumber
                   [ngModel]="cs.character().speed"
                   (ngModelChange)="cs.update({ speed: $event ?? 30 })"
                   [showButtons]="false"
                   [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
-                  (onBlur)="onSpeedBlur()"
                 />
                 <p-inputgroup-addon>m</p-inputgroup-addon>
               </p-inputgroup>
@@ -152,14 +151,6 @@ export class CombatComponent {
   cs = inject(CharacterService);
   editingAC = signal(false);
   editingSpeed = signal(false);
-
-  onACBlur(): void {
-    setTimeout(() => this.editingAC.set(false), 200);
-  }
-
-  onSpeedBlur(): void {
-    setTimeout(() => this.editingSpeed.set(false), 200);
-  }
 
   updateDeathSaves(type: 'successes' | 'failures', index: number, checked: boolean): void {
     const char = this.cs.character();
