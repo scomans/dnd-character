@@ -24,63 +24,22 @@ import { TextareaModule } from 'primeng/textarea';
         [ngModel]="value()"
         (ngModelChange)="onValueChange($event)"
         (blur)="editing.set(false)"
-        class="w-full markdown-textarea"
+        class="w-full text-sm"
         [placeholder]="placeholder()"
       ></textarea>
     } @else {
       <div
-        class="markdown-display"
-        [class.empty]="!value()"
+        class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-amber-600/30 hover:bg-amber-50 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        [class.text-gray-400]="!value()"
+        [class.italic]="!value()"
         (click)="editing.set(true)"
         [innerHTML]="renderedHtml()"
       ></div>
+      @if (!value()) {
+        <span class="text-gray-400 italic text-xs" (click)="editing.set(true)">Klicken zum Bearbeiten...</span>
+      }
     }
   `,
-  styles: [
-    `
-      :host {
-        display: block;
-        width: 100%;
-      }
-      .markdown-display {
-        cursor: pointer;
-        min-height: 2em;
-        padding: 0.25rem;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-size: 0.85rem;
-        line-height: 1.3;
-      }
-      .markdown-display:hover {
-        border-color: var(--p-primary-color, #6366f1);
-        background-color: rgba(99, 102, 241, 0.05);
-      }
-      .markdown-display.empty {
-        color: #999;
-        font-style: italic;
-      }
-      .markdown-display.empty::after {
-        content: 'Klicken zum Bearbeiten...';
-      }
-      .markdown-textarea {
-        width: 100%;
-        font-size: 0.85rem;
-      }
-      :host ::ng-deep .markdown-display p {
-        margin: 0 0 0.3em 0;
-      }
-      :host ::ng-deep .markdown-display p:last-child {
-        margin-bottom: 0;
-      }
-      :host ::ng-deep .markdown-display ul,
-      :host ::ng-deep .markdown-display ol {
-        margin: 0 0 0.3em 0;
-        padding-left: 1.2em;
-      }
-    `,
-  ],
 })
 export class MarkdownEditorComponent {
   value = input<string>('');
@@ -104,3 +63,4 @@ export class MarkdownEditorComponent {
     this.valueChange.emit(newValue);
   }
 }
+
