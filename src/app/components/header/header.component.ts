@@ -34,7 +34,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
                 (ngModelChange)="cs.update({ level: $event ?? 1 })"
                 [min]="1"
                 [max]="20"
-                [showButtons]="true"
+                [showButtons]="false"
                 [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.85rem' }"
               />
             </div>

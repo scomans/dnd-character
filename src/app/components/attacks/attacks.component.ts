@@ -49,6 +49,7 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
                     optionLabel="label"
                     optionValue="value"
                     [style]="{ width: '5rem', fontSize: '0.75rem' }"
+                    appendTo="body"
                   />
                 </td>
                 <td class="p-1">
@@ -74,6 +75,7 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
                     [filter]="true"
                     filterBy="label"
                     placeholder="Typ wählen"
+                    appendTo="body"
                   />
                 </td>
                 <td class="p-1">
@@ -97,7 +99,7 @@ import { Attack, DAMAGE_TYPES } from '../../models/character.model';
         </table>
       </div>
       <div class="flex gap-2 mt-2">
-        <p-button label="Angriff hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addAttack()" />
+        <p-button label="Angriff hinzufügen" icon="pi pi-plus" size="small" [text]="true" (onClick)="addAttack()" />
       </div>
       <div class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-2 border-t border-gray-200 pt-1">
         Waffen & Angriffszauber

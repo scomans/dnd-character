@@ -28,7 +28,7 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS } from '../../mod
             <span class="font-bold w-8 text-right text-amber-900">
               {{ cs.getSkillModifier(skill) >= 0 ? '+' : '' }}{{ cs.getSkillModifier(skill) }}
             </span>
-            <span class="text-xs">{{ getLabel(skill) }} ({{ getAbilityShort(skill) }})</span>
+            <span class="text-xs">{{ getLabel(skill) }} (<span class="font-bold">{{ getAbilityShort(skill) }}</span>)</span>
           </div>
         }
       </div>

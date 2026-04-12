@@ -23,15 +23,15 @@ import { ABILITY_LABELS } from '../../models/character.model';
       </div>
 
       <!-- Proficiency Bonus (click-to-edit) -->
-      <div class="flex items-center gap-2 bg-white border border-amber-800 rounded-lg p-2">
+      <div class="flex items-center gap-2 bg-white border border-amber-800 rounded-lg p-2 overflow-hidden">
         @if (editingProficiency()) {
           <p-inputnumber
             [ngModel]="cs.character().proficiencyBonusOverride ?? cs.getProficiencyBonus()"
             (ngModelChange)="updateProficiency($event)"
             [min]="1"
             [max]="10"
-            [showButtons]="true"
-            [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
+            [showButtons]="false"
+            [inputStyle]="{ width: '2rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
             (onBlur)="editingProficiency.set(false)"
           />
         } @else {

@@ -50,27 +50,23 @@ import { TabsModule } from 'primeng/tabs';
         <p-tabpanels>
           <!-- Page 1: Main Character Sheet -->
           <p-tabpanel value="0">
-            <div class="grid grid-cols-1 md:grid-cols-[auto_auto_1fr_1fr] gap-4 mt-4">
+            <div class="grid grid-cols-1 md:grid-cols-[auto_auto_1fr] gap-4 mt-4">
               <!-- Column 1: Ability Scores -->
               <div class="space-y-3 w-full md:w-36">
                 <app-ability-scores />
               </div>
 
-              <!-- Column 2: Saving Throws + Skills -->
+              <!-- Column 2: Saving Throws + Skills + Proficiencies -->
               <div class="space-y-3 w-full md:w-64">
                 <app-saving-throws />
                 <app-skills />
-              </div>
-
-              <!-- Column 3: Combat, Attacks, Proficiencies -->
-              <div class="space-y-3">
-                <app-combat />
-                <app-attacks />
                 <app-proficiencies-languages />
               </div>
 
-              <!-- Column 4: Features -->
+              <!-- Column 3: Combat, Attacks, Features (Klassenmerkmale) -->
               <div class="space-y-3">
+                <app-combat />
+                <app-attacks />
                 <app-features />
               </div>
             </div>

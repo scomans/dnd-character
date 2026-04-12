@@ -120,6 +120,8 @@ export interface DndCharacter {
 
   // Combat
   armorClass: number;
+  armorValue: number;
+  hasShield: boolean;
   speed: number;
   hitPointsMax: number;
   hitPointsCurrent: number;
@@ -304,6 +306,8 @@ export function createDefaultCharacter(): DndCharacter {
       survival: { proficient: false, expertise: false },
     },
     armorClass: 10,
+    armorValue: 10,
+    hasShield: false,
     speed: 30,
     hitPointsMax: 10,
     hitPointsCurrent: 10,

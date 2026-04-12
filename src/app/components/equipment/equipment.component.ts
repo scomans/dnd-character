@@ -22,7 +22,7 @@ import { Equipment } from '../../models/character.model';
               (ngModelChange)="updateCurrency(coin.key, $event)"
               [showButtons]="true"
               [min]="0"
-              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
+              [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '0.75rem' }"
             />
             <span class="text-[0.6rem] font-bold uppercase text-gray-600">{{ coin.label }}</span>
           </div>

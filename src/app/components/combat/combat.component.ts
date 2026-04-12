@@ -1,25 +1,46 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-combat',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputNumberModule, CheckboxModule],
+  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputTextModule],
   template: `
     <div class="space-y-3">
       <!-- AC / Initiative / Speed Row -->
       <div class="grid grid-cols-3 gap-2">
         <div class="bg-white border-2 border-amber-800 rounded-lg p-3 flex flex-col items-center">
-          <p-inputnumber
-            [ngModel]="cs.character().armorClass"
-            (ngModelChange)="cs.update({ armorClass: $event ?? 10 })"
-            [showButtons]="false"
-            [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
-          />
+          @if (editingAC()) {
+            <div class="flex flex-col items-center gap-1">
+              <p-inputnumber
+                [ngModel]="cs.character().armorValue"
+                (ngModelChange)="cs.update({ armorValue: $event ?? 10 })"
+                [showButtons]="false"
+                [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
+                (onBlur)="onACBlur()"
+              />
+              <label class="flex items-center gap-1 text-xs">
+                <p-checkbox
+                  [ngModel]="cs.character().hasShield"
+                  (ngModelChange)="cs.update({ hasShield: $event })"
+                  [binary]="true"
+                />
+                Schild (+2)
+              </label>
+            </div>
+          } @else {
+            <span
+              class="text-2xl font-bold text-amber-900 cursor-pointer hover:text-amber-700"
+              (click)="editingAC.set(true)"
+            >{{ cs.getComputedArmorClass() }}</span>
+          }
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Rüstungsklasse</span>
         </div>
         <div class="bg-white border-2 border-amber-800 rounded-lg p-3 flex flex-col items-center">
@@ -29,48 +50,52 @@ import { CheckboxModule } from 'primeng/checkbox';
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Initiative</span>
         </div>
         <div class="bg-white border-2 border-amber-800 rounded-lg p-3 flex flex-col items-center">
-          <p-inputnumber
-            [ngModel]="cs.character().speed"
-            (ngModelChange)="cs.update({ speed: $event ?? 30 })"
-            [showButtons]="false"
-            [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
-          />
+          <p-inputgroup styleClass="justify-center">
+            <p-inputnumber
+              [ngModel]="cs.character().speed"
+              (ngModelChange)="cs.update({ speed: $event ?? 30 })"
+              [showButtons]="false"
+              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+            />
+            <p-inputgroup-addon>m</p-inputgroup-addon>
+          </p-inputgroup>
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Bewegungsrate</span>
         </div>
       </div>
 
-      <!-- Hit Points -->
-      <div class="bg-white border-2 border-amber-800 rounded-lg p-3">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs text-gray-500">Trefferpunkte Maximum</span>
-          <p-inputnumber
-            [ngModel]="cs.character().hitPointsMax"
-            (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
-            [showButtons]="true"
-            [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '0.8rem' }"
-          />
+      <!-- Hit Points: Max TP + Temp TP side by side -->
+      <div class="grid grid-cols-2 gap-2">
+        <div class="bg-white border-2 border-amber-800 rounded-lg p-3">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-gray-500">Maximum</span>
+            <p-inputnumber
+              [ngModel]="cs.character().hitPointsMax"
+              (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
+              [showButtons]="true"
+              [inputStyle]="{ width: '4rem', textAlign: 'center', fontSize: '0.8rem' }"
+            />
+          </div>
+          <div class="flex flex-col items-center">
+            <p-inputnumber
+              [ngModel]="cs.character().hitPointsCurrent"
+              (ngModelChange)="cs.update({ hitPointsCurrent: $event ?? 0 })"
+              [showButtons]="true"
+              [inputStyle]="{ width: '5rem', textAlign: 'center', fontSize: '2rem', fontWeight: 'bold' }"
+            />
+            <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Trefferpunkte</span>
+          </div>
         </div>
-        <div class="flex flex-col items-center">
-          <p-inputnumber
-            [ngModel]="cs.character().hitPointsCurrent"
-            (ngModelChange)="cs.update({ hitPointsCurrent: $event ?? 0 })"
-            [showButtons]="true"
-            [inputStyle]="{ width: '5rem', textAlign: 'center', fontSize: '2rem', fontWeight: 'bold' }"
-          />
-          <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Aktuelle Trefferpunkte</span>
-        </div>
-      </div>
 
-      <!-- Temporary Hit Points -->
-      <div class="bg-white border-2 border-amber-800 rounded-lg p-3 flex flex-col items-center">
-        <p-inputnumber
-          [ngModel]="cs.character().hitPointsTemp"
-          (ngModelChange)="cs.update({ hitPointsTemp: $event ?? 0 })"
-          [showButtons]="true"
-          [min]="0"
-          [inputStyle]="{ width: '5rem', textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold' }"
-        />
-        <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Temporäre Trefferpunkte</span>
+        <div class="bg-white border-2 border-amber-800 rounded-lg p-3 flex flex-col items-center justify-center">
+          <p-inputnumber
+            [ngModel]="cs.character().hitPointsTemp"
+            (ngModelChange)="cs.update({ hitPointsTemp: $event ?? 0 })"
+            [showButtons]="true"
+            [min]="0"
+            [inputStyle]="{ width: '5rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+          />
+          <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Temporäre TP</span>
+        </div>
       </div>
 
       <!-- Hit Dice & Death Saves -->
@@ -125,6 +150,12 @@ import { CheckboxModule } from 'primeng/checkbox';
 })
 export class CombatComponent {
   cs = inject(CharacterService);
+  editingAC = signal(false);
+
+  onACBlur(): void {
+    // Delay slightly so the checkbox click can register before closing
+    setTimeout(() => this.editingAC.set(false), 200);
+  }
 
   updateDeathSaves(type: 'successes' | 'failures', index: number, checked: boolean): void {
     const char = this.cs.character();

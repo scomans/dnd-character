@@ -114,6 +114,13 @@ export class CharacterService {
     return this.getAbilityModifier('dex');
   }
 
+  /** Computed Armor Class = DEX modifier + armor value + 2 if shield */
+  getComputedArmorClass(): number {
+    const char = this.character();
+    const dexMod = this.getAbilityModifier('dex');
+    return dexMod + (char.armorValue ?? 10) + (char.hasShield ? 2 : 0);
+  }
+
   /** Passive Perception = 10 + Perception modifier */
   getPassivePerception(): number {
     return 10 + this.getSkillModifier('perception');

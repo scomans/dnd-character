@@ -26,6 +26,7 @@ import { Spell, SpellSlot } from '../../models/character.model';
             optionValue="value"
             placeholder="--"
             [style]="{ width: '100%' }"
+            appendTo="body"
           />
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberattribut</span>
         </div>
@@ -102,6 +103,7 @@ import { Spell, SpellSlot } from '../../models/character.model';
             optionValue="value"
             placeholder="Stufe"
             [style]="{ width: '6rem', fontSize: '0.75rem' }"
+            appendTo="body"
           />
           <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
         </div>
