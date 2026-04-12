@@ -30,7 +30,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
           />
           <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">CHARAKTERNAME</label>
         </div>
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-5 gap-2">
           <div class="flex flex-col">
             <div class="flex gap-1">
               <input pInputText [ngModel]="cs.character().className" (ngModelChange)="cs.update({ className: $event })" class="flex-1 min-w-0" placeholder="Klasse" />
@@ -43,23 +43,23 @@ import { InputNumberModule } from 'primeng/inputnumber';
                 [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.85rem' }"
               />
             </div>
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">KLASSE & STUFE</label>
-          </div>
-          <div class="flex flex-col">
-            <input pInputText [ngModel]="cs.character().playerName" (ngModelChange)="cs.update({ playerName: $event })" class="w-full" />
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">SPIELER*IN NAME</label>
-          </div>
-          <div class="flex flex-col">
-            <p-inputnumber [ngModel]="cs.character().experiencePoints" (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })" [useGrouping]="false" class="w-full" />
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">ERFAHRUNGSPUNKTE</label>
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Klasse & Stufe</label>
           </div>
           <div class="flex flex-col">
             <input pInputText [ngModel]="cs.character().background" (ngModelChange)="cs.update({ background: $event })" class="w-full" />
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">HINTERGRUND</label>
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Hintergrund</label>
           </div>
           <div class="flex flex-col">
             <input pInputText [ngModel]="cs.character().race" (ngModelChange)="cs.update({ race: $event })" class="w-full" />
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">VOLK</label>
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Volk</label>
+          </div>
+          <div class="flex flex-col">
+            <input pInputText [ngModel]="cs.character().playerName" (ngModelChange)="cs.update({ playerName: $event })" class="w-full" />
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Spieler*in</label>
+          </div>
+          <div class="flex flex-col">
+            <p-inputnumber [ngModel]="cs.character().experiencePoints" (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })" [useGrouping]="false" class="w-full" />
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">EP</label>
           </div>
         </div>
       </div>

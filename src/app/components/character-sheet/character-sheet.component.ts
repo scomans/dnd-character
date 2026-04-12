@@ -78,21 +78,21 @@ import { TabsModule } from 'primeng/tabs';
 
           <!-- Page 2: Equipment -->
           <p-tabpanel value="1">
-            <div class="mt-4 max-w-2xl">
+            <div class="mt-4">
               <app-equipment />
             </div>
           </p-tabpanel>
 
           <!-- Page 3: Spellcasting -->
           <p-tabpanel value="2">
-            <div class="mt-4 max-w-4xl">
+            <div class="mt-4">
               <app-spellcasting />
             </div>
           </p-tabpanel>
 
           <!-- Page 4: Appearance, Personality & Backstory -->
           <p-tabpanel value="3">
-            <div class="mt-4 max-w-3xl space-y-4">
+            <div class="mt-4 space-y-4">
               <app-personality />
               <app-appearance-backstory />
             </div>
