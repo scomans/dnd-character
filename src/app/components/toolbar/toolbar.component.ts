@@ -77,6 +77,7 @@ import '@googleworkspace/drive-picker-element';
         [attr.client-id]="drive.clientId"
         [attr.app-id]="drive.appId"
         [attr.oauth-token]="drive.accessToken || null"
+        scope="https://www.googleapis.com/auth/drive.file"
         locale="de"
         title="JSON-Datei auswählen"
       >

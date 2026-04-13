@@ -44,7 +44,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
             <img [src]="cs.character().characterImage" alt="Charakter" class="w-16 h-16 object-cover rounded-lg border border-gray-300" />
           </div>
         }
-        <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2">
+        <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_auto_1fr_1fr_1fr_1fr] gap-2">
           <!-- Klasse & Stufe -->
           <div class="flex flex-col">
             @if (editingField() === 'class') {
@@ -59,14 +59,6 @@ import { ClickOutside } from 'ngxtension/click-outside';
                   [filter]="true"
                   filterPlaceholder="Suchen..."
                 />
-                <p-inputnumber
-                  [ngModel]="cs.character().level"
-                  (ngModelChange)="cs.update({ level: $event ?? 1 })"
-                  [min]="1"
-                  [max]="20"
-                  [showButtons]="false"
-                  [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.85rem' }"
-                />
               </div>
             } @else {
               <span
@@ -74,9 +66,21 @@ import { ClickOutside } from 'ngxtension/click-outside';
                 (click)="editingField.set('class')"
                 pTooltip="Klicken zum Bearbeiten"
                 tooltipPosition="top"
-              >{{ cs.character().className || 'Klasse' }} {{ cs.character().level }}</span>
+              >{{ cs.character().className || 'Klasse' }}</span>
             }
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Klasse & Stufe</label>
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Klasse</label>
+          </div>
+          <!-- Stufe -->
+          <div class="flex flex-col">
+            <p-inputnumber
+              [ngModel]="cs.character().level"
+              (ngModelChange)="cs.update({ level: $event ?? 1 })"
+              [min]="1"
+              [max]="20"
+              [showButtons]="false"
+              [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
+            />
+            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Stufe</label>
           </div>
           <!-- Hintergrund -->
           <div class="flex flex-col">
@@ -155,20 +159,12 @@ import { ClickOutside } from 'ngxtension/click-outside';
           </div>
           <!-- EP -->
           <div class="flex flex-col" pTooltip="Erfahrungspunkte" tooltipPosition="top">
-            @if (editingField() === 'xp') {
-              <p-inputnumber
-                [ngModel]="cs.character().experiencePoints"
-                (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
-                [useGrouping]="false"
-                [inputStyle]="{ width: '100%' }"
-                (clickOutside)="editingField.set(null)"
-              />
-            } @else {
-              <span
-                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
-                (click)="editingField.set('xp')"
-              >{{ cs.character().experiencePoints || '0' }}</span>
-            }
+            <p-inputnumber
+              [ngModel]="cs.character().experiencePoints"
+              (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
+              [useGrouping]="false"
+              [inputStyle]="{ width: '100%' }"
+            />
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">EP</label>
           </div>
         </div>

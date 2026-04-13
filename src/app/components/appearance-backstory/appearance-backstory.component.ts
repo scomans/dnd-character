@@ -26,7 +26,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
               @if (editingField() === 'age') {
                 <input pInputText [ngModel]="cs.character().age" (ngModelChange)="cs.update({ age: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
               } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('age')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().age || '–' }}</span>
+                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('age')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().age || 'Klicken zum Bearbeiten' }}</span>
               }
               <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Alter</label>
             </div>
@@ -38,7 +38,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
                   <p-inputgroup-addon>m</p-inputgroup-addon>
                 </p-inputgroup>
               } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('height')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().height ? cs.character().height + ' m' : '–' }}</span>
+                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('height')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().height ? cs.character().height + ' m' : 'Klicken zum Bearbeiten' }}</span>
               }
               <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Größe</label>
             </div>
@@ -50,7 +50,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
                   <p-inputgroup-addon>kg</p-inputgroup-addon>
                 </p-inputgroup>
               } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('weight')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().weight ? cs.character().weight + ' kg' : '–' }}</span>
+                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('weight')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().weight ? cs.character().weight + ' kg' : 'Klicken zum Bearbeiten' }}</span>
               }
               <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Gewicht</label>
             </div>
@@ -59,7 +59,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
               @if (editingField() === 'eyes') {
                 <input pInputText [ngModel]="cs.character().eyes" (ngModelChange)="cs.update({ eyes: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
               } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('eyes')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().eyes || '–' }}</span>
+                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('eyes')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().eyes || 'Klicken zum Bearbeiten' }}</span>
               }
               <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Augen</label>
             </div>
@@ -68,7 +68,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
               @if (editingField() === 'skin') {
                 <input pInputText [ngModel]="cs.character().skin" (ngModelChange)="cs.update({ skin: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
               } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('skin')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().skin || '–' }}</span>
+                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('skin')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().skin || 'Klicken zum Bearbeiten' }}</span>
               }
               <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Haut</label>
             </div>
@@ -77,7 +77,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
               @if (editingField() === 'hair') {
                 <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
               } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('hair')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().hair || '–' }}</span>
+                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('hair')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().hair || 'Klicken zum Bearbeiten' }}</span>
               }
               <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Haar</label>
             </div>
