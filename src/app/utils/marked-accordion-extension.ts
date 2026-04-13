@@ -90,7 +90,7 @@ function matchAccordionBlock(
       }
     }
 
-    if (nearestEnd === -1) return null; // No closing tag found
+    if (nearestEnd === -1) return null; // No closing tag found.
 
     if (nearestStart !== -1 && nearestStart < nearestEnd) {
       depth++;
@@ -141,8 +141,9 @@ export function markedAccordionExtension(): MarkedExtension {
           const title = token['title'] as string;
           const expanded = token['expanded'] as boolean;
           const tokens = token['tokens'] as Tokens.Generic[];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const renderedBody = (this as any).parser.parse(tokens);
+          const renderedBody = (
+            this as unknown as { parser: { parse(tokens: Tokens.Generic[]): string } }
+          ).parser.parse(tokens);
           const openAttr = expanded ? ' open' : '';
           return (
             `<details class="accordion"${openAttr}>` +
