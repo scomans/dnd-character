@@ -8,13 +8,14 @@ import { SelectModule } from 'primeng/select';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TooltipModule } from 'primeng/tooltip';
+import { IftaLabelModule } from 'primeng/iftalabel';
 import { ALIGNMENTS, DND_CLASS_TREE, DND_RACES, DND_BACKGROUNDS, LIFESTYLES } from '../../models/character.model';
 import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, AutoCompleteModule, TreeSelectModule, TooltipModule, ClickOutside],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, AutoCompleteModule, TreeSelectModule, TooltipModule, IftaLabelModule, ClickOutside],
   template: `
     <div class="bg-white border-2 border-slate-700 rounded-lg p-4 mb-4">
       <!-- Character Name as click-to-edit title -->
@@ -44,34 +45,35 @@ import { ClickOutside } from 'ngxtension/click-outside';
             <img [src]="cs.character().characterImage" alt="Charakter" class="w-16 h-16 object-cover rounded-lg border border-gray-300" />
           </div>
         }
-        <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_auto_1fr_1fr_1fr_1fr] gap-2">
-          <!-- Klasse & Stufe -->
-          <div class="flex flex-col">
+        <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_auto_1fr_1fr_1fr_1fr] gap-2 items-end">
+          <!-- Klasse -->
+          <p-iftalabel>
             @if (editingField() === 'class') {
-              <div class="flex gap-1">
-                <p-treeselect
-                  [ngModel]="selectedClassNode"
-                  (ngModelChange)="onClassNodeSelect($event)"
-                  [options]="classTree"
-                  placeholder="Klasse"
-                  [style]="{ width: '100%', fontSize: '0.85rem' }"
-                  appendTo="body"
-                  [filter]="true"
-                  filterPlaceholder="Suchen..."
-                />
-              </div>
+              <p-treeselect
+                [ngModel]="selectedClassNode"
+                (ngModelChange)="onClassNodeSelect($event)"
+                [options]="classTree"
+                placeholder="Klasse"
+                [style]="{ width: '100%', fontSize: '0.85rem' }"
+                appendTo="body"
+                [filter]="true"
+                filterPlaceholder="Suchen..."
+                id="header-class"
+              />
             } @else {
-              <span
-                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+              <input
+                pInputText
+                [value]="cs.character().className || ''"
                 (click)="editingField.set('class')"
-                pTooltip="Klicken zum Bearbeiten"
-                tooltipPosition="top"
-              >{{ cs.character().className || 'Klasse' }}</span>
+                readonly
+                class="w-full text-sm cursor-pointer"
+                id="header-class"
+              />
             }
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Klasse</label>
-          </div>
+            <label for="header-class">Klasse</label>
+          </p-iftalabel>
           <!-- Stufe -->
-          <div class="flex flex-col">
+          <p-iftalabel>
             <p-inputnumber
               [ngModel]="cs.character().level"
               (ngModelChange)="cs.update({ level: $event ?? 1 })"
@@ -79,11 +81,12 @@ import { ClickOutside } from 'ngxtension/click-outside';
               [max]="20"
               [showButtons]="false"
               [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
+              inputId="header-level"
             />
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Stufe</label>
-          </div>
+            <label for="header-level">Stufe</label>
+          </p-iftalabel>
           <!-- Hintergrund -->
-          <div class="flex flex-col">
+          <p-iftalabel>
             @if (editingField() === 'background') {
               <p-autocomplete
                 [ngModel]="cs.character().background"
@@ -93,23 +96,26 @@ import { ClickOutside } from 'ngxtension/click-outside';
                 (onSelect)="editingField.set(null)"
                 [dropdown]="true"
                 [forceSelection]="false"
-                placeholder="Hintergrund"
+                placeholder=" "
                 [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
                 [style]="{ width: '100%' }"
                 appendTo="body"
+                inputId="header-bg"
               />
             } @else {
-              <span
-                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+              <input
+                pInputText
+                [value]="cs.character().background || ''"
                 (click)="editingField.set('background')"
-                pTooltip="Klicken zum Bearbeiten"
-                tooltipPosition="top"
-              >{{ cs.character().background || 'Hintergrund' }}</span>
+                readonly
+                class="w-full text-sm cursor-pointer"
+                id="header-bg"
+              />
             }
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Hintergrund</label>
-          </div>
+            <label for="header-bg">Hintergrund</label>
+          </p-iftalabel>
           <!-- Volk -->
-          <div class="flex flex-col">
+          <p-iftalabel>
             @if (editingField() === 'race') {
               <p-autocomplete
                 [ngModel]="cs.character().race"
@@ -119,23 +125,26 @@ import { ClickOutside } from 'ngxtension/click-outside';
                 (onSelect)="editingField.set(null)"
                 [dropdown]="true"
                 [forceSelection]="false"
-                placeholder="Volk"
+                placeholder=" "
                 [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
                 [style]="{ width: '100%' }"
                 appendTo="body"
+                inputId="header-race"
               />
             } @else {
-              <span
-                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+              <input
+                pInputText
+                [value]="cs.character().race || ''"
                 (click)="editingField.set('race')"
-                pTooltip="Klicken zum Bearbeiten"
-                tooltipPosition="top"
-              >{{ cs.character().race || 'Volk' }}</span>
+                readonly
+                class="w-full text-sm cursor-pointer"
+                id="header-race"
+              />
             }
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Volk</label>
-          </div>
+            <label for="header-race">Volk</label>
+          </p-iftalabel>
           <!-- Gesinnung -->
-          <div class="flex flex-col">
+          <p-iftalabel>
             @if (editingField() === 'alignment') {
               <p-select
                 [ngModel]="cs.character().alignment"
@@ -143,30 +152,34 @@ import { ClickOutside } from 'ngxtension/click-outside';
                 [options]="alignments"
                 optionLabel="label"
                 optionValue="value"
-                placeholder="--"
+                placeholder=" "
                 [style]="{ width: '100%', fontSize: '0.85rem' }"
                 appendTo="body"
+                inputId="header-alignment"
               />
             } @else {
-              <span
-                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+              <input
+                pInputText
+                [value]="getAlignmentLabel() || ''"
                 (click)="editingField.set('alignment')"
-                pTooltip="Klicken zum Bearbeiten"
-                tooltipPosition="top"
-              >{{ getAlignmentLabel() || 'Gesinnung' }}</span>
+                readonly
+                class="w-full text-sm cursor-pointer"
+                id="header-alignment"
+              />
             }
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Gesinnung</label>
-          </div>
+            <label for="header-alignment">Gesinnung</label>
+          </p-iftalabel>
           <!-- EP -->
-          <div class="flex flex-col" pTooltip="Erfahrungspunkte" tooltipPosition="top">
+          <p-iftalabel>
             <p-inputnumber
               [ngModel]="cs.character().experiencePoints"
               (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
               [useGrouping]="false"
               [inputStyle]="{ width: '100%' }"
+              inputId="header-xp"
             />
-            <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">EP</label>
-          </div>
+            <label for="header-xp">EP</label>
+          </p-iftalabel>
         </div>
       </div>
     </div>
@@ -207,7 +220,6 @@ export class HeaderComponent {
     } else {
       this.cs.update({ className: '' });
     }
-    // Close edit mode after selection
     this.editingField.set(null);
   }
 

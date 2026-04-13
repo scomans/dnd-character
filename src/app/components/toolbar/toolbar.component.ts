@@ -16,7 +16,7 @@ import '@googleworkspace/drive-picker-element';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [CommonModule, FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule],
   template: `
-    <div class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg mb-4 shadow-md">
+    <div class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg mb-4 shadow-md flex-wrap">
       <span class="text-lg font-bold flex-1">⚔️ D&D Charakterbogen</span>
 
       <!-- Google Drive Section -->
@@ -39,7 +39,7 @@ import '@googleworkspace/drive-picker-element';
           icon="pi pi-folder-open"
           size="small"
           severity="secondary"
-          (onClick)="openPicker()"
+          (onClick)="openPickerForFile()"
           pTooltip="Datei aus Google Drive öffnen"
           tooltipPosition="bottom"
         />
@@ -57,8 +57,8 @@ import '@googleworkspace/drive-picker-element';
           label="Mit Google anmelden"
           size="small"
           severity="secondary"
-          (onClick)="openPicker()"
-          pTooltip="Öffne Google Drive File Picker"
+          (onClick)="authenticateOnly()"
+          pTooltip="Mit Google Drive verbinden"
           tooltipPosition="bottom"
         />
       }
@@ -70,7 +70,7 @@ import '@googleworkspace/drive-picker-element';
       <p-button label="Zurücksetzen" icon="pi pi-refresh" size="small" severity="danger" (onClick)="showReset = true" />
     </div>
 
-    <!-- Drive Picker element (only rendered when user requests it to avoid popup blocking) -->
+    <!-- Drive Picker element (always in DOM but hidden, controls auth + picker) -->
     @if (showPicker) {
       <drive-picker
         #drivePicker
@@ -147,6 +147,8 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
   importError = '';
   newDriveFileName = '';
 
+  /** Whether we want to open the picker to select a file (vs auth-only) */
+  private wantFilePicker = false;
   private pickerListenersAttached = false;
 
   // Bound event handlers for cleanup
@@ -154,6 +156,10 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
     const detail = (e as CustomEvent).detail;
     if (detail?.access_token) {
       this.drive.handleOAuthToken(detail.access_token);
+      // If this was an auth-only request, close the picker after getting the token
+      if (!this.wantFilePicker) {
+        this.closePicker();
+      }
     }
   };
 
@@ -169,6 +175,11 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
         console.error('Error reading file from Google Drive:', err);
       }
     }
+    this.closePicker();
+  };
+
+  private onPickerCanceled = () => {
+    this.closePicker();
   };
 
   ngAfterViewInit(): void {
@@ -184,6 +195,7 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
     if (el && !this.pickerListenersAttached) {
       el.addEventListener('picker-oauth-response', this.onOAuthResponse);
       el.addEventListener('picker-picked', this.onFilePicked);
+      el.addEventListener('picker-canceled', this.onPickerCanceled);
       this.pickerListenersAttached = true;
     }
   }
@@ -193,13 +205,41 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
     if (el) {
       el.removeEventListener('picker-oauth-response', this.onOAuthResponse);
       el.removeEventListener('picker-picked', this.onFilePicked);
+      el.removeEventListener('picker-canceled', this.onPickerCanceled);
       this.pickerListenersAttached = false;
     }
   }
 
-  openPicker(): void {
-    // Render the drive-picker element first (user gesture context),
-    // then attach listeners and set visible after it's in the DOM
+  private closePicker(): void {
+    const el = this.drivePickerRef?.nativeElement;
+    if (el) {
+      el.visible = false;
+    }
+    this.showPicker = false;
+    this.pickerListenersAttached = false;
+    this.wantFilePicker = false;
+  }
+
+  /**
+   * Auth only - shows the picker to trigger OAuth but closes it after token is received
+   */
+  authenticateOnly(): void {
+    this.wantFilePicker = false;
+    this.showPicker = true;
+    setTimeout(() => {
+      this.attachPickerListeners();
+      const el = this.drivePickerRef?.nativeElement;
+      if (el) {
+        el.visible = true;
+      }
+    }, 0);
+  }
+
+  /**
+   * Opens the picker to select a file (user already authenticated)
+   */
+  openPickerForFile(): void {
+    this.wantFilePicker = true;
     this.showPicker = true;
     setTimeout(() => {
       this.attachPickerListeners();

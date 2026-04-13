@@ -7,80 +7,44 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
+import { IftaLabelModule } from 'primeng/iftalabel';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { ImagePickerComponent } from '../image-picker/image-picker.component';
-import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-appearance-backstory',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputGroupModule, InputGroupAddonModule, FieldsetModule, TooltipModule, MarkdownEditorComponent, ImagePickerComponent, ClickOutside],
+  imports: [CommonModule, FormsModule, InputTextModule, InputGroupModule, InputGroupAddonModule, FieldsetModule, TooltipModule, IftaLabelModule, MarkdownEditorComponent, ImagePickerComponent],
   template: `
     <div class="space-y-3">
       <!-- Physical Characteristics + Character Image at top -->
       <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
         <p-fieldset legend="Körperliche Merkmale">
           <div class="grid grid-cols-3 gap-2 text-xs">
-            <!-- Alter -->
-            <div class="flex flex-col">
-              @if (editingField() === 'age') {
-                <input pInputText [ngModel]="cs.character().age" (ngModelChange)="cs.update({ age: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
-              } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('age')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().age || 'Klicken zum Bearbeiten' }}</span>
-              }
-              <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Alter</label>
-            </div>
-            <!-- Größe -->
-            <div class="flex flex-col">
-              @if (editingField() === 'height') {
-                <p-inputgroup (clickOutside)="editingField.set(null)">
-                  <input pInputText [ngModel]="cs.character().height" (ngModelChange)="cs.update({ height: $event })" class="w-full text-xs" autofocus />
-                  <p-inputgroup-addon>m</p-inputgroup-addon>
-                </p-inputgroup>
-              } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('height')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().height ? cs.character().height + ' m' : 'Klicken zum Bearbeiten' }}</span>
-              }
-              <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Größe</label>
-            </div>
-            <!-- Gewicht -->
-            <div class="flex flex-col">
-              @if (editingField() === 'weight') {
-                <p-inputgroup (clickOutside)="editingField.set(null)">
-                  <input pInputText [ngModel]="cs.character().weight" (ngModelChange)="cs.update({ weight: $event })" class="w-full text-xs" autofocus />
-                  <p-inputgroup-addon>kg</p-inputgroup-addon>
-                </p-inputgroup>
-              } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('weight')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().weight ? cs.character().weight + ' kg' : 'Klicken zum Bearbeiten' }}</span>
-              }
-              <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Gewicht</label>
-            </div>
-            <!-- Augen -->
-            <div class="flex flex-col">
-              @if (editingField() === 'eyes') {
-                <input pInputText [ngModel]="cs.character().eyes" (ngModelChange)="cs.update({ eyes: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
-              } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('eyes')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().eyes || 'Klicken zum Bearbeiten' }}</span>
-              }
-              <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Augen</label>
-            </div>
-            <!-- Haut -->
-            <div class="flex flex-col">
-              @if (editingField() === 'skin') {
-                <input pInputText [ngModel]="cs.character().skin" (ngModelChange)="cs.update({ skin: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
-              } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('skin')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().skin || 'Klicken zum Bearbeiten' }}</span>
-              }
-              <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Haut</label>
-            </div>
-            <!-- Haar -->
-            <div class="flex flex-col">
-              @if (editingField() === 'hair') {
-                <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" (clickOutside)="editingField.set(null)" autofocus />
-              } @else {
-                <span class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 min-h-[1.5rem]" (click)="editingField.set('hair')" pTooltip="Klicken zum Bearbeiten" tooltipPosition="top">{{ cs.character().hair || 'Klicken zum Bearbeiten' }}</span>
-              }
-              <label class="text-[0.6rem] font-bold uppercase text-gray-600 text-center mt-0.5">Haar</label>
-            </div>
+            <p-iftalabel>
+              <input pInputText [ngModel]="cs.character().age" (ngModelChange)="cs.update({ age: $event })" class="w-full text-xs" id="phys-age" />
+              <label for="phys-age">Alter</label>
+            </p-iftalabel>
+            <p-iftalabel>
+              <input pInputText [ngModel]="cs.character().height" (ngModelChange)="cs.update({ height: $event })" class="w-full text-xs" id="phys-height" />
+              <label for="phys-height">Größe (m)</label>
+            </p-iftalabel>
+            <p-iftalabel>
+              <input pInputText [ngModel]="cs.character().weight" (ngModelChange)="cs.update({ weight: $event })" class="w-full text-xs" id="phys-weight" />
+              <label for="phys-weight">Gewicht (kg)</label>
+            </p-iftalabel>
+            <p-iftalabel>
+              <input pInputText [ngModel]="cs.character().eyes" (ngModelChange)="cs.update({ eyes: $event })" class="w-full text-xs" id="phys-eyes" />
+              <label for="phys-eyes">Augen</label>
+            </p-iftalabel>
+            <p-iftalabel>
+              <input pInputText [ngModel]="cs.character().skin" (ngModelChange)="cs.update({ skin: $event })" class="w-full text-xs" id="phys-skin" />
+              <label for="phys-skin">Haut</label>
+            </p-iftalabel>
+            <p-iftalabel>
+              <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" id="phys-hair" />
+              <label for="phys-hair">Haar</label>
+            </p-iftalabel>
           </div>
         </p-fieldset>
 
@@ -150,5 +114,4 @@ import { ClickOutside } from 'ngxtension/click-outside';
 })
 export class AppearanceBackstoryComponent {
   cs = inject(CharacterService);
-  editingField = signal<string | null>(null);
 }

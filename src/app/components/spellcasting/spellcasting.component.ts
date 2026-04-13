@@ -10,18 +10,19 @@ import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
+import { IftaLabelModule } from 'primeng/iftalabel';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, MarkdownEditorComponent],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, IftaLabelModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
       <div class="grid grid-cols-4 gap-2">
-        <div class="flex flex-col items-center">
+        <p-iftalabel>
           @if (editingField() === 'spellClass') {
             <p-select
               [ngModel]="cs.character().spellcastingClass"
@@ -29,21 +30,24 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
               [options]="spellcastingClasses"
               optionLabel="label"
               optionValue="value"
-              placeholder="--"
+              placeholder=" "
               [style]="{ width: '100%' }"
               appendTo="body"
+              inputId="spell-class"
             />
           } @else {
-            <span
-              class="text-lg font-bold text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5"
+            <input
+              pInputText
+              [value]="getSpellcastingClassLabel() || ''"
               (click)="editingField.set('spellClass')"
-              pTooltip="Klicken zum Bearbeiten"
-              tooltipPosition="top"
-            >{{ getSpellcastingClassLabel() || '--' }}</span>
+              readonly
+              class="w-full text-sm cursor-pointer"
+              id="spell-class"
+            />
           }
-          <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberwirkende Klasse</span>
-        </div>
-        <div class="flex flex-col items-center">
+          <label for="spell-class">Zauberwirkende Klasse</label>
+        </p-iftalabel>
+        <p-iftalabel>
           @if (editingField() === 'spellAbility') {
             <p-select
               [ngModel]="cs.character().spellcastingAbility"
@@ -51,28 +55,31 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
               [options]="abilityOptions"
               optionLabel="label"
               optionValue="value"
-              placeholder="--"
+              placeholder=" "
               [style]="{ width: '100%' }"
               appendTo="body"
+              inputId="spell-ability"
             />
           } @else {
-            <span
-              class="text-lg font-bold text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5"
+            <input
+              pInputText
+              [value]="getAbilityLabel(cs.character().spellcastingAbility) || ''"
               (click)="editingField.set('spellAbility')"
-              pTooltip="Klicken zum Bearbeiten"
-              tooltipPosition="top"
-            >{{ getAbilityLabel(cs.character().spellcastingAbility) || '--' }}</span>
+              readonly
+              class="w-full text-sm cursor-pointer"
+              id="spell-ability"
+            />
           }
-          <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberattribut</span>
-        </div>
-        <div class="flex flex-col items-center"
+          <label for="spell-ability">Zauberattribut</label>
+        </p-iftalabel>
+        <div class="flex flex-col items-center justify-center"
           pTooltip="8 + Übungsbonus + Zauberattribut-Modifikator"
           tooltipPosition="top"
         >
           <span class="text-2xl font-bold text-slate-700">{{ cs.getSpellSaveDC() || '--' }}</span>
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauber-SG</span>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center justify-center">
           <span class="text-2xl font-bold text-slate-700">
             @if (cs.getSpellAttackBonus()) {
               {{ cs.getSpellAttackBonus() >= 0 ? '+' : '' }}{{ cs.getSpellAttackBonus() }}

@@ -21,123 +21,146 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
   imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, InputMaskModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, InputGroupModule, InputGroupAddonModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Waffen & Angriffszauber">
-      <div class="space-y-3">
-        @for (attack of cs.character().attacks; track $index; let i = $index) {
-          <div class="border border-gray-200 rounded-lg p-2 space-y-1.5">
-            <!-- Row 1: Name + Delete -->
-            <div class="flex items-center gap-1">
-              <input pInputText [(ngModel)]="attack.name" (ngModelChange)="updateAttacks()" class="flex-1 text-xs font-bold" placeholder="Angriffsname" />
-              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAttack(i)" />
-            </div>
-            <!-- Row 2: Compact stats -->
-            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-              <!-- Proficient -->
-              <div class="flex items-center gap-0.5" pTooltip="Geübt" tooltipPosition="top">
-                <p-checkbox [(ngModel)]="attack.proficient" (ngModelChange)="updateAttacks()" [binary]="true" />
-                <span class="text-[0.6rem] text-gray-500">ÜB</span>
-              </div>
-              <!-- Attribute -->
-              <p-select
-                [(ngModel)]="attack.attribute"
-                (ngModelChange)="updateAttacks()"
-                [options]="abilityOptions"
-                optionLabel="label"
-                optionValue="value"
-                [style]="{ width: '5.5rem', fontSize: '0.7rem' }"
-                appendTo="body"
-              >
-                <ng-template #selectedItem let-selectedOption>
-                  <span class="text-xs">{{ getShortLabel(selectedOption?.value) }}</span>
-                </ng-template>
-              </p-select>
-              <!-- Attack Bonus (computed) -->
-              <span class="font-bold text-slate-700 px-1" pTooltip="Angriffsbonus = Attr.Mod + ÜB + Mag." tooltipPosition="top">
-                {{ cs.getAttackBonus(attack) >= 0 ? '+' : '' }}{{ cs.getAttackBonus(attack) }}
-              </span>
-              <!-- Range -->
-              <p-inputgroup>
-                <p-inputnumber
-                  [ngModel]="parseRange(attack.range)"
-                  (ngModelChange)="updateAttackRange(i, $event)"
-                  [showButtons]="false"
-                  [min]="0"
-                  [minFractionDigits]="0"
-                  [maxFractionDigits]="1"
-                  [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.7rem' }"
-                />
-                <p-inputgroup-addon class="text-[0.6rem]">m</p-inputgroup-addon>
-              </p-inputgroup>
-              <!-- Damage Dice -->
-              <p-inputMask
-                [(ngModel)]="attack.damageDice"
-                (ngModelChange)="updateAttacks()"
-                mask="99w99"
-                placeholder="1W8"
-                [autoClear]="false"
-                slotChar=" "
-                [style]="{ width: '3.5rem', textAlign: 'center', fontSize: '0.7rem' }"
-              />
-              <!-- Damage Bonus (computed) -->
-              <span class="font-bold text-slate-700" pTooltip="Schadensbonus = Attr.Mod + Mag." tooltipPosition="top">
-                {{ cs.getDamageBonus(attack) >= 0 ? '+' : '' }}{{ cs.getDamageBonus(attack) }}
-              </span>
-              <!-- Damage Type -->
-              <p-select
-                [(ngModel)]="attack.damageType"
-                (ngModelChange)="updateAttacks()"
-                [options]="damageTypes"
-                optionLabel="label"
-                optionValue="value"
-                [style]="{ width: '6rem', fontSize: '0.7rem' }"
-                [filter]="true"
-                filterBy="label"
-                placeholder="Typ"
-                appendTo="body"
-              >
-                <ng-template #selectedItem let-selectedOption>
-                  <span class="text-xs">{{ selectedOption?.value }}</span>
-                </ng-template>
-              </p-select>
-              <!-- Mastery -->
-              <p-select
-                [(ngModel)]="attack.mastery"
-                (ngModelChange)="updateAttacks()"
-                [options]="masteries"
-                optionLabel="label"
-                optionValue="value"
-                [style]="{ width: '5.5rem', fontSize: '0.7rem' }"
-                placeholder="--"
-                appendTo="body"
-              >
-                <ng-template #selectedItem let-selectedOption>
-                  <span class="text-xs">{{ selectedOption?.value || '--' }}</span>
-                </ng-template>
-                <ng-template #item let-option>
-                  <span [pTooltip]="option.description" tooltipPosition="right">{{ option.label }}</span>
-                </ng-template>
-              </p-select>
-              <!-- Magic Bonus -->
-              <p-inputnumber
-                [(ngModel)]="attack.magicBonus"
-                (ngModelChange)="updateAttacks()"
-                [showButtons]="false"
-                [min]="0"
-                [max]="5"
-                [inputStyle]="{ width: '1.5rem', textAlign: 'center', fontSize: '0.7rem' }"
-                pTooltip="Magischer Bonus"
-                tooltipPosition="top"
-              />
-            </div>
-            <!-- Row 3: Description -->
-            <app-markdown-editor
-              [value]="attack.description"
-              (valueChange)="updateAttackDescription(i, $event)"
-              placeholder="Beschreibung..."
-              [minRows]="1"
-            />
-          </div>
-        }
-        <p-button label="Angriff hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addAttack()" />
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs" style="min-width: 600px">
+          <thead>
+            <tr class="border-b border-gray-300">
+              <th class="text-left p-1">Angriff</th>
+              <th class="p-1" pTooltip="Übungsbonus" tooltipPosition="top">ÜB</th>
+              <th class="p-1" pTooltip="Attribut" tooltipPosition="top">Attr</th>
+              <th class="p-1" pTooltip="Angriffsbonus" tooltipPosition="top">Bonus</th>
+              <th class="p-1">RW</th>
+              <th class="p-1">Schaden</th>
+              <th class="p-1" pTooltip="Schadensbonus" tooltipPosition="top">+</th>
+              <th class="text-left p-1">Typ</th>
+              <th class="p-1" pTooltip="Waffenmeisterschaft" tooltipPosition="top">Meist.</th>
+              <th class="p-1" pTooltip="Magischer Bonus" tooltipPosition="top">Mag</th>
+              <th class="p-1 text-right">
+                <p-button icon="pi pi-plus" [rounded]="true" [text]="true" size="small" (onClick)="addAttack()" pTooltip="Angriff hinzufügen" tooltipPosition="top" />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (attack of cs.character().attacks; track $index; let i = $index) {
+              <tr class="border-b border-gray-100">
+                <td class="p-1">
+                  <input pInputText [(ngModel)]="attack.name" (ngModelChange)="updateAttacks()" class="w-full text-xs" style="min-width:80px" />
+                </td>
+                <td class="p-1 text-center">
+                  <p-checkbox [(ngModel)]="attack.proficient" (ngModelChange)="updateAttacks()" [binary]="true" />
+                </td>
+                <td class="p-1">
+                  <p-select
+                    [(ngModel)]="attack.attribute"
+                    (ngModelChange)="updateAttacks()"
+                    [options]="abilityOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [style]="{ width: '4.5rem', fontSize: '0.7rem' }"
+                    appendTo="body"
+                  >
+                    <ng-template #selectedItem let-selectedOption>
+                      <span>{{ getShortLabel(selectedOption?.value) }}</span>
+                    </ng-template>
+                  </p-select>
+                </td>
+                <td class="p-1 text-center font-bold text-slate-700">
+                  {{ cs.getAttackBonus(attack) >= 0 ? '+' : '' }}{{ cs.getAttackBonus(attack) }}
+                </td>
+                <td class="p-1">
+                  <p-inputgroup>
+                    <p-inputnumber
+                      [ngModel]="parseRange(attack.range)"
+                      (ngModelChange)="updateAttackRange(i, $event)"
+                      [showButtons]="false"
+                      [min]="0"
+                      [minFractionDigits]="0"
+                      [maxFractionDigits]="1"
+                      [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.7rem' }"
+                    />
+                    <p-inputgroup-addon class="text-[0.6rem]">m</p-inputgroup-addon>
+                  </p-inputgroup>
+                </td>
+                <td class="p-1">
+                  <p-inputMask
+                    [(ngModel)]="attack.damageDice"
+                    (ngModelChange)="updateAttacks()"
+                    mask="99w99"
+                    placeholder="1W8"
+                    [autoClear]="false"
+                    slotChar=" "
+                    [style]="{ width: '3.5rem', textAlign: 'center', fontSize: '0.7rem' }"
+                  />
+                </td>
+                <td class="p-1 text-center font-bold text-slate-700">
+                  {{ cs.getDamageBonus(attack) >= 0 ? '+' : '' }}{{ cs.getDamageBonus(attack) }}
+                </td>
+                <td class="p-1">
+                  <p-select
+                    [(ngModel)]="attack.damageType"
+                    (ngModelChange)="updateAttacks()"
+                    [options]="damageTypes"
+                    optionLabel="label"
+                    optionValue="value"
+                    [style]="{ width: '5.5rem', fontSize: '0.7rem' }"
+                    [filter]="true"
+                    filterBy="label"
+                    placeholder="Typ"
+                    appendTo="body"
+                  >
+                    <ng-template #selectedItem let-selectedOption>
+                      <span>{{ selectedOption?.value }}</span>
+                    </ng-template>
+                  </p-select>
+                </td>
+                <td class="p-1">
+                  <p-select
+                    [(ngModel)]="attack.mastery"
+                    (ngModelChange)="updateAttacks()"
+                    [options]="masteries"
+                    optionLabel="label"
+                    optionValue="value"
+                    [style]="{ width: '4.5rem', fontSize: '0.7rem' }"
+                    placeholder="--"
+                    appendTo="body"
+                  >
+                    <ng-template #selectedItem let-selectedOption>
+                      <span>{{ selectedOption?.value || '--' }}</span>
+                    </ng-template>
+                    <ng-template #item let-option>
+                      <span [pTooltip]="option.description" tooltipPosition="right">{{ option.label }}</span>
+                    </ng-template>
+                  </p-select>
+                </td>
+                <td class="p-1">
+                  <p-inputnumber
+                    [(ngModel)]="attack.magicBonus"
+                    (ngModelChange)="updateAttacks()"
+                    [showButtons]="false"
+                    [min]="0"
+                    [max]="5"
+                    [inputStyle]="{ width: '1.5rem', textAlign: 'center', fontSize: '0.7rem' }"
+                    pTooltip="Magischer Bonus (z.B. +1 Waffe)"
+                    tooltipPosition="top"
+                  />
+                </td>
+                <td class="p-1">
+                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAttack(i)" />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="11" class="p-1">
+                  <app-markdown-editor
+                    [value]="attack.description"
+                    (valueChange)="updateAttackDescription(i, $event)"
+                    placeholder="Beschreibung..."
+                    [minRows]="1"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     </p-fieldset>
   `,
