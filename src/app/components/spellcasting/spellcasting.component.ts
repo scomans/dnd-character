@@ -144,10 +144,27 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
         </div>
       </div>
 
-      <!-- Filter for prepared spells -->
+      <!-- Filter for prepared spells + expand/collapse -->
       <div class="flex items-center gap-2 mt-2">
         <p-toggleswitch [(ngModel)]="showPreparedOnly" />
         <span class="text-xs text-gray-600">Nur vorbereitete Zauber anzeigen</span>
+        <span class="flex-1"></span>
+        <p-button
+          icon="pi pi-angle-double-down"
+          size="small"
+          [text]="true"
+          pTooltip="Alle aufklappen"
+          tooltipPosition="top"
+          (onClick)="expandAll()"
+        />
+        <p-button
+          icon="pi pi-angle-double-up"
+          size="small"
+          [text]="true"
+          pTooltip="Alle zuklappen"
+          tooltipPosition="top"
+          (onClick)="collapseAll()"
+        />
       </div>
 
       <!-- Spells List with Accordions -->
@@ -157,15 +174,15 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
             <span class="text-xs font-bold text-gray-600 mb-1 block">
               {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
             </span>
-            <p-accordion [multiple]="true">
+            <p-accordion [multiple]="true" [value]="expandedPanels()">
               <div
                 cdkDropList
                 [cdkDropListData]="levelGroup.level"
                 (cdkDropListDropped)="dropSpell($event, levelGroup.level)"
               >
-                @for (spell of getFilteredSpellsForLevel(levelGroup.level); track getSpellGlobalIndex(spell)) {
+                @for (spell of getFilteredSpellsForLevel(levelGroup.level); track $index) {
                   <div cdkDrag [cdkDragData]="spell">
-                    <p-accordion-panel [value]="'spell-' + getSpellGlobalIndex(spell)">
+                    <p-accordion-panel [value]="'spell-' + levelGroup.level + '-' + $index">
                       <p-accordion-header>
                         <div class="flex items-center gap-1 w-full text-xs" (click)="$event.stopPropagation()">
                           <i class="pi pi-bars text-gray-400 cursor-move mr-1" cdkDragHandle></i>
@@ -236,6 +253,7 @@ export class SpellcastingComponent {
   newSpellLevel = 0;
   showPreparedOnly = false;
   editingField = signal<string | null>(null);
+  expandedPanels = signal<string[]>([]);
 
   abilityOptions = [
     { label: 'Keine', value: '' },
@@ -284,8 +302,17 @@ export class SpellcastingComponent {
     return spells;
   }
 
-  getSpellGlobalIndex(spell: Spell): number {
-    return this.cs.character().spells.indexOf(spell);
+  expandAll(): void {
+    const panels: string[] = [];
+    for (const levelGroup of this.groupedSpellLevels) {
+      const spells = this.getFilteredSpellsForLevel(levelGroup.level);
+      spells.forEach((_, i) => panels.push('spell-' + levelGroup.level + '-' + i));
+    }
+    this.expandedPanels.set(panels);
+  }
+
+  collapseAll(): void {
+    this.expandedPanels.set([]);
   }
 
   getSlotMax(level: number): number {
@@ -364,8 +391,7 @@ export class SpellcastingComponent {
 
   updateSpells(): void {
     const char = this.cs.character();
-    const newSpells = [...char.spells.map(s => ({ ...s }))];
-    this.cs.update({ spells: newSpells });
+    this.cs.update({ spells: [...char.spells] });
   }
 
   updateSpellPreparedByRef(spell: Spell, prepared: boolean): void {
