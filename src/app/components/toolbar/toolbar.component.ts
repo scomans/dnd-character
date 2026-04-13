@@ -54,6 +54,19 @@ import '@googleworkspace/drive-picker-element';
           pTooltip="Neue Datei in Google Drive erstellen"
           tooltipPosition="bottom"
         />
+      } @else if (drive.tokenExpired()) {
+        <span class="text-xs text-yellow-300 hidden md:inline">
+          <i class="pi pi-exclamation-triangle mr-1"></i>Sitzung abgelaufen
+        </span>
+        <p-button
+          icon="pi pi-google"
+          label="Erneut anmelden"
+          size="small"
+          severity="warn"
+          (onClick)="authenticateOnly()"
+          pTooltip="Sitzung abgelaufen – erneut anmelden"
+          tooltipPosition="bottom"
+        />
       } @else {
         <p-button
           icon="pi pi-google"
@@ -176,6 +189,9 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
         this.cs.importJSON(content);
       } catch (err) {
         console.error('Error reading file from Google Drive:', err);
+        if (this.drive.tokenExpired()) {
+          // Token expired - UI will update to show re-auth button
+        }
       }
     }
     this.closePicker();
@@ -294,6 +310,10 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
       await this.drive.saveFile(currentFile.id, json, currentFile.name);
     } catch (err) {
       console.error('Error saving to Google Drive:', err);
+      if (this.drive.tokenExpired()) {
+        // Token expired - UI will update to show re-auth button
+        return;
+      }
     }
   }
 
@@ -309,6 +329,10 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
       this.newDriveFileName = '';
     } catch (err) {
       console.error('Error creating file on Google Drive:', err);
+      if (this.drive.tokenExpired()) {
+        this.showNewDriveFile = false;
+        return;
+      }
     }
   }
 }

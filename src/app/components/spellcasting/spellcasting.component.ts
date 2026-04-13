@@ -1,6 +1,6 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Divider } from 'primeng/divider';
 import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
@@ -9,11 +9,12 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
-import { Popover, PopoverModule } from 'primeng/popover';
+import { AccordionModule } from 'primeng/accordion';
 import { TooltipModule } from 'primeng/tooltip';
 import { IftaLabelModule } from 'primeng/iftalabel';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
+import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
@@ -26,10 +27,12 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
     ButtonModule,
     SelectModule,
     FieldsetModule,
-    PopoverModule,
+    AccordionModule,
     TooltipModule,
     IftaLabelModule,
+    ToggleSwitchModule,
     MarkdownEditorComponent,
+    DragDropModule,
     Divider,
   ],
   template: `
@@ -141,37 +144,72 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
         </div>
       </div>
 
-      <!-- Spells List -->
+      <!-- Filter for prepared spells -->
+      <div class="flex items-center gap-2 mt-2">
+        <p-toggleswitch [(ngModel)]="showPreparedOnly" />
+        <span class="text-xs text-gray-600">Nur vorbereitete Zauber anzeigen</span>
+      </div>
+
+      <!-- Spells List with Accordions -->
       <div>
-        <div class="space-y-1">
-          @for (levelGroup of groupedSpellLevels; track levelGroup.level) {
-            <div class="border-t border-gray-200 pt-1">
-              <span class="text-xs font-bold text-gray-600">
-                {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
-              </span>
-              @for (spell of getSpellsForLevel(levelGroup.level); track spell.name + $index) {
-                <div class="flex items-center gap-1 text-xs mt-0.5">
-                  @if (levelGroup.level > 0) {
-                    <p-checkbox
-                      [ngModel]="spell.prepared"
-                      (ngModelChange)="updateSpellPrepared($index, levelGroup.level, $event)"
-                      [binary]="true"
-                    />
-                  }
-                  <input pInputText [(ngModel)]="spell.name" (ngModelChange)="updateSpells()" class="flex-1 text-xs" />
-                  <p-button
-                    icon="pi pi-info-circle"
-                    [rounded]="true"
-                    [text]="true"
-                    size="small"
-                    (onClick)="toggleSpellInfo(spell, $event)"
-                  />
-                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeSpell(spell)" />
-                </div>
-              }
-            </div>
-          }
-        </div>
+        @for (levelGroup of groupedSpellLevels; track levelGroup.level) {
+          <div class="border-t border-gray-200 pt-1 mt-1">
+            <span class="text-xs font-bold text-gray-600 mb-1 block">
+              {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
+            </span>
+            <p-accordion [multiple]="true" [value]="getOpenPanels(levelGroup.level)">
+              <div
+                cdkDropList
+                [cdkDropListData]="levelGroup.level"
+                (cdkDropListDropped)="dropSpell($event, levelGroup.level)"
+              >
+                @for (spell of getFilteredSpellsForLevel(levelGroup.level); track getSpellGlobalIndex(spell)) {
+                  <div cdkDrag [cdkDragData]="spell">
+                    <p-accordion-panel [value]="'spell-' + getSpellGlobalIndex(spell)">
+                      <p-accordion-header>
+                        <div class="flex items-center gap-1 w-full text-xs" (click)="$event.stopPropagation()">
+                          <i class="pi pi-bars text-gray-400 cursor-move mr-1" cdkDragHandle></i>
+                          @if (levelGroup.level > 0) {
+                            <p-checkbox
+                              [ngModel]="spell.prepared"
+                              (ngModelChange)="updateSpellPreparedByRef(spell, $event)"
+                              [binary]="true"
+                            />
+                          }
+                          <input
+                            pInputText
+                            [(ngModel)]="spell.name"
+                            (ngModelChange)="updateSpells()"
+                            class="flex-1 text-xs"
+                            placeholder="Zaubername"
+                          />
+                          <p-button
+                            icon="pi pi-trash"
+                            [rounded]="true"
+                            [text]="true"
+                            severity="danger"
+                            size="small"
+                            (onClick)="removeSpell(spell)"
+                          />
+                        </div>
+                      </p-accordion-header>
+                      <p-accordion-content>
+                        <div class="p-2">
+                          <app-markdown-editor
+                            [value]="spell.description"
+                            (valueChange)="spell.description = $event; updateSpells()"
+                            placeholder="Beschreibung eingeben..."
+                            [minRows]="3"
+                          />
+                        </div>
+                      </p-accordion-content>
+                    </p-accordion-panel>
+                  </div>
+                }
+              </div>
+            </p-accordion>
+          </div>
+        }
         <p-divider />
         <div class="flex gap-2 mt-8 justify-center">
           <p-select
@@ -189,30 +227,14 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
       </div>
 
     </p-fieldset>
-
-    <!-- Spell Info Popover -->
-    <p-popover #spellPopover [style]="{ width: '400px' }">
-      @if (activeSpell) {
-        <div class="space-y-2">
-          <span class="text-sm font-bold">{{ activeSpell.name || 'Zauber' }} - Beschreibung</span>
-          <app-markdown-editor
-            [value]="activeSpell.description"
-            (valueChange)="activeSpell.description = $event; updateSpells()"
-            placeholder="Beschreibung eingeben..."
-            [minRows]="5"
-          />
-        </div>
-      }
-    </p-popover>
   `,
 })
 export class SpellcastingComponent {
   cs = inject(CharacterService);
-  @ViewChild('spellPopover') spellPopover!: Popover;
   spellcastingClasses = SPELLCASTING_CLASSES;
   spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   newSpellLevel = 0;
-  activeSpell: Spell | null = null;
+  showPreparedOnly = false;
   editingField = signal<string | null>(null);
 
   abilityOptions = [
@@ -241,12 +263,33 @@ export class SpellcastingComponent {
 
   get groupedSpellLevels() {
     const spells = this.cs.character().spells;
-    const levels = [...new Set(spells.map(s => s.level))].sort((a, b) => a - b);
-    return levels.map(level => ({ level }));
+    const allLevels = [...new Set(spells.map(s => s.level))].sort((a, b) => a - b);
+    if (this.showPreparedOnly) {
+      return allLevels
+        .filter(level => spells.some(s => s.level === level && (s.prepared || level === 0)))
+        .map(level => ({ level }));
+    }
+    return allLevels.map(level => ({ level }));
   }
 
   getSpellsForLevel(level: number): Spell[] {
     return this.cs.character().spells.filter(s => s.level === level);
+  }
+
+  getFilteredSpellsForLevel(level: number): Spell[] {
+    const spells = this.getSpellsForLevel(level);
+    if (this.showPreparedOnly && level > 0) {
+      return spells.filter(s => s.prepared);
+    }
+    return spells;
+  }
+
+  getSpellGlobalIndex(spell: Spell): number {
+    return this.cs.character().spells.indexOf(spell);
+  }
+
+  getOpenPanels(level: number): string[] {
+    return [];
   }
 
   getSlotMax(level: number): number {
@@ -327,27 +370,33 @@ export class SpellcastingComponent {
     const char = this.cs.character();
     const newSpells = [...char.spells.map(s => ({ ...s }))];
     this.cs.update({ spells: newSpells });
-    if (this.activeSpell) {
-      const idx = char.spells.indexOf(this.activeSpell);
-      if (idx >= 0 && idx < newSpells.length) {
-        this.activeSpell = newSpells[idx];
-      }
+  }
+
+  updateSpellPreparedByRef(spell: Spell, prepared: boolean): void {
+    const char = this.cs.character();
+    const idx = char.spells.indexOf(spell);
+    if (idx >= 0) {
+      const spells = [...char.spells.map(s => ({ ...s }))];
+      spells[idx].prepared = prepared;
+      this.cs.update({ spells });
     }
   }
 
-  updateSpellPrepared(indexInLevel: number, level: number, prepared: boolean): void {
+  dropSpell(event: CdkDragDrop<number>, level: number): void {
     const char = this.cs.character();
     const spellsOfLevel = char.spells.filter(s => s.level === level);
-    if (spellsOfLevel[indexInLevel]) {
-      spellsOfLevel[indexInLevel].prepared = prepared;
-      this.updateSpells();
-    }
-  }
 
-  toggleSpellInfo(spell: Spell, event: Event): void {
-    this.activeSpell = spell;
-    if (this.spellPopover) {
-      this.spellPopover.toggle(event);
-    }
+    if (event.previousIndex === event.currentIndex) return;
+
+    // Reorder within this level group
+    moveItemInArray(spellsOfLevel, event.previousIndex, event.currentIndex);
+
+    // Rebuild the full spells array preserving order of other levels
+    const newSpells = char.spells.filter(s => s.level !== level);
+    // Insert the reordered level spells at the position of the first spell of this level
+    const firstIndex = char.spells.findIndex(s => s.level === level);
+    newSpells.splice(firstIndex >= 0 ? firstIndex : newSpells.length, 0, ...spellsOfLevel);
+
+    this.cs.update({ spells: newSpells });
   }
 }

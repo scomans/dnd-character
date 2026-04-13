@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 
 const DRIVE_API_BASE = 'https://www.googleapis.com/drive/v3';
 const DRIVE_UPLOAD_BASE = 'https://www.googleapis.com/upload/drive/v3';
+const TOKEN_INFO_URL = 'https://www.googleapis.com/oauth2/v1/tokeninfo';
 
 export interface DriveFileInfo {
   id: string;
@@ -29,6 +30,7 @@ export class GoogleDriveService {
   readonly connected = signal(false);
   readonly currentFile = signal<DriveFileInfo | null>(null);
   readonly loading = signal(false);
+  readonly tokenExpired = signal(false);
 
   /** Always configured since the Client ID is embedded */
   readonly configured = signal(true);
@@ -57,6 +59,12 @@ export class GoogleDriveService {
     if (savedToken) {
       this._accessToken = savedToken;
       this.connected.set(true);
+      // Validate the restored token in the background
+      this.validateToken().then(valid => {
+        if (!valid) {
+          this.handleTokenExpired();
+        }
+      });
     }
   }
 
@@ -66,6 +74,7 @@ export class GoogleDriveService {
   handleOAuthToken(token: string): void {
     this._accessToken = token;
     this.connected.set(true);
+    this.tokenExpired.set(false);
     localStorage.setItem(STORAGE_ACCESS_TOKEN_KEY, token);
   }
 
@@ -80,14 +89,54 @@ export class GoogleDriveService {
   }
 
   /**
+   * Validate whether the current access token is still valid by calling the tokeninfo endpoint.
+   */
+  async validateToken(): Promise<boolean> {
+    if (!this._accessToken) return false;
+    try {
+      const resp = await fetch(`${TOKEN_INFO_URL}?access_token=${encodeURIComponent(this._accessToken)}`);
+      return resp.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Ensures the token is valid before making an API call.
+   * Throws an error if the token has expired so the caller can trigger re-auth.
+   */
+  private async ensureValidToken(): Promise<void> {
+    const valid = await this.validateToken();
+    if (!valid) {
+      this.handleTokenExpired();
+      throw new Error('Access token expired. Please re-authenticate with Google.');
+    }
+  }
+
+  /**
+   * Handles an expired token by clearing credentials and setting the tokenExpired signal.
+   */
+  private handleTokenExpired(): void {
+    localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY);
+    this._accessToken = '';
+    this.connected.set(false);
+    this.tokenExpired.set(true);
+  }
+
+  /**
    * Read a file's content from Google Drive using the REST API
    */
   async readFile(fileId: string): Promise<string> {
     this.loading.set(true);
     try {
+      await this.ensureValidToken();
       const resp = await fetch(`${DRIVE_API_BASE}/files/${fileId}?alt=media`, {
         headers: { Authorization: `Bearer ${this._accessToken}` },
       });
+      if (resp.status === 401) {
+        this.handleTokenExpired();
+        throw new Error('Access token expired. Please re-authenticate with Google.');
+      }
       if (!resp.ok) throw new Error(`Drive API error: ${resp.status}`);
       return await resp.text();
     } finally {
@@ -101,6 +150,7 @@ export class GoogleDriveService {
   async saveFile(fileId: string, content: string, fileName?: string): Promise<void> {
     this.loading.set(true);
     try {
+      await this.ensureValidToken();
       const metadata: Record<string, string> = {};
       if (fileName) metadata['name'] = fileName;
 
@@ -123,6 +173,10 @@ export class GoogleDriveService {
           body,
         },
       );
+      if (resp.status === 401) {
+        this.handleTokenExpired();
+        throw new Error('Access token expired. Please re-authenticate with Google.');
+      }
       if (!resp.ok) throw new Error(`Drive API error: ${resp.status}`);
     } finally {
       this.loading.set(false);
@@ -135,6 +189,7 @@ export class GoogleDriveService {
   async createFile(content: string, fileName: string): Promise<DriveFileInfo> {
     this.loading.set(true);
     try {
+      await this.ensureValidToken();
       const metadata = { name: fileName, mimeType: 'application/json' };
 
       const boundary = '-------314159265358979323846';
@@ -156,6 +211,10 @@ export class GoogleDriveService {
           body,
         },
       );
+      if (resp.status === 401) {
+        this.handleTokenExpired();
+        throw new Error('Access token expired. Please re-authenticate with Google.');
+      }
       if (!resp.ok) throw new Error(`Drive API error: ${resp.status}`);
       const result = await resp.json();
       const fileInfo: DriveFileInfo = { id: result.id, name: fileName };
@@ -175,6 +234,7 @@ export class GoogleDriveService {
     this._accessToken = '';
     this.connected.set(false);
     this.currentFile.set(null);
+    this.tokenExpired.set(false);
   }
 
   disconnect(): void {
