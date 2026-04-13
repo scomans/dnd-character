@@ -11,11 +11,16 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
 import { TextareaModule } from 'primeng/textarea';
 import { ClickOutside } from 'ngxtension/click-outside';
+import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
+
+marked.use(markedAccordionExtension());
 
 @Component({
   selector: 'app-markdown-editor',
   standalone: true,
-  imports: [FormsModule, TextareaModule, ClickOutside],
+  imports: [FormsModule, TextareaModule, ClickOutside, Button, Tooltip],
   template: `
     @if (editing()) {
       <div (clickOutside)="editing.set(false)">
@@ -31,15 +36,29 @@ import { ClickOutside } from 'ngxtension/click-outside';
       </div>
     } @else {
       <div
-        class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        class="relative group min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
-        (click)="editing.set(true)"
       >
+        <p-button
+          class="absolute top-1 right-1"
+          [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+          [rounded]="true"
+          [text]="true"
+          size="small"
+          (onClick)="editing.set(true)"
+          [pTooltip]="'Bearbeiten'"
+          tooltipPosition="top"
+        />
         @if (value()) {
           <span [innerHTML]="renderedHtml()"></span>
         } @else {
-          <span class="text-gray-400 dark:text-gray-500 italic text-xs">Klicken zum Bearbeiten...</span>
+          <button
+            type="button"
+            class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer bg-transparent border-none p-0"
+            (click)="editing.set(true)"
+          >Klicken zum Bearbeiten...
+          </button>
         }
       </div>
     }
