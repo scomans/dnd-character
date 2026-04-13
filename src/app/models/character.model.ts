@@ -1,5 +1,12 @@
 import { TreeNode } from 'primeng/api';
 
+export interface NoteNode {
+  id: string;
+  label: string;
+  content: string;
+  children: NoteNode[];
+  expanded?: boolean;
+}
 
 export interface AbilityScore {
   base: number;
@@ -234,6 +241,9 @@ export interface DndCharacter {
   treasure: string;
   characterImage: string;
   organizationLogo: string;
+
+  // Notes
+  notes: NoteNode[];
 }
 
 export const ABILITY_LABELS: { [key: string]: string } = {
@@ -673,5 +683,6 @@ export function createDefaultCharacter(): DndCharacter {
     treasure: '',
     characterImage: '',
     organizationLogo: '',
+    notes: [],
   };
 }

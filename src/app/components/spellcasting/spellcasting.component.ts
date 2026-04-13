@@ -97,7 +97,11 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
           <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">{{ cs.getSpellSaveDC() || '--' }}</span>
           <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 mt-1">Zauber-SG</span>
         </div>
-        <div class="flex flex-col items-center justify-center">
+        <div
+          class="flex flex-col items-center justify-center"
+          pTooltip="Übungsbonus + Zauberattribut-Modifikator"
+          tooltipPosition="top"
+        >
           <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">
             @if (cs.getSpellAttackBonus()) {
               {{ cs.getSpellAttackBonus() >= 0 ? '+' : '' }}{{ cs.getSpellAttackBonus() }}

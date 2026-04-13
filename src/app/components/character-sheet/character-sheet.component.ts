@@ -15,6 +15,7 @@ import { SavingThrowsComponent } from '../saving-throws/saving-throws.component'
 import { SkillsComponent } from '../skills/skills.component';
 import { SpellcastingComponent } from '../spellcasting/spellcasting.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { NotesComponent } from '../notes/notes.component';
 
 
 @Component({
@@ -37,6 +38,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
     LifestyleJumpComponent,
     SpellcastingComponent,
     AppearanceBackstoryComponent,
+    NotesComponent,
   ],
   template: `
     <div class="max-w-7xl mx-auto p-4">
@@ -49,6 +51,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
           <p-tab value="1">Ausrüstung</p-tab>
           <p-tab value="2">Zauberwirken</p-tab>
           <p-tab value="3">Hintergrund</p-tab>
+          <p-tab value="4">Notizen</p-tab>
         </p-tablist>
         <p-tabpanels>
           <!-- Page 1: Main Character Sheet -->
@@ -108,6 +111,11 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
               <app-appearance-backstory />
               <app-personality />
             </div>
+          </p-tabpanel>
+
+          <!-- Page 5: Notes -->
+          <p-tabpanel value="4">
+            <app-notes />
           </p-tabpanel>
         </p-tabpanels>
       </p-tabs>
