@@ -47,82 +47,129 @@ import { ClickOutside } from 'ngxtension/click-outside';
         <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2">
           <!-- Klasse & Stufe -->
           <div class="flex flex-col">
-            <div class="flex gap-1">
-              <p-treeselect
-                [ngModel]="selectedClassNode"
-                (ngModelChange)="onClassNodeSelect($event)"
-                [options]="classTree"
-                placeholder="Klasse"
-                [style]="{ width: '100%', fontSize: '0.85rem' }"
-                appendTo="body"
-                [filter]="true"
-                filterPlaceholder="Suchen..."
-              />
-              <p-inputnumber
-                [ngModel]="cs.character().level"
-                (ngModelChange)="cs.update({ level: $event ?? 1 })"
-                [min]="1"
-                [max]="20"
-                [showButtons]="false"
-                [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.85rem' }"
-              />
-            </div>
+            @if (editingField() === 'class') {
+              <div class="flex gap-1" (clickOutside)="editingField.set(null)">
+                <p-treeselect
+                  [ngModel]="selectedClassNode"
+                  (ngModelChange)="onClassNodeSelect($event)"
+                  [options]="classTree"
+                  placeholder="Klasse"
+                  [style]="{ width: '100%', fontSize: '0.85rem' }"
+                  appendTo="body"
+                  [filter]="true"
+                  filterPlaceholder="Suchen..."
+                />
+                <p-inputnumber
+                  [ngModel]="cs.character().level"
+                  (ngModelChange)="cs.update({ level: $event ?? 1 })"
+                  [min]="1"
+                  [max]="20"
+                  [showButtons]="false"
+                  [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.85rem' }"
+                />
+              </div>
+            } @else {
+              <span
+                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+                (click)="editingField.set('class')"
+                pTooltip="Klicken zum Bearbeiten"
+                tooltipPosition="top"
+              >{{ cs.character().className || 'Klasse' }} {{ cs.character().level }}</span>
+            }
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Klasse & Stufe</label>
           </div>
           <!-- Hintergrund -->
           <div class="flex flex-col">
-            <p-autocomplete
-              [ngModel]="cs.character().background"
-              (ngModelChange)="cs.update({ background: $event })"
-              [suggestions]="filteredBackgrounds"
-              (completeMethod)="filterBackgrounds($event)"
-              [dropdown]="true"
-              [forceSelection]="false"
-              placeholder="Hintergrund"
-              [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
-              [style]="{ width: '100%' }"
-              appendTo="body"
-            />
+            @if (editingField() === 'background') {
+              <p-autocomplete
+                [ngModel]="cs.character().background"
+                (ngModelChange)="cs.update({ background: $event })"
+                [suggestions]="filteredBackgrounds"
+                (completeMethod)="filterBackgrounds($event)"
+                [dropdown]="true"
+                [forceSelection]="false"
+                placeholder="Hintergrund"
+                [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
+                [style]="{ width: '100%' }"
+                appendTo="body"
+                (clickOutside)="editingField.set(null)"
+              />
+            } @else {
+              <span
+                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+                (click)="editingField.set('background')"
+                pTooltip="Klicken zum Bearbeiten"
+                tooltipPosition="top"
+              >{{ cs.character().background || 'Hintergrund' }}</span>
+            }
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Hintergrund</label>
           </div>
           <!-- Volk -->
           <div class="flex flex-col">
-            <p-autocomplete
-              [ngModel]="cs.character().race"
-              (ngModelChange)="cs.update({ race: $event })"
-              [suggestions]="filteredRaces"
-              (completeMethod)="filterRaces($event)"
-              [dropdown]="true"
-              [forceSelection]="false"
-              placeholder="Volk"
-              [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
-              [style]="{ width: '100%' }"
-              appendTo="body"
-            />
+            @if (editingField() === 'race') {
+              <p-autocomplete
+                [ngModel]="cs.character().race"
+                (ngModelChange)="cs.update({ race: $event })"
+                [suggestions]="filteredRaces"
+                (completeMethod)="filterRaces($event)"
+                [dropdown]="true"
+                [forceSelection]="false"
+                placeholder="Volk"
+                [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
+                [style]="{ width: '100%' }"
+                appendTo="body"
+                (clickOutside)="editingField.set(null)"
+              />
+            } @else {
+              <span
+                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+                (click)="editingField.set('race')"
+                pTooltip="Klicken zum Bearbeiten"
+                tooltipPosition="top"
+              >{{ cs.character().race || 'Volk' }}</span>
+            }
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Volk</label>
           </div>
           <!-- Gesinnung -->
           <div class="flex flex-col">
-            <p-select
-              [ngModel]="cs.character().alignment"
-              (ngModelChange)="cs.update({ alignment: $event })"
-              [options]="alignments"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="--"
-              [style]="{ width: '100%', fontSize: '0.85rem' }"
-              appendTo="body"
-            />
+            @if (editingField() === 'alignment') {
+              <p-select
+                [ngModel]="cs.character().alignment"
+                (ngModelChange)="cs.update({ alignment: $event })"
+                [options]="alignments"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="--"
+                [style]="{ width: '100%', fontSize: '0.85rem' }"
+                appendTo="body"
+                (clickOutside)="editingField.set(null)"
+              />
+            } @else {
+              <span
+                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+                (click)="editingField.set('alignment')"
+                pTooltip="Klicken zum Bearbeiten"
+                tooltipPosition="top"
+              >{{ getAlignmentLabel() || 'Gesinnung' }}</span>
+            }
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Gesinnung</label>
           </div>
           <!-- EP -->
           <div class="flex flex-col" pTooltip="Erfahrungspunkte" tooltipPosition="top">
-            <p-inputnumber
-              [ngModel]="cs.character().experiencePoints"
-              (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
-              [useGrouping]="false"
-              [inputStyle]="{ width: '100%' }"
-            />
+            @if (editingField() === 'xp') {
+              <p-inputnumber
+                [ngModel]="cs.character().experiencePoints"
+                (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
+                [useGrouping]="false"
+                [inputStyle]="{ width: '100%' }"
+                (clickOutside)="editingField.set(null)"
+              />
+            } @else {
+              <span
+                class="text-sm text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5 truncate"
+                (click)="editingField.set('xp')"
+              >{{ cs.character().experiencePoints || '0' }}</span>
+            }
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">EP</label>
           </div>
         </div>
@@ -136,6 +183,7 @@ export class HeaderComponent {
   classTree = DND_CLASS_TREE;
   lifestyles = LIFESTYLES;
   editingName = signal(false);
+  editingField = signal<string | null>(null);
 
   // AutoComplete suggestions
   allRaces = DND_RACES;
@@ -146,16 +194,19 @@ export class HeaderComponent {
   selectedClassNode: any = null;
 
   constructor() {
-    // Initialize selectedClassNode from current className using the key
     const className = this.cs.character().className;
     if (className) {
       this.selectedClassNode = className;
     }
   }
 
+  getAlignmentLabel(): string {
+    const value = this.cs.character().alignment;
+    return this.alignments.find(a => a.value === value)?.label ?? value;
+  }
+
   onClassNodeSelect(nodeKey: any): void {
     this.selectedClassNode = nodeKey;
-    // PrimeNG TreeSelect with selectionMode="single" (default) returns the node key directly
     if (nodeKey && typeof nodeKey === 'string') {
       this.cs.update({ className: nodeKey });
     } else {

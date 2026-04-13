@@ -19,7 +19,21 @@ export interface Attack {
   damageDice: string;
   damageType: string;
   description: string;
+  mastery: string;
+  magicBonus: number;
 }
+
+export const WEAPON_MASTERIES: { value: string; label: string; description: string }[] = [
+  { value: '', label: 'Keine', description: '' },
+  { value: 'Cleave', label: 'Cleave', description: 'Bei einem Treffer: Ein weiteres Ziel in Reichweite erleidet den Fähigkeitsmodifikator als Schaden.' },
+  { value: 'Graze', label: 'Graze', description: 'Bei einem Fehlschlag: Das Ziel erleidet den Fähigkeitsmodifikator als Schaden.' },
+  { value: 'Nick', label: 'Nick', description: 'Angriff mit dieser Waffe als Teil der Bonusaktion, wenn eine leichte Waffe im Hauptangriff genutzt wurde.' },
+  { value: 'Push', label: 'Push', description: 'Bei einem Treffer: Das Ziel wird 3m zurückgeschoben (Große oder kleinere Kreatur).' },
+  { value: 'Sap', label: 'Sap', description: 'Bei einem Treffer: Das Ziel hat Nachteil auf seinen nächsten Angriffswurf vor Beginn deines nächsten Zuges.' },
+  { value: 'Slow', label: 'Slow', description: 'Bei einem Treffer: Die Geschwindigkeit des Ziels wird um 3m reduziert bis zum Beginn deines nächsten Zuges.' },
+  { value: 'Topple', label: 'Topple', description: 'Bei einem Treffer: Das Ziel muss einen Konstitutions-Rettungswurf bestehen oder wird liegend.' },
+  { value: 'Vex', label: 'Vex', description: 'Bei einem Treffer: Du hast Vorteil auf deinen nächsten Angriffswurf gegen das Ziel vor dem Ende deines nächsten Zuges.' },
+];
 
 export interface SpellSlot {
   max: number;

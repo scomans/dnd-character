@@ -16,7 +16,7 @@ import { ABILITY_SHORT_LABELS } from '../../models/character.model';
     <p-fieldset styleClass="relative">
       <ng-template pTemplate="header">
         <div class="flex items-center gap-2 w-full">
-          <span>Rettungswürfe</span>
+          <span class="font-bold">Rettungswürfe</span>
           <p-button
             [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
             [rounded]="true"

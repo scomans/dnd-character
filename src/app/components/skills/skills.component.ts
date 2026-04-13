@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
 import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS } from '../../models/character.model';
@@ -10,9 +11,23 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS }
 @Component({
   selector: 'app-skills',
   standalone: true,
-  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule, TooltipModule],
+  imports: [CommonModule, FormsModule, CheckboxModule, ButtonModule, FieldsetModule, TooltipModule],
   template: `
-    <p-fieldset legend="Fertigkeiten">
+    <p-fieldset styleClass="relative">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-2 w-full">
+          <span class="font-bold">Fertigkeiten</span>
+          <p-button
+            [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+            [rounded]="true"
+            [text]="true"
+            size="small"
+            (onClick)="editing.set(!editing())"
+            [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
+            tooltipPosition="top"
+          />
+        </div>
+      </ng-template>
       <div class="space-y-0.5">
         @for (skill of skillKeys; track skill) {
           <div class="flex items-center gap-1 text-sm">
@@ -21,11 +36,13 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS }
               (ngModelChange)="toggleExpertise(skill, $event)"
               [binary]="true"
               styleClass="scale-75"
+              [disabled]="!editing()"
             />
             <p-checkbox
               [ngModel]="isProficient(skill)"
               (ngModelChange)="toggleProficiency(skill, $event)"
               [binary]="true"
+              [disabled]="!editing()"
             />
             <span class="font-bold w-8 text-right text-slate-700">
               {{ cs.getSkillModifier(skill) >= 0 ? '+' : '' }}{{ cs.getSkillModifier(skill) }}
@@ -48,6 +65,7 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS }
 })
 export class SkillsComponent {
   cs = inject(CharacterService);
+  editing = signal(false);
 
   skillKeys = Object.keys(SKILL_LABELS).sort((a, b) =>
     SKILL_LABELS[a].localeCompare(SKILL_LABELS[b], 'de')

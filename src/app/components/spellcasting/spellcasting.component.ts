@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
@@ -11,40 +11,61 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.model';
+import { ClickOutside } from 'ngxtension/click-outside';
+import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, MarkdownEditorComponent],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, MarkdownEditorComponent, ClickOutside],
   template: `
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
       <div class="grid grid-cols-4 gap-2">
         <div class="flex flex-col items-center">
-          <p-select
-            [ngModel]="cs.character().spellcastingClass"
-            (ngModelChange)="onSpellcastingClassChange($event)"
-            [options]="spellcastingClasses"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="--"
-            [style]="{ width: '100%' }"
-            appendTo="body"
-          />
+          @if (editingField() === 'spellClass') {
+            <p-select
+              [ngModel]="cs.character().spellcastingClass"
+              (ngModelChange)="onSpellcastingClassChange($event)"
+              [options]="spellcastingClasses"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="--"
+              [style]="{ width: '100%' }"
+              appendTo="body"
+              (clickOutside)="editingField.set(null)"
+            />
+          } @else {
+            <span
+              class="text-lg font-bold text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5"
+              (click)="editingField.set('spellClass')"
+              pTooltip="Klicken zum Bearbeiten"
+              tooltipPosition="top"
+            >{{ getSpellcastingClassLabel() || '--' }}</span>
+          }
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberwirkende Klasse</span>
         </div>
         <div class="flex flex-col items-center">
-          <p-select
-            [ngModel]="cs.character().spellcastingAbility"
-            (ngModelChange)="cs.update({ spellcastingAbility: $event })"
-            [options]="abilityOptions"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="--"
-            [style]="{ width: '100%' }"
-            appendTo="body"
-          />
+          @if (editingField() === 'spellAbility') {
+            <p-select
+              [ngModel]="cs.character().spellcastingAbility"
+              (ngModelChange)="cs.update({ spellcastingAbility: $event })"
+              [options]="abilityOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="--"
+              [style]="{ width: '100%' }"
+              appendTo="body"
+              (clickOutside)="editingField.set(null)"
+            />
+          } @else {
+            <span
+              class="text-lg font-bold text-slate-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-300 rounded px-1 py-0.5"
+              (click)="editingField.set('spellAbility')"
+              pTooltip="Klicken zum Bearbeiten"
+              tooltipPosition="top"
+            >{{ getAbilityLabel(cs.character().spellcastingAbility) || '--' }}</span>
+          }
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberattribut</span>
         </div>
         <div class="flex flex-col items-center"
@@ -79,7 +100,7 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.m
                 (ngModelChange)="updateSlotMax(level, $event)"
                 [showButtons]="false"
                 [min]="0"
-                [inputStyle]="{ width: '1.8rem', textAlign: 'center', fontSize: '0.65rem' }"
+                [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.7rem' }"
                 pTooltip="Max. Plätze"
                 tooltipPosition="top"
               />
@@ -172,6 +193,7 @@ export class SpellcastingComponent {
   spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   newSpellLevel = 0;
   activeSpell: Spell | null = null;
+  editingField = signal<string | null>(null);
 
   abilityOptions = [
     { label: 'Keine', value: '' },
@@ -187,6 +209,15 @@ export class SpellcastingComponent {
     { label: 'Zaubertrick (Stufe 0)', value: 0 },
     ...Array.from({ length: 9 }, (_, i) => ({ label: `Stufe ${i + 1}`, value: i + 1 })),
   ];
+
+  getSpellcastingClassLabel(): string {
+    const value = this.cs.character().spellcastingClass;
+    return this.spellcastingClasses.find(c => c.value === value)?.label ?? value;
+  }
+
+  getAbilityLabel(ability: string): string {
+    return ABILITY_LABELS[ability] ?? ability;
+  }
 
   get groupedSpellLevels() {
     const spells = this.cs.character().spells;
@@ -220,16 +251,13 @@ export class SpellcastingComponent {
     this.cs.update({ spellSlots: slots });
   }
 
-  /** Returns an array [0, 1, ..., max-1] for rendering slot circles */
   getSlotRange(level: number): number[] {
     const max = this.getSlotMax(level);
     return Array.from({ length: max }, (_, i) => i);
   }
 
-  /** Toggle a slot circle: clicking circle at index i sets used to i+1 if not yet used, or i if already used */
   toggleSlotUsed(level: number, index: number): void {
     const currentUsed = this.getSlotUsed(level);
-    // If clicking the last used circle, un-use it; otherwise set used to index+1
     const newUsed = (index < currentUsed) ? index : index + 1;
     this.updateSlotUsed(level, newUsed);
   }
@@ -273,7 +301,6 @@ export class SpellcastingComponent {
     const char = this.cs.character();
     const newSpells = [...char.spells.map(s => ({ ...s }))];
     this.cs.update({ spells: newSpells });
-    // Update activeSpell reference so it points to the new copy
     if (this.activeSpell) {
       const idx = char.spells.indexOf(this.activeSpell);
       if (idx >= 0 && idx < newSpells.length) {
