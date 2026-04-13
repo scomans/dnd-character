@@ -43,13 +43,14 @@ marked.use(markedAccordionExtension());
           class="absolute top-0 right-0 p-0.5 opacity-0 group-hover:opacity-70 hover:!opacity-100 text-gray-400 dark:text-gray-500 transition-opacity cursor-pointer"
           (click)="editing.set(true)"
           title="Bearbeiten"
+          aria-label="Bearbeiten"
         >
           <i class="pi pi-pencil text-xs"></i>
         </button>
         @if (value()) {
           <span [innerHTML]="renderedHtml()"></span>
         } @else {
-          <span class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer" (click)="editing.set(true)">Klicken zum Bearbeiten...</span>
+          <button type="button" class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer bg-transparent border-none p-0" (click)="editing.set(true)">Klicken zum Bearbeiten...</button>
         }
       </div>
     }
