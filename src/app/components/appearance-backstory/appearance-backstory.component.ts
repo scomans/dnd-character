@@ -81,6 +81,14 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
               <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" id="phys-hair" />
               <label for="phys-hair">Haarfarbe</label>
             </p-iftalabel>
+            <p-iftalabel>
+              <input pInputText [ngModel]="cs.character().gender" (ngModelChange)="cs.update({ gender: $event })" class="w-full text-xs" id="phys-gender" />
+              <label for="phys-gender">Geschlecht</label>
+            </p-iftalabel>
+            <p-iftalabel class="col-span-2">
+              <input pInputText [ngModel]="cs.character().faith" (ngModelChange)="cs.update({ faith: $event })" class="w-full text-xs" id="phys-faith" />
+              <label for="phys-faith">Glaube / Gottheit</label>
+            </p-iftalabel>
             <p-iftalabel class="col-span-3">
               <p-select
                 [ngModel]="cs.character().sizeCategory"
