@@ -36,7 +36,10 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
               <th class="p-1" pTooltip="Waffenmeisterschaft" tooltipPosition="top">Meist.</th>
               <th class="p-1" pTooltip="Magischer Bonus" tooltipPosition="top">Mag</th>
               <th class="p-1 text-right">
-                <p-button icon="pi pi-plus" [rounded]="true" [text]="true" size="small" (onClick)="addAttack()" pTooltip="Angriff hinzufügen" tooltipPosition="top" />
+                <p-button
+                  icon="pi pi-plus" [rounded]="true" [text]="true" size="small" (onClick)="addAttack()" pTooltip="Angriff hinzufügen"
+                  tooltipPosition="top"
+                />
               </th>
             </tr>
           </thead>
@@ -44,7 +47,10 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
             @for (attack of cs.character().attacks; track $index; let i = $index) {
               <tr class="border-b border-gray-100">
                 <td class="p-1">
-                  <input pInputText [(ngModel)]="attack.name" (ngModelChange)="updateAttacks()" class="w-full text-xs" style="min-width:80px" />
+                  <input
+                    pInputText [(ngModel)]="attack.name" (ngModelChange)="updateAttacks()" class="w-full text-xs" style="min-width:80px"
+                    pSize="small"
+                  />
                 </td>
                 <td class="p-1 text-center">
                   <p-checkbox [(ngModel)]="attack.proficient" (ngModelChange)="updateAttacks()" [binary]="true" />
@@ -56,8 +62,10 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                     [options]="abilityOptions"
                     optionLabel="label"
                     optionValue="value"
-                    [style]="{ width: '4.5rem', fontSize: '0.7rem' }"
+                    [style]="{ width: '4rem', fontSize: '0.7rem' }"
                     appendTo="body"
+                    size="small"
+                    class="attack-input"
                   >
                     <ng-template #selectedItem let-selectedOption>
                       <span>{{ getShortLabel(selectedOption?.value) }}</span>
@@ -69,27 +77,29 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                 </td>
                 <td class="p-1">
                   <p-inputgroup>
-                    <p-inputnumber
+                    <p-input-number
                       [ngModel]="parseRange(attack.range)"
                       (ngModelChange)="updateAttackRange(i, $event)"
                       [showButtons]="false"
                       [min]="0"
                       [minFractionDigits]="0"
                       [maxFractionDigits]="1"
-                      [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.7rem' }"
+                      [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.7rem' }"
+                      suffix="m"
+                      size="small"
+                      class="attack-input"
                     />
-                    <p-inputgroup-addon class="text-[0.6rem]">m</p-inputgroup-addon>
                   </p-inputgroup>
                 </td>
                 <td class="p-1">
-                  <p-inputMask
+                  <input
+                    pInputText
                     [(ngModel)]="attack.damageDice"
                     (ngModelChange)="updateAttacks()"
-                    mask="99w99"
                     placeholder="1W8"
-                    [autoClear]="false"
-                    slotChar=" "
-                    [style]="{ width: '3.5rem', textAlign: 'center', fontSize: '0.7rem' }"
+                    class="w-full text-xs attack-input"
+                    [style]="{ width: '4rem', textAlign: 'center', fontSize: '0.7rem' }"
+                    pSize="small"
                   />
                 </td>
                 <td class="p-1 text-center font-bold text-slate-700">
@@ -107,6 +117,8 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                     filterBy="label"
                     placeholder="Typ"
                     appendTo="body"
+                    size="small"
+                    class="attack-input"
                   >
                     <ng-template #selectedItem let-selectedOption>
                       <span>{{ selectedOption?.value }}</span>
@@ -120,9 +132,11 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                     [options]="masteries"
                     optionLabel="label"
                     optionValue="value"
-                    [style]="{ width: '4.5rem', fontSize: '0.7rem' }"
+                    [style]="{ width: '5rem', fontSize: '0.7rem' }"
                     placeholder="--"
                     appendTo="body"
+                    size="small"
+                    class="attack-input"
                   >
                     <ng-template #selectedItem let-selectedOption>
                       <span>{{ selectedOption?.value || '--' }}</span>
@@ -133,15 +147,17 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                   </p-select>
                 </td>
                 <td class="p-1">
-                  <p-inputnumber
+                  <p-input-number
                     [(ngModel)]="attack.magicBonus"
                     (ngModelChange)="updateAttacks()"
                     [showButtons]="false"
                     [min]="0"
                     [max]="5"
-                    [inputStyle]="{ width: '1.5rem', textAlign: 'center', fontSize: '0.7rem' }"
+                    [inputStyle]="{ width: '2rem', textAlign: 'center', fontSize: '0.7rem' }"
                     pTooltip="Magischer Bonus (z.B. +1 Waffe)"
                     tooltipPosition="top"
+                    size="small"
+                    class="attack-input"
                   />
                 </td>
                 <td class="p-1">
@@ -164,6 +180,13 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
       </div>
     </p-fieldset>
   `,
+  styles: `
+  .attack-input {
+    --p-select-sm-padding-x: 0.5rem 0;
+    --p-select-dropdown-width: 1.5rem;
+    --p-inputtext-sm-padding-x: 0.25rem;
+  }
+  `
 })
 export class AttacksComponent {
   cs = inject(CharacterService);

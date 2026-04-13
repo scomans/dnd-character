@@ -176,7 +176,7 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
     <p-popover #spellPopover [style]="{ width: '400px' }">
       @if (activeSpell) {
         <div class="space-y-2">
-          <span class="text-sm font-bold">{{ activeSpell.name || 'Zauber' }} — Beschreibung</span>
+          <span class="text-sm font-bold">{{ activeSpell.name || 'Zauber' }} - Beschreibung</span>
           <app-markdown-editor
             [value]="activeSpell.description"
             (valueChange)="activeSpell.description = $event; updateSpells()"

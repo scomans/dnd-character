@@ -508,7 +508,7 @@ export const DND_CLASS_TREE: ClassTreeNode[] = [
 ];
 
 export const LIFESTYLES: { value: string; label: string; cost: string }[] = [
-  { value: 'elend', label: 'Elend', cost: '—' },
+  { value: 'elend', label: 'Elend', cost: '-' },
   { value: 'armselig', label: 'Armselig', cost: '1 SM' },
   { value: 'arm', label: 'Arm', cost: '2 SM' },
   { value: 'bescheiden', label: 'Bescheiden', cost: '1 GM' },
@@ -518,7 +518,8 @@ export const LIFESTYLES: { value: string; label: string; cost: string }[] = [
 ];
 
 /** Classes (and subclasses) that can cast spells, with their default spellcasting ability */
-export const SPELLCASTING_CLASSES: { value: string; label: string; ability: string }[] = [
+export const SPELLCASTING_CLASSES: { value: string; label: string; ability: string|null }[] = [
+  { value: '-', label: '-', ability: null },
   { value: 'Barde', label: 'Barde', ability: 'cha' },
   { value: 'Druide', label: 'Druide', ability: 'wis' },
   { value: 'Hexenmeister', label: 'Hexenmeister', ability: 'cha' },

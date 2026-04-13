@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { InputText } from 'primeng/inputtext';
 import { CharacterService } from '../../services/character.service';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -14,7 +15,19 @@ import { ClickOutside } from 'ngxtension/click-outside';
 @Component({
   selector: 'app-combat',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputNumberModule, InputGroupModule, InputGroupAddonModule, CheckboxModule, InputMaskModule, FieldsetModule, TooltipModule, ClickOutside],
+  imports: [
+    CommonModule,
+    FormsModule,
+    InputNumberModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    CheckboxModule,
+    InputMaskModule,
+    FieldsetModule,
+    TooltipModule,
+    ClickOutside,
+    InputText,
+  ],
   template: `
     <div class="space-y-3">
       <!-- AC / Initiative / Speed Row -->
@@ -58,15 +71,15 @@ import { ClickOutside } from 'ngxtension/click-outside';
         <p-fieldset legend="Bewegungsrate" styleClass="text-center">
           <div class="flex flex-col items-center">
             @if (editingSpeed()) {
-              <p-inputgroup styleClass="justify-center" (clickOutside)="editingSpeed.set(false)">
-                <p-inputnumber
+              <p-input-group class="justify-center" (clickOutside)="editingSpeed.set(false)">
+                <p-input-number
                   [ngModel]="cs.character().speed"
                   (ngModelChange)="cs.update({ speed: $event ?? 30 })"
                   [showButtons]="false"
                   [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+                  suffix=" m"
                 />
-                <p-inputgroup-addon>m</p-inputgroup-addon>
-              </p-inputgroup>
+              </p-input-group>
             } @else {
               <span
                 class="text-2xl font-bold text-slate-700 cursor-pointer hover:text-slate-500"
@@ -134,28 +147,14 @@ import { ClickOutside } from 'ngxtension/click-outside';
       <div class="grid grid-cols-2 gap-2">
         <p-fieldset legend="Trefferwürfel">
           <div class="flex items-center justify-center gap-2">
-            <p-inputMask
+            <input
+              pInputText
               [ngModel]="cs.character().hitDiceTotal"
               (ngModelChange)="cs.update({ hitDiceTotal: $event })"
-              mask="99w99"
-              placeholder="1W10"
-              [autoClear]="false"
-              slotChar=" "
+              placeholder="1Wx"
+              class="w-full text-xs attack-input"
               [style]="{ width: '5rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold' }"
             />
-            <div class="flex flex-col items-center text-[0.6rem] text-gray-500">
-              <span>Verbraucht</span>
-              <p-inputnumber
-                [ngModel]="cs.character().hitDiceUsed"
-                (ngModelChange)="cs.update({ hitDiceUsed: $event ?? 0 })"
-                [showButtons]="true"
-                buttonLayout="horizontal"
-                incrementButtonIcon="pi pi-plus"
-                decrementButtonIcon="pi pi-minus"
-                [min]="0"
-                [inputStyle]="{ width: '2rem', textAlign: 'center', fontSize: '0.75rem' }"
-              />
-            </div>
           </div>
         </p-fieldset>
         <p-fieldset legend="Rettungswürfe gegen Tod">

@@ -10,7 +10,7 @@ export interface DriveFileInfo {
 
 /**
  * Public OAuth Client ID for the Google Drive Picker.
- * This is NOT a secret — it is restricted by authorized JavaScript origins
+ * This is NOT a secret - it is restricted by authorized JavaScript origins
  * in the Google Cloud Console and is safe to embed in client-side code.
  */
 const CLIENT_ID = '736326091345-7if9d7vta2l4ove33j4o359sjppavgi2.apps.googleusercontent.com';

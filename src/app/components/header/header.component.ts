@@ -49,7 +49,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
           <!-- Klasse -->
           <p-iftalabel>
             @if (editingField() === 'class') {
-              <p-treeselect
+              <p-tree-select
                 [ngModel]="selectedClassNode"
                 (ngModelChange)="onClassNodeSelect($event)"
                 [options]="classTree"
@@ -74,7 +74,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
           </p-iftalabel>
           <!-- Stufe -->
           <p-iftalabel>
-            <p-inputnumber
+            <p-input-number
               [ngModel]="cs.character().level"
               (ngModelChange)="cs.update({ level: $event ?? 1 })"
               [min]="1"
@@ -88,7 +88,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
           <!-- Hintergrund -->
           <p-iftalabel>
             @if (editingField() === 'background') {
-              <p-autocomplete
+              <p-auto-complete
                 [ngModel]="cs.character().background"
                 (ngModelChange)="cs.update({ background: $event })"
                 [suggestions]="filteredBackgrounds"
@@ -117,7 +117,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
           <!-- Volk -->
           <p-iftalabel>
             @if (editingField() === 'race') {
-              <p-autocomplete
+              <p-auto-complete
                 [ngModel]="cs.character().race"
                 (ngModelChange)="cs.update({ race: $event })"
                 [suggestions]="filteredRaces"
@@ -171,7 +171,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
           </p-iftalabel>
           <!-- EP -->
           <p-iftalabel>
-            <p-inputnumber
+            <p-input-number
               [ngModel]="cs.character().experiencePoints"
               (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
               [useGrouping]="false"
@@ -189,7 +189,6 @@ export class HeaderComponent {
   cs = inject(CharacterService);
   alignments = ALIGNMENTS;
   classTree = DND_CLASS_TREE;
-  lifestyles = LIFESTYLES;
   editingName = signal(false);
   editingField = signal<string | null>(null);
 
@@ -214,9 +213,10 @@ export class HeaderComponent {
   }
 
   onClassNodeSelect(nodeKey: any): void {
+    console.log(nodeKey)
     this.selectedClassNode = nodeKey;
-    if (nodeKey && typeof nodeKey === 'string') {
-      this.cs.update({ className: nodeKey });
+    if (nodeKey?.data && typeof nodeKey.data === 'string') {
+      this.cs.update({ className: nodeKey.data });
     } else {
       this.cs.update({ className: '' });
     }

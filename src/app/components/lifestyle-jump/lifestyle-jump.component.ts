@@ -84,7 +84,7 @@ export class LifestyleJumpComponent {
   getLifestyleCost(): string {
     const lifestyle = this.cs.character().lifestyle;
     const found = this.lifestyles.find(l => l.value === lifestyle);
-    return found?.cost ?? '—';
+    return found?.cost ?? '-';
   }
 
   getHighJumpRunning(): number {

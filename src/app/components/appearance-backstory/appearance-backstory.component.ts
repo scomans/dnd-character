@@ -35,15 +35,15 @@ import { ImagePickerComponent } from '../image-picker/image-picker.component';
             </p-iftalabel>
             <p-iftalabel>
               <input pInputText [ngModel]="cs.character().eyes" (ngModelChange)="cs.update({ eyes: $event })" class="w-full text-xs" id="phys-eyes" />
-              <label for="phys-eyes">Augen</label>
+              <label for="phys-eyes">Augenfarbe</label>
             </p-iftalabel>
             <p-iftalabel>
               <input pInputText [ngModel]="cs.character().skin" (ngModelChange)="cs.update({ skin: $event })" class="w-full text-xs" id="phys-skin" />
-              <label for="phys-skin">Haut</label>
+              <label for="phys-skin">Hautfarbe</label>
             </p-iftalabel>
             <p-iftalabel>
               <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" id="phys-hair" />
-              <label for="phys-hair">Haar</label>
+              <label for="phys-hair">Haarfarbe</label>
             </p-iftalabel>
           </div>
         </p-fieldset>
