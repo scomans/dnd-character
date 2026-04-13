@@ -174,7 +174,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
             <span class="text-xs font-bold text-gray-600 mb-1 block">
               {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
             </span>
-            <p-accordion [multiple]="true" [value]="expandedPanels()">
+            <p-accordion [multiple]="true" [value]="expandedPanels()" (valueChange)="onAccordionChange($event)">
               <div
                 cdkDropList
                 [cdkDropListData]="levelGroup.level"
@@ -315,6 +315,16 @@ export class SpellcastingComponent {
     this.expandedPanels.set([]);
   }
 
+  onAccordionChange(value: string | number | string[] | number[] | null | undefined): void {
+    if (Array.isArray(value)) {
+      this.expandedPanels.set(value.map(v => String(v)));
+    } else if (value != null) {
+      this.expandedPanels.set([String(value)]);
+    } else {
+      this.expandedPanels.set([]);
+    }
+  }
+
   getSlotMax(level: number): number {
     return this.cs.character().spellSlots[level]?.max ?? 0;
   }
@@ -395,13 +405,8 @@ export class SpellcastingComponent {
   }
 
   updateSpellPreparedByRef(spell: Spell, prepared: boolean): void {
-    const char = this.cs.character();
-    const idx = char.spells.indexOf(spell);
-    if (idx >= 0) {
-      const spells = [...char.spells.map(s => ({ ...s }))];
-      spells[idx].prepared = prepared;
-      this.cs.update({ spells });
-    }
+    spell.prepared = prepared;
+    this.updateSpells();
   }
 
   dropSpell(event: CdkDragDrop<number>, level: number): void {
