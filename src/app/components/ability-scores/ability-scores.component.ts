@@ -11,7 +11,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
 @Component({
   selector: 'app-ability-scores',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputNumberModule, CheckboxModule, TooltipModule, ClickOutside],
+  imports: [FormsModule, InputNumberModule, CheckboxModule, TooltipModule, ClickOutside],
   template: `
     <div class="space-y-2">
       <!-- Inspiration -->
@@ -21,19 +21,21 @@ import { ClickOutside } from 'ngxtension/click-outside';
           (ngModelChange)="cs.update({ inspiration: $event })"
           [binary]="true"
         />
-        <span class="text-xs font-bold uppercase">Inspiration</span>
+        <span class="text-xs font-bold">Inspiration</span>
       </div>
 
       <!-- Proficiency Bonus (click-to-edit) -->
-      <div class="flex items-center gap-2 bg-white border border-slate-700 rounded-lg p-2 overflow-hidden" pTooltip="Übungsbonus" tooltipPosition="right">
+      <div
+        class="flex items-center gap-2 bg-white border border-slate-700 rounded-lg p-2 overflow-hidden" pTooltip="Übungsbonus" tooltipPosition="right"
+      >
         @if (editingProficiency()) {
-          <p-inputnumber
+          <p-input-number
             [ngModel]="cs.character().proficiencyBonusOverride ?? cs.getProficiencyBonus()"
             (ngModelChange)="updateProficiency($event)"
             [min]="1"
             [max]="10"
             [showButtons]="false"
-            [inputStyle]="{ width: '2rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
+            [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
             (clickOutside)="editingProficiency.set(false)"
           />
         } @else {
@@ -42,13 +44,18 @@ import { ClickOutside } from 'ngxtension/click-outside';
             (click)="editingProficiency.set(true)"
           >+{{ cs.getProficiencyBonus() }}</span>
         }
-        <span class="text-xs font-bold uppercase" pTooltip="Übungsbonus" tooltipPosition="right">ÜB</span>
+        <span class="text-xs font-bold">
+          @if (editingProficiency()) {
+            Übungsb.
+          } @else {
+            Übungsbonus
+          }</span>
       </div>
 
       <!-- Ability Scores (click-to-edit) -->
       @for (ability of abilities; track ability) {
         <div class="bg-white border-2 border-slate-700 rounded-lg p-2 flex flex-col items-center">
-          <span class="text-[0.6rem] font-bold uppercase text-gray-600">{{ getLabel(ability) }}</span>
+          <span class="text-[0.6rem] font-bold text-gray-600">{{ getLabel(ability) }}</span>
           <span class="text-3xl font-bold text-slate-700">
             {{ cs.getAbilityModifier(ability) >= 0 ? '+' : '' }}{{ cs.getAbilityModifier(ability) }}
           </span>

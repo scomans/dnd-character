@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-image-picker',
   standalone: true,
-  imports: [CommonModule, ButtonModule],
+  imports: [ButtonModule],
   template: `
     <div class="flex flex-col items-center gap-2">
       @if (imageData()) {

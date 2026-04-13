@@ -1,18 +1,19 @@
+import { DecimalPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CharacterService } from '../../services/character.service';
-import { SelectModule } from 'primeng/select';
-import { FieldsetModule } from 'primeng/fieldset';
-import { TooltipModule } from 'primeng/tooltip';
+import { Fieldset } from 'primeng/fieldset';
+import { Select } from 'primeng/select';
+import { Tooltip } from 'primeng/tooltip';
 import { LIFESTYLES } from '../../models/character.model';
+import { CharacterService } from '../../services/character.service';
+
 
 @Component({
   selector: 'app-lifestyle-jump',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectModule, FieldsetModule, TooltipModule],
+  imports: [DecimalPipe, FormsModule, Fieldset, Select, Tooltip],
   template: `
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-1 gap-2">
       <p-fieldset legend="Lebensstil">
         <div class="flex items-center gap-2">
           <p-select
@@ -79,7 +80,7 @@ export class LifestyleJumpComponent {
   cs = inject(CharacterService);
   lifestyles = LIFESTYLES;
 
-  private readonly FT_TO_M = 0.3048;
+  private readonly FT_TO_M = 0.3;
 
   getLifestyleCost(): string {
     const lifestyle = this.cs.character().lifestyle;

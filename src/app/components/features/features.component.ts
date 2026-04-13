@@ -7,7 +7,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 @Component({
   selector: 'app-features',
   standalone: true,
-  imports: [CommonModule, FieldsetModule, MarkdownEditorComponent],
+  imports: [FieldsetModule, MarkdownEditorComponent],
   template: `
     <div class="space-y-3">
       <p-fieldset legend="Klassenmerkmale">

@@ -8,7 +8,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 @Component({
   selector: 'app-personality',
   standalone: true,
-  imports: [CommonModule, FormsModule, FieldsetModule, MarkdownEditorComponent],
+  imports: [FormsModule, FieldsetModule, MarkdownEditorComponent],
   template: `
     <div class="space-y-2">
       <p-fieldset legend="Persönlichkeitsmerkmale">

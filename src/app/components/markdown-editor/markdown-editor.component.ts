@@ -15,7 +15,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
 @Component({
   selector: 'app-markdown-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, TextareaModule, ClickOutside],
+  imports: [FormsModule, TextareaModule, ClickOutside],
   template: `
     @if (editing()) {
       <div (clickOutside)="editing.set(false)">

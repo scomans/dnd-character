@@ -1,6 +1,7 @@
 import { Component, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Divider } from 'primeng/divider';
 import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -17,7 +18,20 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
 @Component({
   selector: 'app-spellcasting',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, IftaLabelModule, MarkdownEditorComponent],
+  imports: [
+    FormsModule,
+    InputTextModule,
+    InputNumberModule,
+    CheckboxModule,
+    ButtonModule,
+    SelectModule,
+    FieldsetModule,
+    PopoverModule,
+    TooltipModule,
+    IftaLabelModule,
+    MarkdownEditorComponent,
+    Divider,
+  ],
   template: `
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
@@ -72,12 +86,13 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
           }
           <label for="spell-ability">Zauberattribut</label>
         </p-iftalabel>
-        <div class="flex flex-col items-center justify-center"
+        <div
+          class="flex flex-col items-center justify-center"
           pTooltip="8 + Übungsbonus + Zauberattribut-Modifikator"
           tooltipPosition="top"
         >
           <span class="text-2xl font-bold text-slate-700">{{ cs.getSpellSaveDC() || '--' }}</span>
-          <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauber-SG</span>
+          <span class="text-[0.6rem] font-bold text-gray-600 mt-1">Zauber-SG</span>
         </div>
         <div class="flex flex-col items-center justify-center">
           <span class="text-2xl font-bold text-slate-700">
@@ -87,10 +102,11 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
               --
             }
           </span>
-          <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauber-Angriff</span>
+          <span class="text-[0.6rem] font-bold text-gray-600 mt-1">Zauber-Angriff</span>
         </div>
       </div>
 
+      <p-divider />
       <!-- Spell Slots -->
       <div>
         <span class="text-xs font-bold text-gray-600">Zauberplätze</span>
@@ -98,7 +114,7 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
           @for (level of spellLevels; track level) {
             <div class="flex flex-col items-center text-xs">
               <span class="font-bold text-slate-700 mb-0.5">{{ level }}</span>
-              <p-inputnumber
+              <p-input-number
                 [ngModel]="getSlotMax(level)"
                 (ngModelChange)="updateSlotMax(level, $event)"
                 [showButtons]="false"
@@ -156,7 +172,8 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
             </div>
           }
         </div>
-        <div class="flex gap-2 mt-2">
+        <p-divider />
+        <div class="flex gap-2 mt-8 justify-center">
           <p-select
             [(ngModel)]="newSpellLevel"
             [options]="spellLevelOptions"
@@ -165,6 +182,7 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
             placeholder="Stufe"
             [style]="{ width: '14rem', fontSize: '0.75rem' }"
             appendTo="body"
+            size="small"
           />
           <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
         </div>

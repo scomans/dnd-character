@@ -1,19 +1,20 @@
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DecimalPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CharacterService } from '../../services/character.service';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Equipment } from '../../models/character.model';
+import { CharacterService } from '../../services/character.service';
+
 
 @Component({
   selector: 'app-equipment',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, ButtonModule, FieldsetModule, TooltipModule, DragDropModule],
+  imports: [FormsModule, InputTextModule, InputNumberModule, ButtonModule, FieldsetModule, TooltipModule, DragDropModule, DecimalPipe],
   template: `
     <div class="space-y-3">
       <p-fieldset legend="Ausrüstung">
@@ -25,14 +26,14 @@ import { Equipment } from '../../models/character.model';
                 <div cdkDrag class="flex items-center gap-1 text-xs">
                   <i class="pi pi-bars text-gray-400 cursor-move mr-1" cdkDragHandle></i>
                   <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
-                  <p-inputnumber
+                  <p-input-number
                     [(ngModel)]="item.quantity"
                     (ngModelChange)="updateEquipment()"
                     [showButtons]="false"
                     [min]="0"
                     [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.75rem' }"
                   />
-                  <p-inputnumber
+                  <p-input-number
                     [(ngModel)]="item.weight"
                     (ngModelChange)="updateEquipment()"
                     [showButtons]="false"
@@ -55,11 +56,13 @@ import { Equipment } from '../../models/character.model';
 
           <!-- Currency (right, vertical) - reversed order: highest value first -->
           <div class="shrink-0 flex flex-col gap-1 border-l border-gray-200 pl-4">
-            <span class="text-[0.65rem] font-bold uppercase text-gray-600 text-center mb-1">Münzen</span>
+            <span class="text-[0.65rem] font-bold text-gray-600 text-center mb-1">Münzen</span>
             @for (coin of coins; track coin.key) {
               <div class="flex items-center gap-1">
-                <span class="text-[0.6rem] font-bold uppercase text-gray-600 w-6 text-right" [pTooltip]="coin.tooltip" tooltipPosition="left">{{ coin.label }}</span>
-                <p-inputnumber
+                <span
+                  class="text-[0.6rem] font-bold text-gray-600 w-6 text-right" [pTooltip]="coin.tooltip" tooltipPosition="left"
+                >{{ coin.label }}</span>
+                <p-input-number
                   [ngModel]="getCurrency(coin.key)"
                   (ngModelChange)="updateCurrency(coin.key, $event)"
                   [showButtons]="true"
@@ -81,14 +84,14 @@ import { Equipment } from '../../models/character.model';
             <div cdkDrag class="flex items-center gap-1 text-xs">
               <i class="pi pi-bars text-gray-400 cursor-move mr-1" cdkDragHandle></i>
               <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateAdditionalEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
-              <p-inputnumber
+              <p-input-number
                 [(ngModel)]="item.quantity"
                 (ngModelChange)="updateAdditionalEquipment()"
                 [showButtons]="false"
                 [min]="0"
                 [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.75rem' }"
               />
-              <p-inputnumber
+              <p-input-number
                 [(ngModel)]="item.weight"
                 (ngModelChange)="updateAdditionalEquipment()"
                 [showButtons]="false"

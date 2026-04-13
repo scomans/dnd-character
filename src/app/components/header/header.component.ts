@@ -1,22 +1,33 @@
-import { Component, inject, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, effect, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CharacterService } from '../../services/character.service';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { SelectModule } from 'primeng/select';
+import { ClickOutside } from 'ngxtension/click-outside';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { TreeSelectModule } from 'primeng/treeselect';
-import { TooltipModule } from 'primeng/tooltip';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ImageModule } from 'primeng/image';
-import { ALIGNMENTS, DND_CLASS_TREE, DND_RACES, DND_BACKGROUNDS, LIFESTYLES } from '../../models/character.model';
-import { ClickOutside } from 'ngxtension/click-outside';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { TooltipModule } from 'primeng/tooltip';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { ALIGNMENTS, DND_BACKGROUNDS, DND_CLASS_TREE, DND_RACES } from '../../models/character.model';
+import { CharacterService } from '../../services/character.service';
+
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, AutoCompleteModule, TreeSelectModule, TooltipModule, IftaLabelModule, ImageModule, ClickOutside],
+  imports: [
+    FormsModule,
+    InputTextModule,
+    InputNumberModule,
+    SelectModule,
+    AutoCompleteModule,
+    TreeSelectModule,
+    TooltipModule,
+    IftaLabelModule,
+    ImageModule,
+    ClickOutside,
+  ],
   template: `
     <div class="bg-white border-2 border-slate-700 rounded-lg p-4 mb-4">
       <!-- Character Name as click-to-edit title -->
@@ -54,31 +65,20 @@ import { ClickOutside } from 'ngxtension/click-outside';
         }
         <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_auto_1fr_1fr_1fr_1fr] gap-2 items-end">
           <!-- Klasse -->
-          <p-iftalabel>
-            @if (editingField() === 'class') {
-              <p-tree-select
-                [ngModel]="selectedClassNode"
-                (ngModelChange)="onClassNodeSelect($event)"
-                [options]="classTree"
-                placeholder="Klasse"
-                [style]="{ width: '100%', fontSize: '0.85rem' }"
-                appendTo="body"
-                [filter]="true"
-                filterPlaceholder="Suchen..."
-                id="header-class"
-              />
-            } @else {
-              <input
-                pInputText
-                [value]="cs.character().className || ''"
-                (click)="editingField.set('class')"
-                readonly
-                class="w-full text-sm cursor-pointer"
-                id="header-class"
-              />
-            }
+          <p-ifta-label>
+            <p-tree-select
+              [ngModel]="selectedClassNode()"
+              (ngModelChange)="onClassNodeSelect($event)"
+              [options]="classTree"
+              ariaLabel="Klasse"
+              [style]="{ width: '100%', fontSize: '0.85rem' }"
+              appendTo="body"
+              [showClear]="false"
+              id="header-class"
+              [autofocus]="true"
+            />
             <label for="header-class">Klasse</label>
-          </p-iftalabel>
+          </p-ifta-label>
           <!-- Stufe -->
           <p-iftalabel>
             <p-input-number
@@ -204,14 +204,30 @@ export class HeaderComponent {
   filteredRaces: string[] = [];
   filteredBackgrounds: string[] = [];
 
-  selectedClassNode: any = null;
+  selectedClassNode = model<any | null>(null);
 
   constructor() {
     // Keep selectedClassNode in sync with the character signal
     effect(() => {
       const className = this.cs.character().className;
-      this.selectedClassNode = className || null;
+      const classNode = className ? this.findClassNodeByName(className, this.classTree) : null;
+      this.selectedClassNode.set(classNode || null);
     });
+  }
+
+  findClassNodeByName(name: string, nodes: any[]): any | null {
+    for (const node of nodes) {
+      if (node.data === name) {
+        return node;
+      }
+      if (node.children) {
+        const found = this.findClassNodeByName(name, node.children);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
   }
 
   getAlignmentLabel(): string {
@@ -220,13 +236,12 @@ export class HeaderComponent {
   }
 
   onClassNodeSelect(nodeKey: any): void {
-    this.selectedClassNode = nodeKey;
+    this.selectedClassNode.set(nodeKey);
     if (nodeKey?.data && typeof nodeKey.data === 'string') {
       this.cs.update({ className: nodeKey.data });
     } else {
       this.cs.update({ className: '' });
     }
-    this.editingField.set(null);
   }
 
   onAlignmentChange(value: string): void {

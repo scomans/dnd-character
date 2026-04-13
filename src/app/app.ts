@@ -5,6 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet],
   template: '<router-outlet />',
-  styles: [':host { display: block; min-height: 100dvh; background: #f5f5f5; }'],
+  styles: [':host { display: block; min-height: 100dvh; background: #f5f5f5; width: 100% }'],
 })
 export class App {}

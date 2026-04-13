@@ -18,7 +18,20 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
 @Component({
   selector: 'app-attacks',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, InputMaskModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, InputGroupModule, InputGroupAddonModule, MarkdownEditorComponent],
+  imports: [
+    FormsModule,
+    InputTextModule,
+    InputNumberModule,
+    InputMaskModule,
+    CheckboxModule,
+    ButtonModule,
+    SelectModule,
+    FieldsetModule,
+    TooltipModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    MarkdownEditorComponent,
+  ],
   template: `
     <p-fieldset legend="Waffen & Angriffszauber">
       <div class="overflow-x-auto">
@@ -45,7 +58,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
           </thead>
           <tbody>
             @for (attack of cs.character().attacks; track $index; let i = $index) {
-              <tr class="border-b border-gray-100">
+              <tr>
                 <td class="p-1">
                   <input
                     pInputText [(ngModel)]="attack.name" (ngModelChange)="updateAttacks()" class="w-full text-xs" style="min-width:80px"
@@ -164,7 +177,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                   <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAttack(i)" />
                 </td>
               </tr>
-              <tr>
+              <tr class="border-b border-gray-100">
                 <td colspan="11" class="p-1">
                   <app-markdown-editor
                     [value]="attack.description"

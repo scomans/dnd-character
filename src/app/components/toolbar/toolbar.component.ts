@@ -14,7 +14,7 @@ import '@googleworkspace/drive-picker-element';
   selector: 'app-toolbar',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule],
+  imports: [FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule],
   template: `
     <div class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg mb-4 shadow-md flex-wrap">
       <span class="text-lg font-bold flex-1">⚔️ D&D Charakterbogen</span>
@@ -23,7 +23,10 @@ import '@googleworkspace/drive-picker-element';
       @if (drive.connected()) {
         @if (drive.currentFile()) {
           <span class="text-xs text-slate-300 hidden md:inline" pTooltip="Verbundene Google Drive Datei" tooltipPosition="bottom">
-            <i class="pi pi-google text-xs mr-1"></i>{{ drive.currentFile()!.name }}
+            <span class="flex items-center">
+              <i class="pi pi-google text-xs mr-1"></i>
+              {{ drive.currentFile()!.name }}
+            </span>
           </span>
           <p-button
             icon="pi pi-save"
