@@ -111,7 +111,19 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
               [contextMenu]="cm"
               [metaKeySelection]="false"
               class="notes-tree"
-            />
+            >
+              <ng-template #nodeTemplate let-node>
+                <div class="flex items-center gap-1 w-full group/node">
+                  <span class="flex-1 truncate text-sm">{{ node.label }}</span>
+                  <button
+                    type="button"
+                    class="opacity-0 group-hover/node:opacity-100 transition-opacity pi pi-plus text-xs text-gray-400 hover:text-blue-500 bg-transparent border-none cursor-pointer p-0.5 rounded hover:bg-slate-200 dark:hover:bg-gray-600"
+                    (click)="addChildNoteById(node.key); $event.stopPropagation()"
+                    title="Unternotiz hinzufügen"
+                  ></button>
+                </div>
+              </ng-template>
+            </p-tree>
           } @else {
             <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 text-sm p-4 text-center">
               <i class="pi pi-file-edit text-3xl mb-2"></i>
@@ -203,9 +215,8 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
               </div>
             } @else {
               <div
-                class="flex-1 overflow-y-auto p-3 text-sm leading-relaxed markdown-content cursor-pointer"
+                class="flex-1 overflow-y-auto p-3 text-sm leading-relaxed markdown-content"
                 [innerHTML]="renderedHtml()"
-                (click)="editingContent.set(true)"
               ></div>
               <div class="flex justify-end px-3 py-1 border-t border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-750">
                 <p-button
@@ -331,8 +342,12 @@ export class NotesComponent {
   addChildNote(): void {
     const selected = this.selectedNote();
     if (!selected) return;
+    this.addChildNoteById(selected.id);
+  }
+
+  addChildNoteById(parentId: string): void {
     const notes = cloneNotes(this.cs.character().notes ?? []);
-    const parent = findNode(notes, selected.id);
+    const parent = findNode(notes, parentId);
     if (!parent) return;
     const newNote: NoteNode = {
       id: generateId(),

@@ -202,6 +202,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                             pInputText
                             [(ngModel)]="spell.name"
                             (ngModelChange)="updateSpells()"
+                            (keydown.space)="$event.stopPropagation()"
                             class="flex-1 text-xs"
                             placeholder="Zaubername"
                           />

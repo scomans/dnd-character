@@ -78,6 +78,18 @@ html.dark-mode body {
   border-left: 3px solid var(--dnd-border);
   color: #666;
 }
+html.dark-mode .markdown-content blockquote {
+  color: #aaa;
+}
+html.dark-mode .markdown-content a {
+  color: #6ba3e8;
+}
+html.dark-mode .markdown-content code {
+  background: var(--dnd-section-bg);
+}
+html.dark-mode .markdown-content pre {
+  background: var(--dnd-section-bg);
+}
 .markdown-content pre {
   margin: 0.2em 0;
   padding: 0.4em;
