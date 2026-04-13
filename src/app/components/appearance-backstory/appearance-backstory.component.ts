@@ -33,10 +33,20 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
     <div class="space-y-3">
       <!-- Physical Characteristics + Character Image at top -->
       <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
-        <p-fieldset legend="Körperliche Merkmale">
+        <p-fieldset legend="Merkmale">
           <div class="grid grid-cols-3 gap-2 text-xs">
             <p-iftalabel>
-              <input pInputText [ngModel]="cs.character().age" (ngModelChange)="cs.update({ age: $event })" class="w-full text-xs" id="phys-age" />
+              <p-input-number
+                [ngModel]="cs.character().age"
+                (ngModelChange)="cs.update({ age: $event })"
+                [showButtons]="false"
+                [min]="0"
+                [minFractionDigits]="0"
+                [maxFractionDigits]="0"
+                class="w-full text-xs"
+                id="phys-age"
+                size="small"
+              />
               <label for="phys-age">Alter</label>
             </p-iftalabel>
             <p-iftalabel>
@@ -85,11 +95,11 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
               <input pInputText [ngModel]="cs.character().gender" (ngModelChange)="cs.update({ gender: $event })" class="w-full text-xs" id="phys-gender" />
               <label for="phys-gender">Geschlecht</label>
             </p-iftalabel>
-            <p-iftalabel class="col-span-2">
+            <p-iftalabel>
               <input pInputText [ngModel]="cs.character().faith" (ngModelChange)="cs.update({ faith: $event })" class="w-full text-xs" id="phys-faith" />
               <label for="phys-faith">Glaube / Gottheit</label>
             </p-iftalabel>
-            <p-iftalabel class="col-span-3">
+            <p-iftalabel>
               <p-select
                 [ngModel]="cs.character().sizeCategory"
                 (ngModelChange)="cs.update({ sizeCategory: $event })"
