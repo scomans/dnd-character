@@ -133,7 +133,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
       <!-- Hit Dice & Death Saves -->
       <div class="grid grid-cols-2 gap-2">
         <p-fieldset legend="Trefferwürfel">
-          <div class="flex items-center justify-center">
+          <div class="flex items-center justify-center gap-2">
             <p-inputMask
               [ngModel]="cs.character().hitDiceTotal"
               (ngModelChange)="cs.update({ hitDiceTotal: $event })"
@@ -143,6 +143,19 @@ import { ClickOutside } from 'ngxtension/click-outside';
               slotChar=" "
               [style]="{ width: '5rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold' }"
             />
+            <div class="flex flex-col items-center text-[0.6rem] text-gray-500">
+              <span>Verbraucht</span>
+              <p-inputnumber
+                [ngModel]="cs.character().hitDiceUsed"
+                (ngModelChange)="cs.update({ hitDiceUsed: $event ?? 0 })"
+                [showButtons]="true"
+                buttonLayout="horizontal"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+                [min]="0"
+                [inputStyle]="{ width: '2rem', textAlign: 'center', fontSize: '0.75rem' }"
+              />
+            </div>
           </div>
         </p-fieldset>
         <p-fieldset legend="Rettungswürfe gegen Tod">

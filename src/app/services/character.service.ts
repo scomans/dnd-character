@@ -137,18 +137,21 @@ export class CharacterService {
     return 10 + this.getSkillModifier('perception');
   }
 
-  /** Attack bonus for a weapon */
+  /** Attack bonus for a weapon: Ability Modifier + Proficiency Bonus (if proficient) + Magic Bonus */
   getAttackBonus(attack: {
     proficient: boolean;
     attribute: string;
+    magicBonus?: number;
   }): number {
     const mod = this.getAbilityModifier(attack.attribute);
-    return attack.proficient ? mod + this.getProficiencyBonus() : mod;
+    const prof = attack.proficient ? this.getProficiencyBonus() : 0;
+    const magic = attack.magicBonus ?? 0;
+    return mod + prof + magic;
   }
 
-  /** Damage bonus for a weapon (ability modifier) */
-  getDamageBonus(attack: { attribute: string }): number {
-    return this.getAbilityModifier(attack.attribute);
+  /** Damage bonus for a weapon: ability modifier + magic bonus */
+  getDamageBonus(attack: { attribute: string; magicBonus?: number }): number {
+    return this.getAbilityModifier(attack.attribute) + (attack.magicBonus ?? 0);
   }
 
   /** Spell save DC = 8 + proficiency + spellcasting ability modifier */
