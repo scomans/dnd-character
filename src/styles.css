@@ -44,6 +44,14 @@ html.dark-mode body {
   font-size: 0.85rem !important;
 }
 
+html.dark-mode .p-inputtext,
+html.dark-mode .p-inputnumber-input,
+html.dark-mode .p-textarea {
+  background: var(--dnd-section-bg);
+  color: var(--dnd-text);
+  border-color: var(--dnd-border);
+}
+
 .p-checkbox .p-checkbox-box {
   width: 1.1rem !important;
   height: 1.1rem !important;
