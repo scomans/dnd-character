@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, SecurityContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { marked } from 'marked';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from 'primeng/api';
@@ -17,10 +17,8 @@ import { markedAccordionExtension } from '../../utils/marked-accordion-extension
 
 marked.use(markedAccordionExtension());
 
-let nextId = 1;
-
 function generateId(): string {
-  return `note-${Date.now()}-${nextId++}`;
+  return `note-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
 /** Convert NoteNode[] to PrimeNG TreeNode[] */
@@ -279,14 +277,14 @@ export class NotesComponent {
     return toTreeNodes(notes);
   });
 
-  renderedHtml(): SafeHtml {
+  renderedHtml = computed(() => {
     const note = this.selectedNote();
     if (!note?.content) return '';
     const html = marked.parse(note.content, { async: false }) as string;
     const sanitized =
       this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
     return this.sanitizer.bypassSecurityTrustHtml(sanitized);
-  }
+  });
 
   onNodeSelect(node: TreeNode | TreeNode[] | null | undefined): void {
     if (!node || Array.isArray(node)) return;
