@@ -11,9 +11,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
 import { TextareaModule } from 'primeng/textarea';
 import { ClickOutside } from 'ngxtension/click-outside';
-import { markedSpoilerExtension } from '../../utils/marked-spoiler-extension';
+import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
 
-marked.use(markedSpoilerExtension());
+marked.use(markedAccordionExtension());
 
 @Component({
   selector: 'app-markdown-editor',
