@@ -225,6 +225,8 @@ export interface DndCharacter {
   eyes: string;
   skin: string;
   hair: string;
+  gender: string;
+  faith: string;
   sizeCategory: string;
   appearance: string;
   backstory: string;
@@ -371,23 +373,23 @@ export const DND_BACKGROUNDS: string[] = [
   'Charlatan',
   'Krimineller',
   'Entertainer',
-  'Volksheldin',
-  'Gildenhandwerkerin',
+  'Volksheld',
+  'Gildenhandwerker',
   'Einsiedler',
-  'Adlig',
-  'Ausgestoßene',
-  'Weise',
-  'Seefahrerin',
-  'Soldatin',
+  'Adliger',
+  'Ausgestoßener',
+  'Weiser',
+  'Seefahrer',
+  'Soldat',
   'Straßenkind',
-  'Stammesangehörige',
-  'Archäologin',
+  'Stammesangehöriger',
+  'Archäologe',
   'Stadtwache',
-  'Spionin',
+  'Spion',
   'Kopfgeldjäger',
   'Pirat',
-  'Fernhändlerin',
-  'Ritterin',
+  'Fernhändler',
+  'Ritter',
   'Falkner',
 ];
 
@@ -662,6 +664,8 @@ export function createDefaultCharacter(): DndCharacter {
     eyes: '',
     skin: '',
     hair: '',
+    gender: '',
+    faith: '',
     sizeCategory: '',
     appearance: '',
     backstory: '',
