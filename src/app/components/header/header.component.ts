@@ -29,7 +29,7 @@ import { CharacterService } from '../../services/character.service';
     ClickOutside,
   ],
   template: `
-    <div class="bg-white border-2 border-slate-700 rounded-lg p-4 mb-4">
+    <div class="bg-white dark:bg-gray-800 border-2 border-slate-700 dark:border-slate-500 rounded-lg p-4 mb-4">
       <!-- Character Name as click-to-edit title -->
       <div class="flex items-center gap-2 mb-3">
         @if (editingName()) {
@@ -44,7 +44,7 @@ import { CharacterService } from '../../services/character.service';
           />
         } @else {
           <span
-            class="text-2xl font-bold text-slate-800 tracking-wide font-serif cursor-pointer hover:text-slate-500 flex-1"
+            class="text-2xl font-bold text-slate-800 dark:text-slate-200 tracking-wide font-serif cursor-pointer hover:text-slate-500 flex-1"
             (click)="editingName.set(true)"
             pTooltip="Klicken zum Bearbeiten"
             tooltipPosition="top"
@@ -59,7 +59,7 @@ import { CharacterService } from '../../services/character.service';
               alt="Charakter"
               [preview]="true"
               width="64"
-              imageClass="w-16 h-16 object-cover rounded-lg border border-gray-300"
+              imageClass="w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
             />
           </div>
         }

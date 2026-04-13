@@ -31,7 +31,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
       </div>
     } @else {
       <div
-        class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
         (click)="editing.set(true)"
@@ -39,7 +39,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
         @if (value()) {
           <span [innerHTML]="renderedHtml()"></span>
         } @else {
-          <span class="text-gray-400 italic text-xs">Klicken zum Bearbeiten...</span>
+          <span class="text-gray-400 dark:text-gray-500 italic text-xs">Klicken zum Bearbeiten...</span>
         }
       </div>
     }

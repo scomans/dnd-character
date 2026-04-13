@@ -15,7 +15,7 @@ import { CharacterService } from '../../services/character.service';
   template: `
     <div class="space-y-2">
       <!-- Inspiration -->
-      <div class="flex items-center gap-2 bg-white border border-slate-700 rounded-lg p-2">
+      <div class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2">
         <p-checkbox
           [ngModel]="cs.character().inspiration"
           (ngModelChange)="cs.update({ inspiration: $event })"
@@ -26,7 +26,7 @@ import { CharacterService } from '../../services/character.service';
 
       <!-- Proficiency Bonus (click-to-edit) -->
       <div
-        class="flex items-center gap-2 bg-white border border-slate-700 rounded-lg p-2 overflow-hidden" pTooltip="Übungsbonus" tooltipPosition="right"
+        class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2 overflow-hidden" pTooltip="Übungsbonus" tooltipPosition="right"
       >
         @if (editingProficiency()) {
           <p-input-number
@@ -41,7 +41,7 @@ import { CharacterService } from '../../services/character.service';
           />
         } @else {
           <span
-            class="text-xl font-bold text-slate-700 w-10 text-center cursor-pointer hover:text-slate-500"
+            class="text-xl font-bold text-slate-700 dark:text-slate-300 w-10 text-center cursor-pointer hover:text-slate-500"
             (click)="editingProficiency.set(true)"
           >+{{ cs.getProficiencyBonus() }}</span>
         }
@@ -53,9 +53,9 @@ import { CharacterService } from '../../services/character.service';
       <!-- Ability Scores (click-to-edit) -->
       <div class="grid grid-cols-2 sm:grid-cols-1 gap-2">
         @for (ability of abilities; track ability) {
-          <div class="bg-white border-2 border-slate-700 rounded-lg p-2 flex flex-col items-center">
-            <span class="text-[0.6rem] font-bold text-gray-600">{{ getLabel(ability) }}</span>
-            <span class="text-3xl font-bold text-slate-700">
+          <div class="bg-white dark:bg-gray-800 border-2 border-slate-700 dark:border-slate-500 rounded-lg p-2 flex flex-col items-center">
+            <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400">{{ getLabel(ability) }}</span>
+            <span class="text-3xl font-bold text-slate-700 dark:text-slate-300">
               {{ cs.getAbilityModifier(ability) >= 0 ? '+' : '' }}{{ cs.getAbilityModifier(ability) }}
             </span>
             <div class="mt-1">
@@ -71,7 +71,7 @@ import { CharacterService } from '../../services/character.service';
                 />
               } @else {
                 <span
-                  class="text-sm font-medium text-gray-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-400/30 rounded px-2 py-0.5"
+                  class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-400/30 rounded px-2 py-0.5"
                   (click)="editingAbility.set(ability)"
                 >{{ getAbilityBase(ability) }}</span>
               }

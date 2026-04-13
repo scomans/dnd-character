@@ -2,6 +2,7 @@ import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild, After
 import { CommonModule } from '@angular/common';
 import { CharacterService } from '../../services/character.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
+import { ThemeService } from '../../services/theme.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
@@ -16,8 +17,20 @@ import '@googleworkspace/drive-picker-element';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule],
   template: `
-    <div class="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg mb-4 shadow-md flex-wrap">
+    <div class="flex items-center gap-2 bg-slate-700 dark:bg-slate-800 text-white px-4 py-2 rounded-lg mb-4 shadow-md flex-wrap">
       <span class="text-lg font-bold flex-1">⚔️ D&D Charakterbogen</span>
+
+      <!-- Dark Mode Toggle -->
+      <p-button
+        [icon]="theme.darkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+        size="small"
+        severity="secondary"
+        (onClick)="theme.toggleDarkMode()"
+        [pTooltip]="theme.darkMode() ? 'Heller Modus' : 'Dunkler Modus'"
+        tooltipPosition="bottom"
+      />
+
+      <span class="border-l border-slate-500 h-6 mx-1"></span>
 
       <!-- Google Drive Section -->
       @if (drive.connected()) {
@@ -152,6 +165,7 @@ import '@googleworkspace/drive-picker-element';
 export class ToolbarComponent implements AfterViewInit, OnDestroy {
   cs = inject(CharacterService);
   drive = inject(GoogleDriveService);
+  theme = inject(ThemeService);
 
   @ViewChild('drivePicker') drivePickerRef?: ElementRef;
 

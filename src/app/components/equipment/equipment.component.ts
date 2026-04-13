@@ -24,7 +24,7 @@ import { CharacterService } from '../../services/character.service';
             <div cdkDropList (cdkDropListDropped)="dropEquipment($event)" class="space-y-1">
               @for (item of cs.character().equipment; track $index; let i = $index) {
                 <div cdkDrag class="flex items-center gap-1 text-xs">
-                  <i class="pi pi-bars text-gray-400 cursor-move mr-1" cdkDragHandle></i>
+                  <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
                   <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
                   <p-input-number
                     [(ngModel)]="item.quantity"
@@ -41,26 +41,26 @@ import { CharacterService } from '../../services/character.service';
                     [minFractionDigits]="1"
                     [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
                   />
-                  <span class="text-gray-400 text-[0.6rem]">kg</span>
+                  <span class="text-gray-400 dark:text-gray-500 text-[0.6rem]">kg</span>
                   <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeItem(i)" />
                 </div>
               }
             </div>
             <div class="flex justify-between items-center mt-2">
               <p-button label="Hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addItem()" />
-              <span class="text-xs text-gray-500">
+              <span class="text-xs text-gray-500 dark:text-gray-400">
                 Gewicht: {{ getTotalWeight() | number:'1.1-1' }} kg
               </span>
             </div>
           </div>
 
           <!-- Currency (right, vertical) - reversed order: highest value first -->
-          <div class="shrink-0 flex flex-col gap-1 border-l border-gray-200 pl-4">
-            <span class="text-[0.65rem] font-bold text-gray-600 text-center mb-1">Münzen</span>
+          <div class="shrink-0 flex flex-col gap-1 border-l border-gray-200 dark:border-gray-700 pl-4">
+            <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400 text-center mb-1">Münzen</span>
             @for (coin of coins; track coin.key) {
               <div class="flex items-center gap-1">
                 <span
-                  class="text-[0.6rem] font-bold text-gray-600 w-6 text-right" [pTooltip]="coin.tooltip" tooltipPosition="left"
+                  class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 w-6 text-right" [pTooltip]="coin.tooltip" tooltipPosition="left"
                 >{{ coin.label }}</span>
                 <p-input-number
                   [ngModel]="getCurrency(coin.key)"
@@ -82,7 +82,7 @@ import { CharacterService } from '../../services/character.service';
         <div cdkDropList (cdkDropListDropped)="dropAdditionalEquipment($event)" class="space-y-1">
           @for (item of cs.character().additionalEquipment; track $index; let i = $index) {
             <div cdkDrag class="flex items-center gap-1 text-xs">
-              <i class="pi pi-bars text-gray-400 cursor-move mr-1" cdkDragHandle></i>
+              <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
               <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateAdditionalEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
               <p-input-number
                 [(ngModel)]="item.quantity"
@@ -99,14 +99,14 @@ import { CharacterService } from '../../services/character.service';
                 [minFractionDigits]="1"
                 [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
               />
-              <span class="text-gray-400 text-[0.6rem]">kg</span>
+              <span class="text-gray-400 dark:text-gray-500 text-[0.6rem]">kg</span>
               <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAdditionalItem(i)" />
             </div>
           }
         </div>
         <div class="flex justify-between items-center mt-2">
           <p-button label="Hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addAdditionalItem()" />
-          <span class="text-xs text-gray-500">
+          <span class="text-xs text-gray-500 dark:text-gray-400">
             Gewicht: {{ getAdditionalTotalWeight() | number:'1.1-1' }} kg
           </span>
         </div>

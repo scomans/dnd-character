@@ -94,29 +94,29 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
           pTooltip="8 + Übungsbonus + Zauberattribut-Modifikator"
           tooltipPosition="top"
         >
-          <span class="text-2xl font-bold text-slate-700">{{ cs.getSpellSaveDC() || '--' }}</span>
-          <span class="text-[0.6rem] font-bold text-gray-600 mt-1">Zauber-SG</span>
+          <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">{{ cs.getSpellSaveDC() || '--' }}</span>
+          <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 mt-1">Zauber-SG</span>
         </div>
         <div class="flex flex-col items-center justify-center">
-          <span class="text-2xl font-bold text-slate-700">
+          <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">
             @if (cs.getSpellAttackBonus()) {
               {{ cs.getSpellAttackBonus() >= 0 ? '+' : '' }}{{ cs.getSpellAttackBonus() }}
             } @else {
               --
             }
           </span>
-          <span class="text-[0.6rem] font-bold text-gray-600 mt-1">Zauber-Angriff</span>
+          <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 mt-1">Zauber-Angriff</span>
         </div>
       </div>
 
       <p-divider />
       <!-- Spell Slots -->
       <div>
-        <span class="text-xs font-bold text-gray-600">Zauberplätze</span>
+        <span class="text-xs font-bold text-gray-600 dark:text-gray-400">Zauberplätze</span>
         <div class="grid grid-cols-9 gap-1 mt-1">
           @for (level of spellLevels; track level) {
             <div class="flex flex-col items-center text-xs">
-              <span class="font-bold text-slate-700 mb-0.5">{{ level }}</span>
+              <span class="font-bold text-slate-700 dark:text-slate-300 mb-0.5">{{ level }}</span>
               <p-input-number
                 [ngModel]="getSlotMax(level)"
                 (ngModelChange)="updateSlotMax(level, $event)"
@@ -129,10 +129,11 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
               <div class="flex flex-wrap justify-center gap-0.5 mt-1">
                 @for (i of getSlotRange(level); track i) {
                   <span
-                    class="w-3.5 h-3.5 rounded-full border border-slate-400 cursor-pointer flex items-center justify-center text-[0.5rem]"
+                    class="w-3.5 h-3.5 rounded-full border border-slate-400 dark:border-slate-500 cursor-pointer flex items-center justify-center text-[0.5rem]"
                     [class.bg-slate-700]="i < getSlotUsed(level)"
                     [class.border-slate-700]="i < getSlotUsed(level)"
                     [class.bg-white]="i >= getSlotUsed(level)"
+                    [class.dark:bg-gray-700]="i >= getSlotUsed(level)"
                     (click)="toggleSlotUsed(level, i)"
                     [pTooltip]="i < getSlotUsed(level) ? 'Verbraucht' : 'Verfügbar'"
                     tooltipPosition="top"
@@ -147,7 +148,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
       <!-- Filter for prepared spells + expand/collapse -->
       <div class="flex items-center gap-2 mt-2">
         <p-toggleswitch [(ngModel)]="showPreparedOnly" />
-        <span class="text-xs text-gray-600">Nur vorbereitete Zauber anzeigen</span>
+        <span class="text-xs text-gray-600 dark:text-gray-400">Nur vorbereitete Zauber anzeigen</span>
         <span class="flex-1"></span>
         <p-button
           icon="pi pi-angle-double-down"
@@ -170,8 +171,8 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
       <!-- Spells List with Accordions -->
       <div>
         @for (levelGroup of groupedSpellLevels; track levelGroup.level) {
-          <div class="border-t border-gray-200 pt-1 mt-1">
-            <span class="text-xs font-bold text-gray-600 mb-1 block">
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-1 mt-1">
+            <span class="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1 block">
               {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
             </span>
             <p-accordion [multiple]="true" [value]="expandedPanels()" (valueChange)="onAccordionChange($event)">
@@ -185,7 +186,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                     <p-accordion-panel [value]="'spell-' + levelGroup.level + '-' + $index">
                       <p-accordion-header>
                         <div class="flex items-center gap-1 w-full text-xs" (click)="$event.stopPropagation()">
-                          <i class="pi pi-bars text-gray-400 cursor-move mr-1" cdkDragHandle></i>
+                          <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
                           @if (levelGroup.level > 0) {
                             <p-checkbox
                               [ngModel]="spell.prepared"
