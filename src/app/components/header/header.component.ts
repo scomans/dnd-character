@@ -87,8 +87,9 @@ import { CharacterService } from '../../services/character.service';
               [min]="1"
               [max]="20"
               [showButtons]="false"
-              [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
+              [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
               inputId="header-level"
+              [fluid]="true"
             />
             <label for="header-level">Stufe</label>
           </p-iftalabel>
@@ -184,6 +185,7 @@ import { CharacterService } from '../../services/character.service';
               [useGrouping]="false"
               [inputStyle]="{ width: '100%' }"
               inputId="header-xp"
+              [fluid]="true"
             />
             <label for="header-xp">EP</label>
           </p-iftalabel>
