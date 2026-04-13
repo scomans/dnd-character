@@ -9,13 +9,14 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
 import { Popover, PopoverModule } from 'primeng/popover';
-import { TextareaModule } from 'primeng/textarea';
+import { TooltipModule } from 'primeng/tooltip';
+import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TextareaModule],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
@@ -46,7 +47,10 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.m
           />
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauberattribut</span>
         </div>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center"
+          pTooltip="8 + Übungsbonus + Zauberattribut-Modifikator"
+          tooltipPosition="top"
+        >
           <span class="text-2xl font-bold text-slate-700">{{ cs.getSpellSaveDC() || '--' }}</span>
           <span class="text-[0.6rem] font-bold uppercase text-gray-600 mt-1">Zauber-SG</span>
         </div>
@@ -68,23 +72,30 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.m
         <div class="grid grid-cols-9 gap-1 mt-1">
           @for (level of spellLevels; track level) {
             <div class="flex flex-col items-center text-xs">
-              <span class="font-bold text-slate-700">{{ level }}</span>
-              <div class="flex gap-0.5 mt-0.5">
-                <p-inputnumber
-                  [ngModel]="getSlotUsed(level)"
-                  (ngModelChange)="updateSlotUsed(level, $event)"
-                  [showButtons]="false"
-                  [min]="0"
-                  [inputStyle]="{ width: '1.5rem', textAlign: 'center', fontSize: '0.65rem' }"
-                />
-                <span class="text-gray-400">/</span>
-                <p-inputnumber
-                  [ngModel]="getSlotMax(level)"
-                  (ngModelChange)="updateSlotMax(level, $event)"
-                  [showButtons]="false"
-                  [min]="0"
-                  [inputStyle]="{ width: '1.5rem', textAlign: 'center', fontSize: '0.65rem' }"
-                />
+              <span class="font-bold text-slate-700 mb-0.5">{{ level }}</span>
+              <!-- Editable max slots -->
+              <p-inputnumber
+                [ngModel]="getSlotMax(level)"
+                (ngModelChange)="updateSlotMax(level, $event)"
+                [showButtons]="false"
+                [min]="0"
+                [inputStyle]="{ width: '1.8rem', textAlign: 'center', fontSize: '0.65rem' }"
+                pTooltip="Max. Plätze"
+                tooltipPosition="top"
+              />
+              <!-- Slot usage as clickable circles -->
+              <div class="flex flex-wrap justify-center gap-0.5 mt-1">
+                @for (i of getSlotRange(level); track i) {
+                  <span
+                    class="w-3.5 h-3.5 rounded-full border border-slate-400 cursor-pointer flex items-center justify-center text-[0.5rem]"
+                    [class.bg-slate-700]="i < getSlotUsed(level)"
+                    [class.border-slate-700]="i < getSlotUsed(level)"
+                    [class.bg-white]="i >= getSlotUsed(level)"
+                    (click)="toggleSlotUsed(level, i)"
+                    [pTooltip]="i < getSlotUsed(level) ? 'Verbraucht' : 'Verfügbar'"
+                    tooltipPosition="top"
+                  ></span>
+                }
               </div>
             </div>
           }
@@ -129,7 +140,7 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.m
             optionLabel="label"
             optionValue="value"
             placeholder="Stufe"
-            [style]="{ width: '10rem', fontSize: '0.75rem' }"
+            [style]="{ width: '14rem', fontSize: '0.75rem' }"
             appendTo="body"
           />
           <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
@@ -139,18 +150,16 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES } from '../../models/character.m
     </p-fieldset>
 
     <!-- Spell Info Popover -->
-    <p-popover #spellPopover [style]="{ width: '300px' }">
+    <p-popover #spellPopover [style]="{ width: '400px' }">
       @if (activeSpell) {
         <div class="space-y-2">
           <span class="text-sm font-bold">{{ activeSpell.name || 'Zauber' }} — Beschreibung</span>
-          <textarea
-            pTextarea
-            [(ngModel)]="activeSpell.description"
-            (ngModelChange)="updateSpells()"
-            [rows]="5"
-            class="w-full text-xs"
+          <app-markdown-editor
+            [value]="activeSpell.description"
+            (valueChange)="activeSpell.description = $event; updateSpells()"
             placeholder="Beschreibung eingeben..."
-          ></textarea>
+            [minRows]="5"
+          />
         </div>
       }
     </p-popover>
@@ -209,6 +218,20 @@ export class SpellcastingComponent {
     const slots = { ...char.spellSlots };
     slots[level] = { max: slots[level]?.max ?? 0, used: value ?? 0 };
     this.cs.update({ spellSlots: slots });
+  }
+
+  /** Returns an array [0, 1, ..., max-1] for rendering slot circles */
+  getSlotRange(level: number): number[] {
+    const max = this.getSlotMax(level);
+    return Array.from({ length: max }, (_, i) => i);
+  }
+
+  /** Toggle a slot circle: clicking circle at index i sets used to i+1 if not yet used, or i if already used */
+  toggleSlotUsed(level: number, index: number): void {
+    const currentUsed = this.getSlotUsed(level);
+    // If clicking the last used circle, un-use it; otherwise set used to index+1
+    const newUsed = (index < currentUsed) ? index : index + 1;
+    this.updateSlotUsed(level, newUsed);
   }
 
   onSpellcastingClassChange(value: string): void {

@@ -5,15 +5,16 @@ import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TooltipModule } from 'primeng/tooltip';
-import { ALIGNMENTS, DND_CLASS_TREE, LIFESTYLES } from '../../models/character.model';
+import { ALIGNMENTS, DND_CLASS_TREE, DND_RACES, DND_BACKGROUNDS, LIFESTYLES } from '../../models/character.model';
 import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, TreeSelectModule, TooltipModule, ClickOutside],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, AutoCompleteModule, TreeSelectModule, TooltipModule, ClickOutside],
   template: `
     <div class="bg-white border-2 border-slate-700 rounded-lg p-4 mb-4">
       <!-- Character Name as click-to-edit title -->
@@ -70,12 +71,34 @@ import { ClickOutside } from 'ngxtension/click-outside';
           </div>
           <!-- Hintergrund -->
           <div class="flex flex-col">
-            <input pInputText [ngModel]="cs.character().background" (ngModelChange)="cs.update({ background: $event })" class="w-full" />
+            <p-autocomplete
+              [ngModel]="cs.character().background"
+              (ngModelChange)="cs.update({ background: $event })"
+              [suggestions]="filteredBackgrounds"
+              (completeMethod)="filterBackgrounds($event)"
+              [dropdown]="true"
+              [forceSelection]="false"
+              placeholder="Hintergrund"
+              [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
+              [style]="{ width: '100%' }"
+              appendTo="body"
+            />
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Hintergrund</label>
           </div>
           <!-- Volk -->
           <div class="flex flex-col">
-            <input pInputText [ngModel]="cs.character().race" (ngModelChange)="cs.update({ race: $event })" class="w-full" />
+            <p-autocomplete
+              [ngModel]="cs.character().race"
+              (ngModelChange)="cs.update({ race: $event })"
+              [suggestions]="filteredRaces"
+              (completeMethod)="filterRaces($event)"
+              [dropdown]="true"
+              [forceSelection]="false"
+              placeholder="Volk"
+              [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
+              [style]="{ width: '100%' }"
+              appendTo="body"
+            />
             <label class="text-[0.65rem] font-bold uppercase text-gray-500 mt-0.5 text-center">Volk</label>
           </div>
           <!-- Gesinnung -->
@@ -114,6 +137,12 @@ export class HeaderComponent {
   lifestyles = LIFESTYLES;
   editingName = signal(false);
 
+  // AutoComplete suggestions
+  allRaces = DND_RACES;
+  allBackgrounds = DND_BACKGROUNDS;
+  filteredRaces: string[] = [];
+  filteredBackgrounds: string[] = [];
+
   selectedClassNode: any = null;
 
   constructor() {
@@ -132,5 +161,15 @@ export class HeaderComponent {
     } else {
       this.cs.update({ className: '' });
     }
+  }
+
+  filterRaces(event: { query: string }): void {
+    const query = event.query.toLowerCase();
+    this.filteredRaces = this.allRaces.filter(r => r.toLowerCase().includes(query));
+  }
+
+  filterBackgrounds(event: { query: string }): void {
+    const query = event.query.toLowerCase();
+    this.filteredBackgrounds = this.allBackgrounds.filter(b => b.toLowerCase().includes(query));
   }
 }

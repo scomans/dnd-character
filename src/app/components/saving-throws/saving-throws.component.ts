@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ButtonModule } from 'primeng/button';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
 import { ABILITY_SHORT_LABELS } from '../../models/character.model';
@@ -10,9 +11,23 @@ import { ABILITY_SHORT_LABELS } from '../../models/character.model';
 @Component({
   selector: 'app-saving-throws',
   standalone: true,
-  imports: [CommonModule, FormsModule, CheckboxModule, FieldsetModule, TooltipModule],
+  imports: [CommonModule, FormsModule, CheckboxModule, ButtonModule, FieldsetModule, TooltipModule],
   template: `
-    <p-fieldset legend="Rettungswürfe">
+    <p-fieldset styleClass="relative">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-2 w-full">
+          <span>Rettungswürfe</span>
+          <p-button
+            [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+            [rounded]="true"
+            [text]="true"
+            size="small"
+            (onClick)="editing.set(!editing())"
+            [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
+            tooltipPosition="top"
+          />
+        </div>
+      </ng-template>
       <div class="space-y-0.5">
         @for (ability of abilities; track ability) {
           <div class="flex items-center gap-1.5 text-sm">
@@ -20,6 +35,7 @@ import { ABILITY_SHORT_LABELS } from '../../models/character.model';
               [ngModel]="isProficient(ability)"
               (ngModelChange)="toggleProficiency(ability, $event)"
               [binary]="true"
+              [disabled]="!editing()"
             />
             <span class="font-bold w-8 text-right text-slate-700">
               {{ cs.getSavingThrowModifier(ability) >= 0 ? '+' : '' }}{{ cs.getSavingThrowModifier(ability) }}
@@ -34,6 +50,7 @@ import { ABILITY_SHORT_LABELS } from '../../models/character.model';
 export class SavingThrowsComponent {
   cs = inject(CharacterService);
   abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+  editing = signal(false);
 
   private abilityLabels: Record<string, string> = {
     str: 'Stärke',

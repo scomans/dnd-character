@@ -60,7 +60,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
                 [min]="1"
                 [max]="30"
                 [showButtons]="true"
-                [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.85rem' }"
+                [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
                 (clickOutside)="editingAbility.set(null)"
               />
             } @else {

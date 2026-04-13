@@ -70,20 +70,22 @@ import '@googleworkspace/drive-picker-element';
       <p-button label="Zurücksetzen" icon="pi pi-refresh" size="small" severity="danger" (onClick)="showReset = true" />
     </div>
 
-    <!-- Drive Picker element (always available since Client ID is embedded) -->
-    <drive-picker
-      #drivePicker
-      [attr.client-id]="drive.clientId"
-      [attr.app-id]="drive.appId"
-      [attr.oauth-token]="drive.accessToken || null"
-      locale="de"
-      title="JSON-Datei auswählen"
-    >
-      <drive-picker-docs-view
-        mime-types="application/json"
-        mode="LIST"
-      ></drive-picker-docs-view>
-    </drive-picker>
+    <!-- Drive Picker element (only rendered when user requests it to avoid popup blocking) -->
+    @if (showPicker) {
+      <drive-picker
+        #drivePicker
+        [attr.client-id]="drive.clientId"
+        [attr.app-id]="drive.appId"
+        [attr.oauth-token]="drive.accessToken || null"
+        locale="de"
+        title="JSON-Datei auswählen"
+      >
+        <drive-picker-docs-view
+          mime-types="application/json"
+          mode="LIST"
+        ></drive-picker-docs-view>
+      </drive-picker>
+    }
 
     <!-- New Drive File Dialog -->
     <p-dialog header="Neue Datei in Google Drive" [(visible)]="showNewDriveFile" [modal]="true" [style]="{ width: '400px' }">
@@ -139,6 +141,7 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
   showImport = false;
   showReset = false;
   showNewDriveFile = false;
+  showPicker = false;
   importText = '';
   importError = '';
   newDriveFileName = '';
@@ -194,11 +197,16 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
   }
 
   openPicker(): void {
-    this.attachPickerListeners();
-    const el = this.drivePickerRef?.nativeElement;
-    if (el) {
-      el.visible = true;
-    }
+    // Render the drive-picker element first (user gesture context),
+    // then attach listeners and set visible after it's in the DOM
+    this.showPicker = true;
+    setTimeout(() => {
+      this.attachPickerListeners();
+      const el = this.drivePickerRef?.nativeElement;
+      if (el) {
+        el.visible = true;
+      }
+    }, 0);
   }
 
   exportJSON(): void {
