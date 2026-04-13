@@ -72,7 +72,7 @@ import { TabsModule } from 'primeng/tabs';
                 <app-lifestyle-jump />
               </div>
 
-              <!-- Proficiencies spans columns 1+2 -->
+              <!-- Proficiencies directly below Ability Scores + Skills columns -->
               <div class="md:col-span-2 space-y-3">
                 <app-proficiencies-languages />
               </div>
@@ -96,8 +96,8 @@ import { TabsModule } from 'primeng/tabs';
           <!-- Page 4: Appearance, Personality & Backstory -->
           <p-tabpanel value="3">
             <div class="mt-4 space-y-4">
-              <app-personality />
               <app-appearance-backstory />
+              <app-personality />
             </div>
           </p-tabpanel>
         </p-tabpanels>

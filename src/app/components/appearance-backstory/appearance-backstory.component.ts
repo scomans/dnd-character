@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { SelectModule } from 'primeng/select';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
 import { IftaLabelModule } from 'primeng/iftalabel';
@@ -14,7 +15,7 @@ import { ImagePickerComponent } from '../image-picker/image-picker.component';
 @Component({
   selector: 'app-appearance-backstory',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputGroupModule, InputGroupAddonModule, FieldsetModule, TooltipModule, IftaLabelModule, MarkdownEditorComponent, ImagePickerComponent],
+  imports: [CommonModule, FormsModule, InputTextModule, InputGroupModule, InputGroupAddonModule, SelectModule, FieldsetModule, TooltipModule, IftaLabelModule, MarkdownEditorComponent, ImagePickerComponent],
   template: `
     <div class="space-y-3">
       <!-- Physical Characteristics + Character Image at top -->
@@ -44,6 +45,20 @@ import { ImagePickerComponent } from '../image-picker/image-picker.component';
             <p-iftalabel>
               <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" id="phys-hair" />
               <label for="phys-hair">Haarfarbe</label>
+            </p-iftalabel>
+            <p-iftalabel class="col-span-3">
+              <p-select
+                [ngModel]="cs.character().sizeCategory"
+                (ngModelChange)="cs.update({ sizeCategory: $event })"
+                [options]="sizeCategories"
+                optionLabel="label"
+                optionValue="value"
+                placeholder=" "
+                [style]="{ width: '100%', fontSize: '0.75rem' }"
+                appendTo="body"
+                inputId="phys-size"
+              />
+              <label for="phys-size">Größenkategorie</label>
             </p-iftalabel>
           </div>
         </p-fieldset>
@@ -114,4 +129,14 @@ import { ImagePickerComponent } from '../image-picker/image-picker.component';
 })
 export class AppearanceBackstoryComponent {
   cs = inject(CharacterService);
+
+  sizeCategories = [
+    { value: '', label: 'Keine' },
+    { value: 'Winzig', label: 'Winzig (Tiny)' },
+    { value: 'Klein', label: 'Klein (Small)' },
+    { value: 'Mittel', label: 'Mittel (Medium)' },
+    { value: 'Groß', label: 'Groß (Large)' },
+    { value: 'Riesig', label: 'Riesig (Huge)' },
+    { value: 'Gigantisch', label: 'Gigantisch (Gargantuan)' },
+  ];
 }

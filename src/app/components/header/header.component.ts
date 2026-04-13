@@ -9,13 +9,14 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { IftaLabelModule } from 'primeng/iftalabel';
+import { ImageModule } from 'primeng/image';
 import { ALIGNMENTS, DND_CLASS_TREE, DND_RACES, DND_BACKGROUNDS, LIFESTYLES } from '../../models/character.model';
 import { ClickOutside } from 'ngxtension/click-outside';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, AutoCompleteModule, TreeSelectModule, TooltipModule, IftaLabelModule, ClickOutside],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, SelectModule, AutoCompleteModule, TreeSelectModule, TooltipModule, IftaLabelModule, ImageModule, ClickOutside],
   template: `
     <div class="bg-white border-2 border-slate-700 rounded-lg p-4 mb-4">
       <!-- Character Name as click-to-edit title -->
@@ -42,7 +43,13 @@ import { ClickOutside } from 'ngxtension/click-outside';
       <div class="flex gap-4 items-start">
         @if (cs.character().characterImage) {
           <div class="shrink-0">
-            <img [src]="cs.character().characterImage" alt="Charakter" class="w-16 h-16 object-cover rounded-lg border border-gray-300" />
+            <p-image
+              [src]="cs.character().characterImage"
+              alt="Charakter"
+              [preview]="true"
+              width="64"
+              imageClass="w-16 h-16 object-cover rounded-lg border border-gray-300"
+            />
           </div>
         }
         <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_auto_1fr_1fr_1fr_1fr] gap-2 items-end">
@@ -213,7 +220,6 @@ export class HeaderComponent {
   }
 
   onClassNodeSelect(nodeKey: any): void {
-    console.log(nodeKey)
     this.selectedClassNode = nodeKey;
     if (nodeKey?.data && typeof nodeKey.data === 'string') {
       this.cs.update({ className: nodeKey.data });

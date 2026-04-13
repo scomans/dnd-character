@@ -26,6 +26,14 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
           [minRows]="6"
         />
       </p-fieldset>
+      <p-fieldset legend="Sinne">
+        <app-markdown-editor
+          [value]="cs.character().senses"
+          (valueChange)="cs.update({ senses: $event })"
+          placeholder="Sinne (z.B. Dunkelsicht 18m, Passive Wahrnehmung)..."
+          [minRows]="3"
+        />
+      </p-fieldset>
     </div>
   `,
 })

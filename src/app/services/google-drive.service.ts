@@ -18,6 +18,7 @@ const APP_ID = CLIENT_ID.split('-')[0];
 
 const STORAGE_FILE_ID_KEY = 'gdrive-file-id';
 const STORAGE_FILE_NAME_KEY = 'gdrive-file-name';
+const STORAGE_ACCESS_TOKEN_KEY = 'gdrive-access-token';
 
 @Injectable({
   providedIn: 'root',
@@ -52,6 +53,11 @@ export class GoogleDriveService {
     if (savedFileId && savedFileName) {
       this.currentFile.set({ id: savedFileId, name: savedFileName });
     }
+    const savedToken = localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY);
+    if (savedToken) {
+      this._accessToken = savedToken;
+      this.connected.set(true);
+    }
   }
 
   /**
@@ -60,6 +66,7 @@ export class GoogleDriveService {
   handleOAuthToken(token: string): void {
     this._accessToken = token;
     this.connected.set(true);
+    localStorage.setItem(STORAGE_ACCESS_TOKEN_KEY, token);
   }
 
   /**
@@ -164,12 +171,14 @@ export class GoogleDriveService {
   clearCredentials(): void {
     localStorage.removeItem(STORAGE_FILE_ID_KEY);
     localStorage.removeItem(STORAGE_FILE_NAME_KEY);
+    localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY);
     this._accessToken = '';
     this.connected.set(false);
     this.currentFile.set(null);
   }
 
   disconnect(): void {
+    localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY);
     this._accessToken = '';
     this.connected.set(false);
   }
