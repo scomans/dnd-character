@@ -157,7 +157,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
             <span class="text-xs font-bold text-gray-600 mb-1 block">
               {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
             </span>
-            <p-accordion [multiple]="true" [value]="getOpenPanels(levelGroup.level)">
+            <p-accordion [multiple]="true">
               <div
                 cdkDropList
                 [cdkDropListData]="levelGroup.level"
@@ -288,10 +288,6 @@ export class SpellcastingComponent {
     return this.cs.character().spells.indexOf(spell);
   }
 
-  getOpenPanels(level: number): string[] {
-    return [];
-  }
-
   getSlotMax(level: number): number {
     return this.cs.character().spellSlots[level]?.max ?? 0;
   }
@@ -391,10 +387,9 @@ export class SpellcastingComponent {
     // Reorder within this level group
     moveItemInArray(spellsOfLevel, event.previousIndex, event.currentIndex);
 
-    // Rebuild the full spells array preserving order of other levels
-    const newSpells = char.spells.filter(s => s.level !== level);
-    // Insert the reordered level spells at the position of the first spell of this level
+    // Compute insertion index before filtering
     const firstIndex = char.spells.findIndex(s => s.level === level);
+    const newSpells = char.spells.filter(s => s.level !== level);
     newSpells.splice(firstIndex >= 0 ? firstIndex : newSpells.length, 0, ...spellsOfLevel);
 
     this.cs.update({ spells: newSpells });

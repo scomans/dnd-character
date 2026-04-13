@@ -94,22 +94,12 @@ export class GoogleDriveService {
   async validateToken(): Promise<boolean> {
     if (!this._accessToken) return false;
     try {
-      const resp = await fetch(`${TOKEN_INFO_URL}?access_token=${encodeURIComponent(this._accessToken)}`);
+      const resp = await fetch(TOKEN_INFO_URL, {
+        headers: { Authorization: `Bearer ${this._accessToken}` },
+      });
       return resp.ok;
     } catch {
       return false;
-    }
-  }
-
-  /**
-   * Ensures the token is valid before making an API call.
-   * Throws an error if the token has expired so the caller can trigger re-auth.
-   */
-  private async ensureValidToken(): Promise<void> {
-    const valid = await this.validateToken();
-    if (!valid) {
-      this.handleTokenExpired();
-      throw new Error('Access token expired. Please re-authenticate with Google.');
     }
   }
 
@@ -129,7 +119,6 @@ export class GoogleDriveService {
   async readFile(fileId: string): Promise<string> {
     this.loading.set(true);
     try {
-      await this.ensureValidToken();
       const resp = await fetch(`${DRIVE_API_BASE}/files/${fileId}?alt=media`, {
         headers: { Authorization: `Bearer ${this._accessToken}` },
       });
@@ -150,7 +139,6 @@ export class GoogleDriveService {
   async saveFile(fileId: string, content: string, fileName?: string): Promise<void> {
     this.loading.set(true);
     try {
-      await this.ensureValidToken();
       const metadata: Record<string, string> = {};
       if (fileName) metadata['name'] = fileName;
 
@@ -189,7 +177,6 @@ export class GoogleDriveService {
   async createFile(content: string, fileName: string): Promise<DriveFileInfo> {
     this.loading.set(true);
     try {
-      await this.ensureValidToken();
       const metadata = { name: fileName, mimeType: 'application/json' };
 
       const boundary = '-------314159265358979323846';
