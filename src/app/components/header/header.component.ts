@@ -51,7 +51,7 @@ import { CharacterService } from '../../services/character.service';
           >{{ cs.character().characterName || 'Charaktername' }}</span>
         }
       </div>
-      <div class="flex gap-4 items-start">
+      <div class="flex flex-col sm:flex-row flex-wrap gap-4 items-stretch">
         @if (cs.character().characterImage) {
           <div class="shrink-0">
             <p-image
@@ -63,7 +63,7 @@ import { CharacterService } from '../../services/character.service';
             />
           </div>
         }
-        <div class="flex-1 min-w-0 grid grid-cols-2 md:grid-cols-[2fr_auto_1fr_1fr_1fr_1fr] gap-2 items-end">
+        <div class="flex-1 min-w-0 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-[2fr_auto_1fr_1fr_1fr_1fr] gap-2 items-end">
           <!-- Klasse -->
           <p-ifta-label>
             <p-tree-select
@@ -80,7 +80,7 @@ import { CharacterService } from '../../services/character.service';
             <label for="header-class">Klasse</label>
           </p-ifta-label>
           <!-- Stufe -->
-          <p-iftalabel>
+          <p-ifta-label>
             <p-input-number
               [ngModel]="cs.character().level"
               (ngModelChange)="cs.update({ level: $event ?? 1 })"
@@ -92,9 +92,9 @@ import { CharacterService } from '../../services/character.service';
               [fluid]="true"
             />
             <label for="header-level">Stufe</label>
-          </p-iftalabel>
+          </p-ifta-label>
           <!-- Hintergrund -->
-          <p-iftalabel>
+          <p-ifta-label>
             @if (editingField() === 'background') {
               <p-auto-complete
                 [ngModel]="cs.character().background"
@@ -121,9 +121,9 @@ import { CharacterService } from '../../services/character.service';
               />
             }
             <label for="header-bg">Hintergrund</label>
-          </p-iftalabel>
+          </p-ifta-label>
           <!-- Volk -->
-          <p-iftalabel>
+          <p-ifta-label>
             @if (editingField() === 'race') {
               <p-auto-complete
                 [ngModel]="cs.character().race"
@@ -150,9 +150,9 @@ import { CharacterService } from '../../services/character.service';
               />
             }
             <label for="header-race">Volk</label>
-          </p-iftalabel>
+          </p-ifta-label>
           <!-- Gesinnung -->
-          <p-iftalabel>
+          <p-ifta-label>
             @if (editingField() === 'alignment') {
               <p-select
                 [ngModel]="cs.character().alignment"
@@ -176,9 +176,9 @@ import { CharacterService } from '../../services/character.service';
               />
             }
             <label for="header-alignment">Gesinnung</label>
-          </p-iftalabel>
+          </p-ifta-label>
           <!-- EP -->
-          <p-iftalabel>
+          <p-ifta-label>
             <p-input-number
               [ngModel]="cs.character().experiencePoints"
               (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
@@ -188,7 +188,7 @@ import { CharacterService } from '../../services/character.service';
               [fluid]="true"
             />
             <label for="header-xp">EP</label>
-          </p-iftalabel>
+          </p-ifta-label>
         </div>
       </div>
     </div>

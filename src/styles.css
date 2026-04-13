@@ -12,7 +12,7 @@
 }
 
 html, body {
-  @apply m-0 p-0 w-full h-full;
+  @apply m-0 p-0 w-full h-full overflow-x-hidden;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 14px;
   background: #f5f5f5;

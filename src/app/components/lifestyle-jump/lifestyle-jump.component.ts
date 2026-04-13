@@ -13,9 +13,9 @@ import { CharacterService } from '../../services/character.service';
   standalone: true,
   imports: [DecimalPipe, FormsModule, Fieldset, Select, Tooltip],
   template: `
-    <div class="grid grid-cols-1 gap-2">
-      <p-fieldset legend="Lebensstil">
-        <div class="flex items-center gap-2">
+    <div class="flex flex-wrap gap-2 flex-1">
+      <p-fieldset class="flex-1" legend="Lebensstil">
+        <div class="flex flex-wrap items-center gap-2">
           <p-select
             [ngModel]="cs.character().lifestyle"
             (ngModelChange)="cs.update({ lifestyle: $event })"
@@ -24,15 +24,16 @@ import { CharacterService } from '../../services/character.service';
             optionValue="value"
             [style]="{ width: '100%', fontSize: '0.8rem' }"
             appendTo="body"
+            class="flex-1"
           />
-          <div class="shrink-0 text-right">
+          <div class="flex-1 text-right">
             <span class="text-xs text-gray-500">Tägliche Kosten</span>
             <div class="text-sm font-bold text-slate-700">{{ getLifestyleCost() }}</div>
           </div>
         </div>
       </p-fieldset>
 
-      <p-fieldset legend="Hoch- & Weitsprung">
+      <p-fieldset class="flex-1" legend="Hoch- & Weitsprung">
         <div class="text-xs">
           <table class="w-full">
             <thead>

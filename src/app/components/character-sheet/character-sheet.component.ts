@@ -53,14 +53,14 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
         <p-tabpanels>
           <!-- Page 1: Main Character Sheet -->
           <p-tabpanel value="0">
-            <div class="flex flex-wrap gap-4" style="grid-auto-rows: 80px;">
+            <div class="flex flex-wrap gap-4 overflow-x-hidden">
               <!-- Column 1: Ability Scores -->
               <div class="max-sm:w-full">
                 <app-ability-scores />
               </div>
 
               <!-- Column 2: Saving Throws + Skills -->
-              <div class="max-sm:w-full max-sm:flex max-sm:flex-row-reverse justify-end gap-4">
+              <div class="flex max-sm:w-full flex-col sm:flex-row-reverse md:flex-col justify-end gap-4">
                 <app-saving-throws />
                 <app-skills />
               </div>
@@ -70,7 +70,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
                 <app-combat />
               </div>
 
-              <div class="w-full">
+              <div class="w-full overflow-x-auto">
                 <app-attacks />
               </div>
 
