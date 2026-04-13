@@ -219,7 +219,7 @@ export class AttacksComponent {
       proficient: true,
       attribute: 'str',
       range: '1.5',
-      damageDice: ' 1W8',
+      damageDice: '1W8',
       damageType: 'Hieb',
       description: '',
       mastery: '',
