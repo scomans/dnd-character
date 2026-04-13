@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from '../toolbar/toolbar.component';
-import { HeaderComponent } from '../header/header.component';
+import { Component } from '@angular/core';
+import { TabsModule } from 'primeng/tabs';
 import { AbilityScoresComponent } from '../ability-scores/ability-scores.component';
-import { SavingThrowsComponent } from '../saving-throws/saving-throws.component';
-import { SkillsComponent } from '../skills/skills.component';
-import { CombatComponent } from '../combat/combat.component';
-import { PersonalityComponent } from '../personality/personality.component';
+import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
 import { AttacksComponent } from '../attacks/attacks.component';
-import { ProficienciesLanguagesComponent } from '../proficiencies-languages/proficiencies-languages.component';
+import { CombatComponent } from '../combat/combat.component';
 import { EquipmentComponent } from '../equipment/equipment.component';
 import { FeaturesComponent } from '../features/features.component';
+import { HeaderComponent } from '../header/header.component';
 import { LifestyleJumpComponent } from '../lifestyle-jump/lifestyle-jump.component';
+import { PersonalityComponent } from '../personality/personality.component';
+import { ProficienciesLanguagesComponent } from '../proficiencies-languages/proficiencies-languages.component';
+import { SavingThrowsComponent } from '../saving-throws/saving-throws.component';
+import { SkillsComponent } from '../skills/skills.component';
 import { SpellcastingComponent } from '../spellcasting/spellcasting.component';
-import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
-import { TabsModule } from 'primeng/tabs';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
+
 
 @Component({
   selector: 'app-character-sheet',
@@ -52,33 +53,37 @@ import { TabsModule } from 'primeng/tabs';
         <p-tabpanels>
           <!-- Page 1: Main Character Sheet -->
           <p-tabpanel value="0">
-            <div class="grid grid-cols-1 md:grid-cols-[auto_auto_1fr] mt-4">
-              <div class="grid grid-cols-1 md:grid-cols-[auto_auto_1fr] gap-4 content-start">
-                <!-- Column 1: Ability Scores -->
-                <div class="w-full md:w-36">
-                  <app-ability-scores />
-                </div>
+            <div class="flex flex-wrap gap-4" style="grid-auto-rows: 80px;">
+              <!-- Column 1: Ability Scores -->
+              <div class="max-sm:w-full">
+                <app-ability-scores />
+              </div>
 
-                <!-- Column 2: Saving Throws + Skills -->
-                <div class="w-full md:w-64">
-                  <app-saving-throws />
-                  <app-skills />
-                </div>
-
-                <!-- Proficiencies directly below Ability Scores + Skills columns -->
-                <div class="md:col-span-2">
-                  <app-proficiencies-languages />
-                </div>
-                <div class="md:col-span-2">
-                  <app-lifestyle-jump />
-                </div>
+              <!-- Column 2: Saving Throws + Skills -->
+              <div class="max-sm:w-full max-sm:flex max-sm:flex-row-reverse justify-end gap-4">
+                <app-saving-throws />
+                <app-skills />
               </div>
 
               <!-- Column 3: Combat, Attacks, Features (Klassenmerkmale) -->
-              <div>
+              <div class="flex-1">
                 <app-combat />
+              </div>
+
+              <div class="w-full">
                 <app-attacks />
+              </div>
+
+              <div class="w-full">
                 <app-features />
+              </div>
+
+              <!-- Proficiencies directly below Ability Scores + Skills columns -->
+              <div class="flex-1">
+                <app-proficiencies-languages />
+              </div>
+              <div class="flex-1">
+                <app-lifestyle-jump />
               </div>
             </div>
           </p-tabpanel>

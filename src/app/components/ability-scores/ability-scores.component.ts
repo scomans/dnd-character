@@ -1,12 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CharacterService } from '../../services/character.service';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { ClickOutside } from 'ngxtension/click-outside';
 import { CheckboxModule } from 'primeng/checkbox';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { ABILITY_LABELS } from '../../models/character.model';
-import { ClickOutside } from 'ngxtension/click-outside';
+import { CharacterService } from '../../services/character.service';
+
 
 @Component({
   selector: 'app-ability-scores',
@@ -37,6 +37,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
             [showButtons]="false"
             [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
             (clickOutside)="editingProficiency.set(false)"
+            class="w-full"
           />
         } @else {
           <span
@@ -44,41 +45,40 @@ import { ClickOutside } from 'ngxtension/click-outside';
             (click)="editingProficiency.set(true)"
           >+{{ cs.getProficiencyBonus() }}</span>
         }
-        <span class="text-xs font-bold">
-          @if (editingProficiency()) {
-            Übungsb.
-          } @else {
-            Übungsbonus
-          }</span>
+        @if (!editingProficiency()) {
+          <span class="text-xs font-bold">Übungsb.</span>
+        }
       </div>
 
       <!-- Ability Scores (click-to-edit) -->
-      @for (ability of abilities; track ability) {
-        <div class="bg-white border-2 border-slate-700 rounded-lg p-2 flex flex-col items-center">
-          <span class="text-[0.6rem] font-bold text-gray-600">{{ getLabel(ability) }}</span>
-          <span class="text-3xl font-bold text-slate-700">
-            {{ cs.getAbilityModifier(ability) >= 0 ? '+' : '' }}{{ cs.getAbilityModifier(ability) }}
-          </span>
-          <div class="mt-1">
-            @if (editingAbility() === ability) {
-              <p-inputnumber
-                [ngModel]="getAbilityBase(ability)"
-                (ngModelChange)="updateAbility(ability, $event)"
-                [min]="1"
-                [max]="30"
-                [showButtons]="true"
-                [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
-                (clickOutside)="editingAbility.set(null)"
-              />
-            } @else {
-              <span
-                class="text-sm font-medium text-gray-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-400/30 rounded px-2 py-0.5"
-                (click)="editingAbility.set(ability)"
-              >{{ getAbilityBase(ability) }}</span>
-            }
+      <div class="grid grid-cols-2 sm:grid-cols-1 gap-2">
+        @for (ability of abilities; track ability) {
+          <div class="bg-white border-2 border-slate-700 rounded-lg p-2 flex flex-col items-center">
+            <span class="text-[0.6rem] font-bold text-gray-600">{{ getLabel(ability) }}</span>
+            <span class="text-3xl font-bold text-slate-700">
+              {{ cs.getAbilityModifier(ability) >= 0 ? '+' : '' }}{{ cs.getAbilityModifier(ability) }}
+            </span>
+            <div class="mt-1">
+              @if (editingAbility() === ability) {
+                <p-input-number
+                  [ngModel]="getAbilityBase(ability)"
+                  (ngModelChange)="updateAbility(ability, $event)"
+                  [min]="1"
+                  [max]="30"
+                  [showButtons]="true"
+                  [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
+                  (clickOutside)="editingAbility.set(null)"
+                />
+              } @else {
+                <span
+                  class="text-sm font-medium text-gray-700 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-400/30 rounded px-2 py-0.5"
+                  (click)="editingAbility.set(ability)"
+                >{{ getAbilityBase(ability) }}</span>
+              }
+            </div>
           </div>
-        </div>
-      }
+        }
+      </div>
     </div>
   `,
 })
