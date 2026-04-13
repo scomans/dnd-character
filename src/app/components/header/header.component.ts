@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
@@ -48,7 +48,7 @@ import { ClickOutside } from 'ngxtension/click-outside';
           <!-- Klasse & Stufe -->
           <div class="flex flex-col">
             @if (editingField() === 'class') {
-              <div class="flex gap-1" (clickOutside)="editingField.set(null)">
+              <div class="flex gap-1">
                 <p-treeselect
                   [ngModel]="selectedClassNode"
                   (ngModelChange)="onClassNodeSelect($event)"
@@ -86,13 +86,13 @@ import { ClickOutside } from 'ngxtension/click-outside';
                 (ngModelChange)="cs.update({ background: $event })"
                 [suggestions]="filteredBackgrounds"
                 (completeMethod)="filterBackgrounds($event)"
+                (onSelect)="editingField.set(null)"
                 [dropdown]="true"
                 [forceSelection]="false"
                 placeholder="Hintergrund"
                 [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
                 [style]="{ width: '100%' }"
                 appendTo="body"
-                (clickOutside)="editingField.set(null)"
               />
             } @else {
               <span
@@ -112,13 +112,13 @@ import { ClickOutside } from 'ngxtension/click-outside';
                 (ngModelChange)="cs.update({ race: $event })"
                 [suggestions]="filteredRaces"
                 (completeMethod)="filterRaces($event)"
+                (onSelect)="editingField.set(null)"
                 [dropdown]="true"
                 [forceSelection]="false"
                 placeholder="Volk"
                 [inputStyle]="{ width: '100%', fontSize: '0.85rem' }"
                 [style]="{ width: '100%' }"
                 appendTo="body"
-                (clickOutside)="editingField.set(null)"
               />
             } @else {
               <span
@@ -135,14 +135,13 @@ import { ClickOutside } from 'ngxtension/click-outside';
             @if (editingField() === 'alignment') {
               <p-select
                 [ngModel]="cs.character().alignment"
-                (ngModelChange)="cs.update({ alignment: $event })"
+                (ngModelChange)="onAlignmentChange($event)"
                 [options]="alignments"
                 optionLabel="label"
                 optionValue="value"
                 placeholder="--"
                 [style]="{ width: '100%', fontSize: '0.85rem' }"
                 appendTo="body"
-                (clickOutside)="editingField.set(null)"
               />
             } @else {
               <span
@@ -185,7 +184,6 @@ export class HeaderComponent {
   editingName = signal(false);
   editingField = signal<string | null>(null);
 
-  // AutoComplete suggestions
   allRaces = DND_RACES;
   allBackgrounds = DND_BACKGROUNDS;
   filteredRaces: string[] = [];
@@ -194,10 +192,11 @@ export class HeaderComponent {
   selectedClassNode: any = null;
 
   constructor() {
-    const className = this.cs.character().className;
-    if (className) {
-      this.selectedClassNode = className;
-    }
+    // Keep selectedClassNode in sync with the character signal
+    effect(() => {
+      const className = this.cs.character().className;
+      this.selectedClassNode = className || null;
+    });
   }
 
   getAlignmentLabel(): string {
@@ -212,6 +211,13 @@ export class HeaderComponent {
     } else {
       this.cs.update({ className: '' });
     }
+    // Close edit mode after selection
+    this.editingField.set(null);
+  }
+
+  onAlignmentChange(value: string): void {
+    this.cs.update({ alignment: value });
+    this.editingField.set(null);
   }
 
   filterRaces(event: { query: string }): void {

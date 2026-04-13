@@ -13,7 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/character.model';
+import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '../../models/character.model';
 
 @Component({
   selector: 'app-attacks',
@@ -21,7 +21,6 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/charact
   imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, InputMaskModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, TooltipModule, InputGroupModule, InputGroupAddonModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Waffen & Angriffszauber">
-      <!-- Attacks Table -->
       <div class="overflow-x-auto">
         <table class="w-full text-xs">
           <thead>
@@ -30,10 +29,12 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/charact
               <th class="p-1" pTooltip="Übungsbonus" tooltipPosition="top">ÜB</th>
               <th class="p-1" pTooltip="Attribut" tooltipPosition="top">ATTR</th>
               <th class="p-1">Reichweite</th>
-              <th class="p-1">Bonus</th>
+              <th class="p-1" pTooltip="Angriffsbonus = Attributsmod. + Übungsbonus (wenn geübt) + Magischer Bonus" tooltipPosition="top">Bonus</th>
               <th class="p-1">Schaden</th>
-              <th class="p-1">+</th>
+              <th class="p-1" pTooltip="Schadensbonus = Attributsmod. + Magischer Bonus" tooltipPosition="top">+</th>
               <th class="text-left p-1">Schadentyp</th>
+              <th class="p-1" pTooltip="Waffenmeisterschaft" tooltipPosition="top">Meisterschaft</th>
+              <th class="p-1" pTooltip="Magischer Bonus" tooltipPosition="top">Mag.</th>
               <th class="p-1 text-right">
                 <p-button icon="pi pi-plus" [rounded]="true" [text]="true" size="small" (onClick)="addAttack()" pTooltip="Angriff hinzufügen" tooltipPosition="top" />
               </th>
@@ -113,21 +114,50 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS } from '../../models/charact
                   </p-select>
                 </td>
                 <td class="p-1">
+                  <p-select
+                    [(ngModel)]="attack.mastery"
+                    (ngModelChange)="updateAttacks()"
+                    [options]="masteries"
+                    optionLabel="label"
+                    optionValue="value"
+                    [style]="{ width: '7rem', fontSize: '0.75rem' }"
+                    placeholder="--"
+                    appendTo="body"
+                  >
+                    <ng-template #selectedItem let-selectedOption>
+                      <span>{{ selectedOption?.value || '--' }}</span>
+                    </ng-template>
+                    <ng-template #item let-option>
+                      <span [pTooltip]="option.description" tooltipPosition="right">{{ option.label }}</span>
+                    </ng-template>
+                  </p-select>
+                </td>
+                <td class="p-1">
+                  <p-inputnumber
+                    [(ngModel)]="attack.magicBonus"
+                    (ngModelChange)="updateAttacks()"
+                    [showButtons]="false"
+                    [min]="0"
+                    [max]="5"
+                    [inputStyle]="{ width: '2rem', textAlign: 'center', fontSize: '0.75rem' }"
+                    pTooltip="Magischer Bonus (z.B. +1 Waffe)"
+                    tooltipPosition="top"
+                  />
+                </td>
+                <td class="p-1">
                   <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAttack(i)" />
                 </td>
               </tr>
-              @if (attack.description) {
-                <tr>
-                  <td colspan="9" class="p-1">
-                    <app-markdown-editor
-                      [value]="attack.description"
-                      (valueChange)="updateAttackDescription(i, $event)"
-                      placeholder="Beschreibung..."
-                      [minRows]="1"
-                    />
-                  </td>
-                </tr>
-              }
+              <tr>
+                <td colspan="11" class="p-1">
+                  <app-markdown-editor
+                    [value]="attack.description"
+                    (valueChange)="updateAttackDescription(i, $event)"
+                    placeholder="Beschreibung..."
+                    [minRows]="1"
+                  />
+                </td>
+              </tr>
             }
           </tbody>
         </table>
@@ -139,6 +169,7 @@ export class AttacksComponent {
   cs = inject(CharacterService);
 
   damageTypes = DAMAGE_TYPES;
+  masteries = WEAPON_MASTERIES;
 
   abilityOptions = [
     { label: 'Stärke', value: 'str' },
@@ -168,6 +199,8 @@ export class AttacksComponent {
       damageDice: ' 1W8',
       damageType: 'Hieb',
       description: '',
+      mastery: '',
+      magicBonus: 0,
     }];
     this.cs.update({ attacks });
   }

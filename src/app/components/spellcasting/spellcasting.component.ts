@@ -11,13 +11,12 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { ClickOutside } from 'ngxtension/click-outside';
 import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, MarkdownEditorComponent, ClickOutside],
+  imports: [CommonModule, FormsModule, InputTextModule, InputNumberModule, CheckboxModule, ButtonModule, SelectModule, FieldsetModule, PopoverModule, TooltipModule, MarkdownEditorComponent],
   template: `
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
@@ -33,7 +32,6 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
               placeholder="--"
               [style]="{ width: '100%' }"
               appendTo="body"
-              (clickOutside)="editingField.set(null)"
             />
           } @else {
             <span
@@ -49,14 +47,13 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
           @if (editingField() === 'spellAbility') {
             <p-select
               [ngModel]="cs.character().spellcastingAbility"
-              (ngModelChange)="cs.update({ spellcastingAbility: $event })"
+              (ngModelChange)="onSpellAbilityChange($event)"
               [options]="abilityOptions"
               optionLabel="label"
               optionValue="value"
               placeholder="--"
               [style]="{ width: '100%' }"
               appendTo="body"
-              (clickOutside)="editingField.set(null)"
             />
           } @else {
             <span
@@ -94,7 +91,6 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
           @for (level of spellLevels; track level) {
             <div class="flex flex-col items-center text-xs">
               <span class="font-bold text-slate-700 mb-0.5">{{ level }}</span>
-              <!-- Editable max slots -->
               <p-inputnumber
                 [ngModel]="getSlotMax(level)"
                 (ngModelChange)="updateSlotMax(level, $event)"
@@ -104,7 +100,6 @@ import { Spell, SpellSlot, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../mo
                 pTooltip="Max. Plätze"
                 tooltipPosition="top"
               />
-              <!-- Slot usage as clickable circles -->
               <div class="flex flex-wrap justify-center gap-0.5 mt-1">
                 @for (i of getSlotRange(level); track i) {
                   <span
@@ -269,6 +264,12 @@ export class SpellcastingComponent {
       updates['spellcastingAbility'] = found.ability;
     }
     this.cs.update(updates);
+    this.editingField.set(null);
+  }
+
+  onSpellAbilityChange(value: string): void {
+    this.cs.update({ spellcastingAbility: value });
+    this.editingField.set(null);
   }
 
   addSpell(): void {
