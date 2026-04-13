@@ -180,12 +180,16 @@ export interface DndCharacter {
   // Features and Traits
   featuresAndTraits: string;
   racialTraits: string;
+  senses: string;
 
   // Spellcasting
   spellcastingClass: string;
   spellcastingAbility: string;
   spellSlots: { [level: number]: SpellSlot };
   spells: Spell[];
+
+  // Additional Equipment
+  additionalEquipment: Equipment[];
 
   // Appearance & Backstory
   age: string;
@@ -194,6 +198,7 @@ export interface DndCharacter {
   eyes: string;
   skin: string;
   hair: string;
+  sizeCategory: string;
   appearance: string;
   backstory: string;
   alliesAndOrganizations: string;
@@ -611,9 +616,11 @@ export function createDefaultCharacter(): DndCharacter {
     languages: '',
     toolsAndOther: '',
     equipment: [],
+    additionalEquipment: [],
     currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
     featuresAndTraits: '',
     racialTraits: '',
+    senses: '',
     spellcastingClass: '',
     spellcastingAbility: '',
     spellSlots: {},
@@ -624,6 +631,7 @@ export function createDefaultCharacter(): DndCharacter {
     eyes: '',
     skin: '',
     hair: '',
+    sizeCategory: '',
     appearance: '',
     backstory: '',
     alliesAndOrganizations: '',
