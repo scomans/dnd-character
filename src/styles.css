@@ -66,6 +66,26 @@ html.dark-mode body {
 .markdown-content strong {
   font-weight: 700;
 }
+.markdown-content details.spoiler {
+  margin: 0.3em 0;
+  border: 1px solid var(--dnd-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.markdown-content details.spoiler > summary {
+  cursor: pointer;
+  padding: 0.3em 0.5em;
+  font-weight: 600;
+  background: var(--dnd-bg-dark);
+  user-select: none;
+  list-style: revert;
+}
+.markdown-content details.spoiler > summary:hover {
+  background: var(--dnd-border);
+}
+.markdown-content details.spoiler > .spoiler-content {
+  padding: 0.3em 0.5em;
+}
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
