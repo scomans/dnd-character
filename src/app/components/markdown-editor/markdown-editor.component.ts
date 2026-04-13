@@ -34,15 +34,22 @@ marked.use(markedAccordionExtension());
       </div>
     } @else {
       <div
-        class="cursor-pointer min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        class="relative group min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
-        (click)="editing.set(true)"
       >
+        <button
+          type="button"
+          class="absolute top-0 right-0 p-0.5 opacity-0 group-hover:opacity-70 hover:!opacity-100 text-gray-400 dark:text-gray-500 transition-opacity cursor-pointer"
+          (click)="editing.set(true)"
+          title="Bearbeiten"
+        >
+          <i class="pi pi-pencil text-xs"></i>
+        </button>
         @if (value()) {
           <span [innerHTML]="renderedHtml()"></span>
         } @else {
-          <span class="text-gray-400 dark:text-gray-500 italic text-xs">Klicken zum Bearbeiten...</span>
+          <span class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer" (click)="editing.set(true)">Klicken zum Bearbeiten...</span>
         }
       </div>
     }
