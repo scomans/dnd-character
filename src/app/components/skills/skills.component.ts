@@ -44,7 +44,7 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS }
               [binary]="true"
               [disabled]="!editing()"
             />
-            <span class="font-bold w-6 text-right text-slate-700">
+            <span class="font-bold w-6 text-right text-slate-700 dark:text-slate-300">
               {{ cs.getSkillModifier(skill) >= 0 ? '+' : '' }}{{ cs.getSkillModifier(skill) }}
             </span>
             <span class="text-xs">{{ getLabel(skill) }} (<span class="font-bold" [pTooltip]="getAbilityFull(skill)" tooltipPosition="right">{{ getAbilityShort(skill) }}</span>)</span>
@@ -53,11 +53,11 @@ import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS }
       </div>
 
       <!-- Passive Perception -->
-      <div class="mt-2 flex items-center gap-2 border-t border-gray-200 pt-2">
-        <span class="text-lg font-bold text-slate-700">{{ cs.getPassivePerception() }}</span>
+      <div class="mt-2 flex items-center gap-2 border-t border-gray-200 dark:border-gray-700 pt-2">
+        <span class="text-lg font-bold text-slate-700 dark:text-slate-300">{{ cs.getPassivePerception() }}</span>
         <div class="text-[0.6rem]">
-          <div class="font-bold text-gray-600">Passive Weisheit (Wahrnehmung)</div>
-          <div class="text-gray-400">[10 + Wahrnehmung]</div>
+          <div class="font-bold text-gray-600 dark:text-gray-400">Passive Weisheit (Wahrnehmung)</div>
+          <div class="text-gray-400 dark:text-gray-500">[10 + Wahrnehmung]</div>
         </div>
       </div>
     </p-fieldset>

@@ -13,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
           [src]="imageData()"
           [alt]="alt()"
           [class]="imageClass()"
-          class="object-cover rounded-lg border border-gray-300 cursor-pointer"
+          class="object-cover rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
           (click)="openFilePicker()"
         />
         <p-button
@@ -25,12 +25,12 @@ import { ButtonModule } from 'primeng/button';
         />
       } @else {
         <div
-          class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-slate-500 hover:bg-slate-50 transition-colors"
+          class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors"
           [class]="placeholderClass()"
           (click)="openFilePicker()"
         >
-          <i class="pi pi-image text-2xl text-gray-400 mb-1"></i>
-          <span class="text-xs text-gray-500">{{ placeholder() }}</span>
+          <i class="pi pi-image text-2xl text-gray-400 dark:text-gray-500 mb-1"></i>
+          <span class="text-xs text-gray-500 dark:text-gray-400">{{ placeholder() }}</span>
         </div>
       }
       <input

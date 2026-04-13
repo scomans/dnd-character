@@ -37,7 +37,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
       <div class="overflow-x-auto">
         <table class="w-full text-xs" style="min-width: 600px">
           <thead>
-            <tr class="border-b border-gray-300">
+            <tr class="border-b border-gray-300 dark:border-gray-600">
               <th class="text-left p-1">Angriff</th>
               <th class="p-1" pTooltip="Übungsbonus" tooltipPosition="top">ÜB</th>
               <th class="p-1" pTooltip="Attribut" tooltipPosition="top">Attr</th>
@@ -85,7 +85,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                     </ng-template>
                   </p-select>
                 </td>
-                <td class="p-1 text-center font-bold text-slate-700">
+                <td class="p-1 text-center font-bold text-slate-700 dark:text-slate-300">
                   {{ cs.getAttackBonus(attack) >= 0 ? '+' : '' }}{{ cs.getAttackBonus(attack) }}
                 </td>
                 <td class="p-1">
@@ -115,7 +115,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                     pSize="small"
                   />
                 </td>
-                <td class="p-1 text-center font-bold text-slate-700">
+                <td class="p-1 text-center font-bold text-slate-700 dark:text-slate-300">
                   {{ cs.getDamageBonus(attack) >= 0 ? '+' : '' }}{{ cs.getDamageBonus(attack) }}
                 </td>
                 <td class="p-1">
@@ -177,7 +177,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                   <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAttack(i)" />
                 </td>
               </tr>
-              <tr class="border-b border-gray-100">
+              <tr class="border-b border-gray-100 dark:border-gray-700">
                 <td colspan="11" class="p-1">
                   <app-markdown-editor
                     [value]="attack.description"

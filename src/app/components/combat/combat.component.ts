@@ -54,7 +54,7 @@ import { CharacterService } from '../../services/character.service';
               </div>
             } @else {
               <span
-                class="text-2xl font-bold text-slate-700 cursor-pointer hover:text-slate-500"
+                class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
                 pTooltip="Rüstungsklasse (klicken zum Bearbeiten)"
                 tooltipPosition="top"
                 (click)="editingAC.set(true)"
@@ -64,7 +64,7 @@ import { CharacterService } from '../../services/character.service';
         </p-fieldset>
         <p-fieldset legend="Initiative" class="flex-1" styleClass="text-center">
           <div class="flex flex-col items-center">
-            <span class="text-2xl font-bold text-slate-700" pTooltip="Geschicklichkeits-Modifikator" tooltipPosition="top">
+            <span class="text-2xl font-bold text-slate-700 dark:text-slate-300" pTooltip="Geschicklichkeits-Modifikator" tooltipPosition="top">
               {{ cs.getInitiative() >= 0 ? '+' : '' }}{{ cs.getInitiative() }}
             </span>
           </div>
@@ -83,7 +83,7 @@ import { CharacterService } from '../../services/character.service';
               </p-input-group>
             } @else {
               <span
-                class="text-2xl font-bold text-slate-700 cursor-pointer hover:text-slate-500"
+                class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
                 (click)="editingSpeed.set(true)"
               >{{ cs.character().speed }} m</span>
             }
@@ -108,7 +108,7 @@ import { CharacterService } from '../../services/character.service';
               [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
               size="small"
             />
-            <span class="text-xl font-bold text-gray-400">/</span>
+            <span class="text-xl font-bold text-gray-400 dark:text-gray-500">/</span>
             @if (editingMaxHP()) {
               <div (clickOutside)="editingMaxHP.set(false)">
                 <p-input-number
@@ -121,7 +121,7 @@ import { CharacterService } from '../../services/character.service';
               </div>
             } @else {
               <span
-                class="text-2xl font-bold text-slate-700 cursor-pointer hover:text-slate-500"
+                class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
                 pTooltip="Max. TP (klicken zum Bearbeiten)"
                 tooltipPosition="top"
                 (click)="editingMaxHP.set(true)"

@@ -32,7 +32,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
       <div class="space-y-3">
         <!-- Armor Proficiencies -->
         <div>
-          <span class="text-[0.65rem] font-bold text-gray-600">Rüstung</span>
+          <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400">Rüstung</span>
           <div class="flex flex-wrap gap-3 mt-1">
             <label class="flex items-center gap-1 text-xs">
               <p-checkbox [ngModel]="cs.character().armorProficiencies.light" (ngModelChange)="updateArmor('light', $event)" [binary]="true" [disabled]="!editing()" />
@@ -55,7 +55,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 
         <!-- Weapon Proficiencies -->
         <div>
-          <span class="text-[0.65rem] font-bold text-gray-600">Waffen</span>
+          <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400">Waffen</span>
           <div class="flex flex-wrap gap-3 mt-1">
             <label class="flex items-center gap-1 text-xs">
               <p-checkbox [ngModel]="cs.character().weaponProficiencies.simple" (ngModelChange)="updateWeapon('simple', $event)" [binary]="true" [disabled]="!editing()" />
@@ -72,13 +72,13 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
               <input pInputText [ngModel]="cs.character().weaponProficiencies.other" (ngModelChange)="updateWeaponOther($event)" class="flex-1 text-xs" />
             </div>
           } @else if (cs.character().weaponProficiencies.other) {
-            <div class="mt-1 text-xs text-gray-600">Sonstige: {{ cs.character().weaponProficiencies.other }}</div>
+            <div class="mt-1 text-xs text-gray-600 dark:text-gray-400">Sonstige: {{ cs.character().weaponProficiencies.other }}</div>
           }
         </div>
 
         <!-- Languages -->
         <div>
-          <span class="text-[0.65rem] font-bold text-gray-600">Sprachen</span>
+          <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400">Sprachen</span>
           <app-markdown-editor
             [value]="cs.character().languages"
             (valueChange)="cs.update({ languages: $event })"
@@ -89,7 +89,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 
         <!-- Tools & Other -->
         <div>
-          <span class="text-[0.65rem] font-bold text-gray-600">Werkzeuge & Andere</span>
+          <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400">Werkzeuge & Andere</span>
           <app-markdown-editor
             [value]="cs.character().toolsAndOther"
             (valueChange)="cs.update({ toolsAndOther: $event })"

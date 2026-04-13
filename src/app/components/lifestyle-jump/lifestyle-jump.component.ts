@@ -27,8 +27,8 @@ import { CharacterService } from '../../services/character.service';
             class="flex-1"
           />
           <div class="flex-1 text-right">
-            <span class="text-xs text-gray-500">Tägliche Kosten</span>
-            <div class="text-sm font-bold text-slate-700">{{ getLifestyleCost() }}</div>
+            <span class="text-xs text-gray-500 dark:text-gray-400">Tägliche Kosten</span>
+            <div class="text-sm font-bold text-slate-700 dark:text-slate-300">{{ getLifestyleCost() }}</div>
           </div>
         </div>
       </p-fieldset>
@@ -39,20 +39,20 @@ import { CharacterService } from '../../services/character.service';
             <thead>
               <tr>
                 <th></th>
-                <th class="text-center text-[0.6rem] text-gray-500">Ohne Anlauf</th>
-                <th class="text-center text-[0.6rem] text-gray-500">Mit Anlauf</th>
+                <th class="text-center text-[0.6rem] text-gray-500 dark:text-gray-400">Ohne Anlauf</th>
+                <th class="text-center text-[0.6rem] text-gray-500 dark:text-gray-400">Mit Anlauf</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="text-[0.65rem] font-bold">Hoch</td>
                 <td class="text-center">
-                  <span class="font-bold text-slate-700" pTooltip="(Stärke-Mod + 3) / 2 ft → m" tooltipPosition="top">
+                  <span class="font-bold text-slate-700 dark:text-slate-300" pTooltip="(Stärke-Mod + 3) / 2 ft → m" tooltipPosition="top">
                     {{ getHighJumpStanding() | number:'1.2-2' }} m
                   </span>
                 </td>
                 <td class="text-center">
-                  <span class="font-bold text-slate-700" pTooltip="Stärke-Mod + 3 ft → m" tooltipPosition="top">
+                  <span class="font-bold text-slate-700 dark:text-slate-300" pTooltip="Stärke-Mod + 3 ft → m" tooltipPosition="top">
                     {{ getHighJumpRunning() | number:'1.2-2' }} m
                   </span>
                 </td>
@@ -60,12 +60,12 @@ import { CharacterService } from '../../services/character.service';
               <tr>
                 <td class="text-[0.65rem] font-bold">Weit</td>
                 <td class="text-center">
-                  <span class="font-bold text-slate-700" pTooltip="Stärke-Wert / 2 ft → m" tooltipPosition="top">
+                  <span class="font-bold text-slate-700 dark:text-slate-300" pTooltip="Stärke-Wert / 2 ft → m" tooltipPosition="top">
                     {{ getLongJumpStanding() | number:'1.2-2' }} m
                   </span>
                 </td>
                 <td class="text-center">
-                  <span class="font-bold text-slate-700" pTooltip="Stärke-Wert ft → m" tooltipPosition="top">
+                  <span class="font-bold text-slate-700 dark:text-slate-300" pTooltip="Stärke-Wert ft → m" tooltipPosition="top">
                     {{ getLongJumpRunning() | number:'1.2-2' }} m
                   </span>
                 </td>

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Configure Tailwind dark mode to use .dark-mode selector (matching PrimeNG config) */
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+
 /* DnD Character Sheet Theme */
 :root {
   --dnd-red: #58180d;
@@ -11,11 +14,28 @@
   --dnd-section-bg: #fff9ee;
 }
 
+html.dark-mode {
+  --dnd-red: #a0412a;
+  --dnd-gold: #d4b97a;
+  --dnd-bg: #23272e;
+  --dnd-bg-dark: #1a1d23;
+  --dnd-border: #444c56;
+  --dnd-text: #e6edf3;
+  --dnd-section-bg: #2d333b;
+}
+
 html, body {
   @apply m-0 p-0 w-full h-full overflow-x-hidden;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 14px;
   background: #f5f5f5;
+  color: var(--dnd-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+html.dark-mode,
+html.dark-mode body {
+  background: #1a1d23;
   color: var(--dnd-text);
 }
 
