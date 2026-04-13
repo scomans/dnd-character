@@ -19,8 +19,8 @@ import { type MarkedExtension, type Tokens } from 'marked';
  * Renders as native HTML <details>/<summary> for expand/collapse.
  */
 
-const START_TAGS = ['::::accordion', ':accordion', ':acd'];
-const END_TAGS = ['::::accordionend', ':accordionend', ':acdend'];
+const START_TAGS = [':accordion', ':acd', ':spoiler', '++++'];
+const END_TAGS = [':accordionend', ':acdend', ':spoilerend', '++++'];
 
 const PROP_REGEX = /\s*(\w+)="([^"]+)"/g;
 

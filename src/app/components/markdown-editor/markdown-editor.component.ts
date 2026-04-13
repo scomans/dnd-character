@@ -12,13 +12,15 @@ import { marked } from 'marked';
 import { TextareaModule } from 'primeng/textarea';
 import { ClickOutside } from 'ngxtension/click-outside';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
+import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 marked.use(markedAccordionExtension());
 
 @Component({
   selector: 'app-markdown-editor',
   standalone: true,
-  imports: [FormsModule, TextareaModule, ClickOutside],
+  imports: [FormsModule, TextareaModule, ClickOutside, Button, Tooltip],
   template: `
     @if (editing()) {
       <div (clickOutside)="editing.set(false)">
@@ -38,19 +40,25 @@ marked.use(markedAccordionExtension());
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
       >
-        <button
-          type="button"
-          class="absolute top-0 right-0 p-0.5 opacity-0 group-hover:opacity-70 hover:!opacity-100 text-gray-400 dark:text-gray-500 transition-opacity cursor-pointer"
-          (click)="editing.set(true)"
-          title="Bearbeiten"
-          aria-label="Bearbeiten"
-        >
-          <i class="pi pi-pencil text-xs"></i>
-        </button>
+        <p-button
+          class="absolute top-1 right-1"
+          [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+          [rounded]="true"
+          [text]="true"
+          size="small"
+          (onClick)="editing.set(true)"
+          [pTooltip]="'Bearbeiten'"
+          tooltipPosition="top"
+        />
         @if (value()) {
           <span [innerHTML]="renderedHtml()"></span>
         } @else {
-          <button type="button" class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer bg-transparent border-none p-0" (click)="editing.set(true)">Klicken zum Bearbeiten...</button>
+          <button
+            type="button"
+            class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer bg-transparent border-none p-0"
+            (click)="editing.set(true)"
+          >Klicken zum Bearbeiten...
+          </button>
         }
       </div>
     }
