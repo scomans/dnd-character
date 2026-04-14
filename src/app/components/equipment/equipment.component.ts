@@ -2,11 +2,13 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DecimalPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
+import { Button } from 'primeng/button';
+import { Fieldset } from 'primeng/fieldset';
+import { InputNumber } from 'primeng/inputnumber';
+import { InputText } from 'primeng/inputtext';
+import { Tooltip } from 'primeng/tooltip';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { Equipment } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
@@ -14,8 +16,10 @@ import { CharacterService } from '../../services/character.service';
 @Component({
   selector: 'app-equipment',
   standalone: true,
-  imports: [FormsModule, InputTextModule, InputNumberModule, ButtonModule, FieldsetModule, TooltipModule, DragDropModule, DecimalPipe],
+  imports: [FormsModule, InputText, InputNumber, Button, Fieldset, Tooltip, DragDropModule, DecimalPipe, ConfirmDialog],
+  providers: [ConfirmationService],
   template: `
+    <p-confirmDialog />
     <div class="space-y-3">
       <p-fieldset legend="Ausrüstung">
         <div class="flex gap-4">
@@ -42,7 +46,7 @@ import { CharacterService } from '../../services/character.service';
                     [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
                   />
                   <span class="text-gray-400 dark:text-gray-500 text-[0.6rem]">kg</span>
-                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeItem(i)" />
+                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="confirmRemoveItem(i, item.name)" />
                 </div>
               }
             </div>
@@ -100,7 +104,7 @@ import { CharacterService } from '../../services/character.service';
                 [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
               />
               <span class="text-gray-400 dark:text-gray-500 text-[0.6rem]">kg</span>
-              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="removeAdditionalItem(i)" />
+              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="confirmRemoveAdditionalItem(i, item.name)" />
             </div>
           }
         </div>
@@ -116,6 +120,7 @@ import { CharacterService } from '../../services/character.service';
 })
 export class EquipmentComponent {
   cs = inject(CharacterService);
+  private confirmationService = inject(ConfirmationService);
 
   // Reversed order: highest value first
   coins = [
@@ -142,6 +147,17 @@ export class EquipmentComponent {
     const char = this.cs.character();
     const equipment = [...char.equipment, { name: '', quantity: 1, weight: 0, description: '' }];
     this.cs.update({ equipment });
+  }
+
+  confirmRemoveItem(index: number, name: string): void {
+    this.confirmationService.confirm({
+      message: `„${name || 'Unbenannt'}" wirklich löschen?`,
+      header: 'Gegenstand löschen',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Löschen',
+      rejectLabel: 'Abbrechen',
+      accept: () => this.removeItem(index),
+    });
   }
 
   removeItem(index: number): void {
@@ -172,6 +188,17 @@ export class EquipmentComponent {
     const char = this.cs.character();
     const additionalEquipment = [...(char.additionalEquipment ?? []), { name: '', quantity: 1, weight: 0, description: '' }];
     this.cs.update({ additionalEquipment });
+  }
+
+  confirmRemoveAdditionalItem(index: number, name: string): void {
+    this.confirmationService.confirm({
+      message: `„${name || 'Unbenannt'}" wirklich löschen?`,
+      header: 'Gegenstand löschen',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Löschen',
+      rejectLabel: 'Abbrechen',
+      accept: () => this.removeAdditionalItem(index),
+    });
   }
 
   removeAdditionalItem(index: number): void {

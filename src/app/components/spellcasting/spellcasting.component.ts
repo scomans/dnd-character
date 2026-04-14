@@ -3,16 +3,18 @@ import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Divider } from 'primeng/divider';
 import { CharacterService } from '../../services/character.service';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { FieldsetModule } from 'primeng/fieldset';
-import { AccordionModule } from 'primeng/accordion';
-import { TooltipModule } from 'primeng/tooltip';
-import { IftaLabelModule } from 'primeng/iftalabel';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { InputText } from 'primeng/inputtext';
+import { InputNumber } from 'primeng/inputnumber';
+import { Checkbox } from 'primeng/checkbox';
+import { Button } from 'primeng/button';
+import { Select } from 'primeng/select';
+import { Fieldset } from 'primeng/fieldset';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Tooltip } from 'primeng/tooltip';
+import { IftaLabel } from 'primeng/iftalabel';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
 
@@ -21,21 +23,27 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
   standalone: true,
   imports: [
     FormsModule,
-    InputTextModule,
-    InputNumberModule,
-    CheckboxModule,
-    ButtonModule,
-    SelectModule,
-    FieldsetModule,
-    AccordionModule,
-    TooltipModule,
-    IftaLabelModule,
-    ToggleSwitchModule,
+    InputText,
+    InputNumber,
+    Checkbox,
+    Button,
+    Select,
+    Fieldset,
+    Accordion,
+    AccordionPanel,
+    AccordionHeader,
+    AccordionContent,
+    Tooltip,
+    IftaLabel,
+    ToggleSwitch,
     MarkdownEditorComponent,
     DragDropModule,
     Divider,
+    ConfirmDialog,
   ],
+  providers: [ConfirmationService],
   template: `
+    <p-confirmDialog />
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
       <div class="grid grid-cols-4 gap-2">
@@ -198,26 +206,31 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                               [binary]="true"
                             />
                           }
-                          <input
-                            pInputText
-                            [(ngModel)]="spell.name"
-                            (ngModelChange)="updateSpells()"
-                            (keydown.space)="$event.stopPropagation()"
-                            class="flex-1 text-xs"
-                            placeholder="Zaubername"
-                          />
-                          <p-button
-                            icon="pi pi-trash"
-                            [rounded]="true"
-                            [text]="true"
-                            severity="danger"
-                            size="small"
-                            (onClick)="removeSpell(spell)"
-                          />
+                          <span class="flex-1 text-xs font-medium text-slate-700 dark:text-slate-300">{{ spell.name || 'Unbenannt' }}</span>
                         </div>
                       </p-accordion-header>
                       <p-accordion-content>
-                        <div class="p-2">
+                        <div class="p-2 space-y-2">
+                          <div class="flex items-center gap-2">
+                            <input
+                              pInputText
+                              [(ngModel)]="spell.name"
+                              (ngModelChange)="updateSpells()"
+                              (keydown.space)="$event.stopPropagation()"
+                              class="flex-1 text-xs"
+                              placeholder="Zaubername"
+                            />
+                            <p-button
+                              icon="pi pi-trash"
+                              [rounded]="true"
+                              [text]="true"
+                              severity="danger"
+                              size="small"
+                              (onClick)="confirmRemoveSpell(spell)"
+                              pTooltip="Zauber löschen"
+                              tooltipPosition="top"
+                            />
+                          </div>
                           <app-markdown-editor
                             [value]="spell.description"
                             (valueChange)="spell.description = $event; updateSpells()"
@@ -254,6 +267,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
 })
 export class SpellcastingComponent {
   cs = inject(CharacterService);
+  private confirmationService = inject(ConfirmationService);
   spellcastingClasses = SPELLCASTING_CLASSES;
   spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   newSpellLevel = 0;
@@ -393,6 +407,17 @@ export class SpellcastingComponent {
       prepared: false,
     };
     this.cs.update({ spells: [...char.spells, newSpell] });
+  }
+
+  confirmRemoveSpell(spell: Spell): void {
+    this.confirmationService.confirm({
+      message: `„${spell.name || 'Unbenannt'}" wirklich löschen?`,
+      header: 'Zauber löschen',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Löschen',
+      rejectLabel: 'Abbrechen',
+      accept: () => this.removeSpell(spell),
+    });
   }
 
   removeSpell(spell: Spell): void {

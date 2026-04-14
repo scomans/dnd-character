@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClickOutside } from 'ngxtension/click-outside';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { Button } from 'primeng/button';
+import { Fieldset } from 'primeng/fieldset';
+import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
+import { Tooltip } from 'primeng/tooltip';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { Counter } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
@@ -17,14 +19,17 @@ import { CharacterService } from '../../services/character.service';
   imports: [
     CommonModule,
     FormsModule,
-    ButtonModule,
-    FieldsetModule,
-    InputNumberModule,
+    Button,
+    Fieldset,
+    InputNumber,
     InputText,
-    TooltipModule,
+    Tooltip,
     ClickOutside,
+    ConfirmDialog,
   ],
+  providers: [ConfirmationService],
   template: `
+    <p-confirmDialog />
     <p-fieldset legend="Zähler / Tracker">
       <div class="flex flex-col gap-3">
         @for (counter of cs.character().counters; track $index) {
@@ -37,7 +42,7 @@ import { CharacterService } from '../../services/character.service';
                   [text]="true"
                   severity="danger"
                   size="small"
-                  (onClick)="remove($index)"
+                  (onClick)="confirmRemove($index, counter.name)"
                   pTooltip="Entfernen"
                   tooltipPosition="top"
                 />
@@ -119,6 +124,7 @@ import { CharacterService } from '../../services/character.service';
 })
 export class CountersComponent {
   cs = inject(CharacterService);
+  private confirmationService = inject(ConfirmationService);
   editingIndex = signal(-1);
 
   add(): void {
@@ -126,6 +132,17 @@ export class CountersComponent {
     counters.push({ name: '', maxValue: 3, currentValue: 3 });
     this.cs.update({ counters });
     this.editingIndex.set(counters.length - 1);
+  }
+
+  confirmRemove(index: number, name: string): void {
+    this.confirmationService.confirm({
+      message: `„${name || 'Unbenannt'}" wirklich löschen?`,
+      header: 'Zähler löschen',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Löschen',
+      rejectLabel: 'Abbrechen',
+      accept: () => this.remove(index),
+    });
   }
 
   remove(index: number): void {
