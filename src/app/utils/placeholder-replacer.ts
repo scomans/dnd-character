@@ -1,6 +1,7 @@
 import { type MarkedExtension, type Tokens } from 'marked';
-import { CharacterService } from '../services/character.service';
 import { SKILL_LABELS } from '../models/character.model';
+import { CharacterService } from '../services/character.service';
+
 
 /**
  * Custom marked inline extension for character-value placeholders.
@@ -65,11 +66,11 @@ for (const [key, label] of Object.entries(SKILL_LABELS)) {
 // ---------------------------------------------------------------------------
 
 function formatModifier(value: number): string {
-  return value >= 0 ? `+${value}` : `${value}`;
+  return `${ value }`;
 }
 
 function escapeHtml(text: string): string {
-  return text
+  return (text ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -102,8 +103,10 @@ function resolvePlaceholder(
     case 'üb':
       return { value: formatModifier(cs.getProficiencyBonus()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'rk':
+    case 'ac':
       return { value: String(cs.getComputedArmorClass()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'br':
+    case 'bg':
       return { value: String(char.speed), tooltip: SPECIAL_TOOLTIP[key] };
     case 'ini':
       return { value: formatModifier(cs.getInitiative()), tooltip: SPECIAL_TOOLTIP[key] };
@@ -118,6 +121,7 @@ function resolvePlaceholder(
     case 'zattk':
       return { value: formatModifier(cs.getSpellAttackBonus()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'lvl':
+    case 'level':
       return { value: String(cs.getLevel()), tooltip: SPECIAL_TOOLTIP[key] };
     default:
       break;
