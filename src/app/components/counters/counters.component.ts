@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClickOutside } from 'ngxtension/click-outside';
@@ -16,7 +15,6 @@ import { CharacterService } from '../../services/character.service';
 @Component({
   selector: 'app-counters',
   imports: [
-    CommonModule,
     FormsModule,
     Button,
     Fieldset,

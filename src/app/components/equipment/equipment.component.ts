@@ -1,4 +1,4 @@
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DecimalPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +15,7 @@ import { CharacterService } from '../../services/character.service';
 
 @Component({
   selector: 'app-equipment',
-  imports: [FormsModule, InputText, InputNumber, Button, Fieldset, Tooltip, DragDropModule, DecimalPipe, ConfirmDialog],
+  imports: [FormsModule, InputText, InputNumber, Button, Fieldset, Tooltip, CdkDropList, CdkDrag, CdkDragHandle, DecimalPipe, ConfirmDialog],
   providers: [ConfirmationService],
   templateUrl: './equipment.component.html',
   styleUrl: './equipment.component.scss',

@@ -5,7 +5,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Marked } from 'marked';
 import { ClickOutside } from 'ngxtension/click-outside';
 import { Button } from 'primeng/button';
-import { TextareaModule } from 'primeng/textarea';
+import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
@@ -13,7 +13,7 @@ import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
 
 @Component({
   selector: 'app-markdown-editor',
-  imports: [FormsModule, NgClass, TextareaModule, ClickOutside, Button, Tooltip],
+  imports: [FormsModule, NgClass, Textarea, ClickOutside, Button, Tooltip],
   templateUrl: './markdown-editor.component.html',
   styleUrl: './markdown-editor.component.scss',
 })

@@ -1,5 +1,5 @@
 <p-fieldset styleClass="relative">
-  <ng-template pTemplate="header">
+  <ng-template #header>
     <div class="flex items-center gap-2 w-full">
       <span class="font-bold">Fertigkeiten</span>
       <p-button
@@ -20,7 +20,7 @@
           [ngModel]="isExpertise(skill)"
           (ngModelChange)="toggleExpertise(skill, $event)"
           [binary]="true"
-          styleClass="scale-75"
+          class="scale-75"
           [disabled]="!editing()"
         />
         <p-checkbox
@@ -32,7 +32,9 @@
         <span class="font-bold w-6 text-right text-slate-700 dark:text-slate-300">
           {{ cs.getSkillModifier(skill) >= 0 ? '+' : '' }}{{ cs.getSkillModifier(skill) }}
         </span>
-        <span class="text-xs">{{ getLabel(skill) }} (<span class="font-bold" [pTooltip]="getAbilityFull(skill)" tooltipPosition="right">{{ getAbilityShort(skill) }}</span>)</span>
+        <span class="text-xs">{{ getLabel(skill) }} (<span
+          class="font-bold" [pTooltip]="getAbilityFull(skill)" tooltipPosition="right"
+        >{{ getAbilityShort(skill) }}</span>)</span>
       </div>
     }
   </div>

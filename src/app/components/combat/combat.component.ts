@@ -1,15 +1,12 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClickOutside } from 'ngxtension/click-outside';
-import { CheckboxModule } from 'primeng/checkbox';
-import { FieldsetModule } from 'primeng/fieldset';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputMaskModule } from 'primeng/inputmask';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { Checkbox } from 'primeng/checkbox';
+import { Fieldset } from 'primeng/fieldset';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
+import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
 import { CountersComponent } from '../counters/counters.component';
 
@@ -17,15 +14,12 @@ import { CountersComponent } from '../counters/counters.component';
 @Component({
   selector: 'app-combat',
   imports: [
-    CommonModule,
     FormsModule,
-    InputNumberModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    CheckboxModule,
-    InputMaskModule,
-    FieldsetModule,
-    TooltipModule,
+    InputNumber,
+    InputGroup,
+    Checkbox,
+    Fieldset,
+    Tooltip,
     ClickOutside,
     InputText,
     CountersComponent,

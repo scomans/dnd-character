@@ -60,7 +60,7 @@
   [(visible)]="sidebarVisible"
   header="Notizen"
   [style]="{ width: '280px' }"
-  [showCloseIcon]="true"
+  [closable]="true"
 >
   <ng-container *ngTemplateOutlet="treeContent" />
 </p-drawer>
@@ -194,4 +194,4 @@
   </div>
 </div>
 
-<p-contextmenu #cm [model]="contextMenuItems" />
+<p-context-menu #cm [model]="contextMenuItems" />

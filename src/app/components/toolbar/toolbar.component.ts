@@ -2,12 +2,12 @@ import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild, After
 import { CharacterService } from '../../services/character.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
+import { Button } from 'primeng/button';
+import { Dialog } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
-import { TextareaModule } from 'primeng/textarea';
-import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
+import { Textarea } from 'primeng/textarea';
+import { InputText } from 'primeng/inputtext';
+import { Tooltip } from 'primeng/tooltip';
 import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import '@googleworkspace/drive-picker-element';
@@ -15,7 +15,7 @@ import '@googleworkspace/drive-picker-element';
 @Component({
   selector: 'app-toolbar',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule, Menu],
+  imports: [FormsModule, Button, Dialog, Textarea, InputText, Tooltip, Menu],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
 })

@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Divider } from 'primeng/divider';
 import { CharacterService } from '../../services/character.service';
 import { InputText } from 'primeng/inputtext';
@@ -36,7 +36,9 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
     IftaLabel,
     ToggleSwitch,
     MarkdownEditorComponent,
-    DragDropModule,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
     Divider,
     ConfirmDialog,
   ],

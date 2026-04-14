@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { CharacterService } from '../../services/character.service';
-import { FieldsetModule } from 'primeng/fieldset';
+import { Fieldset } from 'primeng/fieldset';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
 @Component({
   selector: 'app-features',
-  imports: [FieldsetModule, MarkdownEditorComponent],
+  imports: [Fieldset, MarkdownEditorComponent],
   templateUrl: './features.component.html',
   styleUrl: './features.component.scss',
 })

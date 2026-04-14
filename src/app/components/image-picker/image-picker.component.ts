@@ -1,10 +1,9 @@
 import { Component, input, output, ElementRef, viewChild, inject, NgZone } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-image-picker',
-  imports: [ButtonModule],
+  imports: [Button],
   templateUrl: './image-picker.component.html',
   styleUrl: './image-picker.component.scss',
 })

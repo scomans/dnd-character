@@ -1,6 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { TabsModule } from 'primeng/tabs';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { AbilityScoresComponent } from '../ability-scores/ability-scores.component';
 import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
 import { AttacksComponent } from '../attacks/attacks.component';
@@ -21,8 +20,11 @@ import { NotesComponent } from '../notes/notes.component';
 @Component({
   selector: 'app-character-sheet',
   imports: [
-    CommonModule,
-    TabsModule,
+    Tabs,
+    TabList,
+    Tab,
+    TabPanels,
+    TabPanel,
     ToolbarComponent,
     HeaderComponent,
     AbilityScoresComponent,

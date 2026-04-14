@@ -1,16 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { TooltipModule } from 'primeng/tooltip';
+import { Checkbox } from 'primeng/checkbox';
+import { Button } from 'primeng/button';
+import { Fieldset } from 'primeng/fieldset';
+import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_SHORT_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-saving-throws',
-  imports: [FormsModule, CheckboxModule, ButtonModule, FieldsetModule, TooltipModule],
+  imports: [FormsModule, Checkbox, Button, Fieldset, Tooltip],
   templateUrl: './saving-throws.component.html',
   styleUrl: './saving-throws.component.scss',
 })
