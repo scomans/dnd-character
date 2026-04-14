@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, SecurityContext, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Marked } from 'marked';
@@ -35,7 +35,8 @@ export class MarkdownEditorComponent {
     if (!val) return '';
     val = val.replace(/\n(?=\n)/g, '\n\n<br/>\n');
     const html = this.marked.parse(val, { async: false, gfm: true, breaks: true }) as string;
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
+    return this.sanitizer.bypassSecurityTrustHtml(sanitized);
   }
 
   onValueChange(newValue: string): void {

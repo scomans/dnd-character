@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, SecurityContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -121,7 +121,9 @@ export class NotesComponent {
     const note = this.selectedNote();
     if (!note?.content) return '';
     const html = this.marked.parse(note.content, { async: false }) as string;
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    const sanitized =
+      this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
+    return this.sanitizer.bypassSecurityTrustHtml(sanitized);
   });
 
   onNodeSelect(node: TreeNode | TreeNode[] | null | undefined): void {
