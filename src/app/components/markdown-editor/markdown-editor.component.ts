@@ -1,19 +1,14 @@
-import {
-  Component,
-  input,
-  output,
-  signal,
-  SecurityContext,
-} from '@angular/core';
 import { NgClass } from '@angular/common';
+import { Component, input, output, SecurityContext, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
-import { TextareaModule } from 'primeng/textarea';
 import { ClickOutside } from 'ngxtension/click-outside';
-import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
 import { Button } from 'primeng/button';
+import { TextareaModule } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
+import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
+
 
 marked.use(markedAccordionExtension());
 
@@ -36,7 +31,7 @@ marked.use(markedAccordionExtension());
       </div>
     } @else {
       <div
-        class="relative group min-h-8 p-1 border border-transparent rounded text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        class="relative group min-h-8 p-1 border border-transparent rounded text-sm leading-snug break-words markdown-content"
         [ngClass]="readonly() ? '' : 'hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700'"
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
@@ -79,9 +74,10 @@ export class MarkdownEditorComponent {
   constructor(private sanitizer: DomSanitizer) {}
 
   renderedHtml(): SafeHtml {
-    const val = this.value();
+    let val = this.value();
     if (!val) return '';
-    const html = marked.parse(val, { async: false }) as string;
+    val = val.replace(/\n(?=\n)/g, '\n\n<br/>\n');
+    const html = marked.parse(val, { async: false, gfm: true, breaks: true }) as string;
     const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
     return this.sanitizer.bypassSecurityTrustHtml(sanitized);
   }

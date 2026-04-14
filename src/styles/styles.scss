@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@import "includes/markdown";
+
+/* Configure Tailwind dark mode to use .dark-mode selector (matching PrimeNG config) */
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
+
+/* DnD Character Sheet Theme */
+:root {
+  --dnd-bg: #f5f5f5;
+  --dnd-bg-dark: #d5d5d5;
+  --dnd-border: var(--color-slate-700);
+  --dnd-text: #1a1a1a;
+  --dnd-section-bg: #fff9ee;
+}
+
+html.dark-mode {
+  --dnd-bg: #23272e;
+  --dnd-bg-dark: #1a1d23;
+  --dnd-border: var(--color-slate-500);
+  --dnd-text: #e6edf3;
+  --dnd-section-bg: #2d333b;
+}
+
+html, body {
+  @apply m-0 p-0 w-full h-full overflow-x-hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  background: var(--dnd-bg);
+  color: var(--dnd-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* PrimeNG input overrides for DnD theme */
+.p-inputtext, .p-inputnumber-input, .p-textarea {
+  font-size: 0.85rem !important;
+}
+
+html.dark-mode .p-inputtext,
+html.dark-mode .p-inputnumber-input,
+html.dark-mode .p-textarea {
+  background: var(--dnd-section-bg);
+  color: var(--dnd-text);
+  border-color: var(--dnd-border);
+}
+
+.p-checkbox .p-checkbox-box {
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--dnd-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dnd-border);
+  border-radius: 4px;
+}
