@@ -129,7 +129,7 @@
       <input pInputText [(ngModel)]="newDriveFileName" placeholder="charakter.json" class="w-full text-sm" />
     </div>
   </div>
-  <ng-template pTemplate="footer">
+  <ng-template #footer>
     <p-button label="Abbrechen" [text]="true" (onClick)="showNewDriveFile = false" />
     <p-button label="Erstellen & Speichern" icon="pi pi-check" [loading]="drive.loading()" (onClick)="createDriveFile()" />
   </ng-template>
@@ -150,7 +150,7 @@
       <p class="text-red-600 text-sm">{{ importError }}</p>
     }
   </div>
-  <ng-template pTemplate="footer">
+  <ng-template #footer>
     <p-button label="Abbrechen" [text]="true" (onClick)="showImport = false; importError = ''" />
     <p-button label="Importieren" icon="pi pi-check" (onClick)="doImport()" />
   </ng-template>
@@ -159,7 +159,7 @@
 <!-- Reset Confirmation -->
 <p-dialog header="Charakter zurücksetzen?" [(visible)]="showReset" [modal]="true" [style]="{ width: '400px' }">
   <p class="text-sm">Möchtest du wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.</p>
-  <ng-template pTemplate="footer">
+  <ng-template #footer>
     <p-button label="Abbrechen" [text]="true" (onClick)="showReset = false" />
     <p-button label="Zurücksetzen" icon="pi pi-refresh" severity="danger" (onClick)="doReset()" />
   </ng-template>
@@ -182,7 +182,7 @@
       Beim Laden werden lokale Änderungen überschrieben.
     </p>
   </div>
-  <ng-template pTemplate="footer">
+  <ng-template #footer>
     <p-button label="Später" [text]="true" (onClick)="showRemoteUpdate = false" />
     <p-button label="Jetzt laden" icon="pi pi-cloud-download" (onClick)="reloadFromRemote()" [loading]="drive.loading()" />
   </ng-template>
