@@ -98,6 +98,12 @@ export interface DeathSaves {
   failures: number;
 }
 
+export interface Counter {
+  name: string;
+  maxValue: number;
+  currentValue: number;
+}
+
 export interface Currency {
   cp: number;
   sp: number;
@@ -244,6 +250,9 @@ export interface DndCharacter {
 
   // Notes
   notes: NoteNode[];
+
+  // Counters / Trackers
+  counters: Counter[];
 }
 
 export const ABILITY_LABELS: { [key: string]: string } = {
@@ -684,5 +693,6 @@ export function createDefaultCharacter(): DndCharacter {
     characterImage: '',
     organizationLogo: '',
     notes: [],
+    counters: [],
   };
 }
