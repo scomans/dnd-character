@@ -2,13 +2,13 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DecimalPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Fieldset } from 'primeng/fieldset';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
 import { Tooltip } from 'primeng/tooltip';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
 import { Equipment } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
@@ -27,7 +27,7 @@ import { CharacterService } from '../../services/character.service';
           <div class="flex-1 min-w-0">
             <div cdkDropList (cdkDropListDropped)="dropEquipment($event)" class="space-y-1">
               @for (item of cs.character().equipment; track $index; let i = $index) {
-                <div cdkDrag class="flex items-center gap-1 text-xs">
+                <div cdkDrag class="flex items-center gap-1 text-xs" cdkDragLockAxis="y">
                   <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
                   <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
                   <p-input-number
@@ -85,7 +85,7 @@ import { CharacterService } from '../../services/character.service';
       <p-fieldset legend="Zusätzliche Ausrüstung">
         <div cdkDropList (cdkDropListDropped)="dropAdditionalEquipment($event)" class="space-y-1">
           @for (item of cs.character().additionalEquipment; track $index; let i = $index) {
-            <div cdkDrag class="flex items-center gap-1 text-xs">
+            <div cdkDrag class="flex items-center gap-1 text-xs" cdkDragLockAxis="y">
               <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
               <input pInputText [(ngModel)]="item.name" (ngModelChange)="updateAdditionalEquipment()" class="flex-1 text-xs" placeholder="Gegenstand" />
               <p-input-number

@@ -202,7 +202,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                 (cdkDropListDropped)="dropSpell($event, levelGroup.level)"
               >
                 @for (spell of getFilteredSpellsForLevel(levelGroup.level); track $index) {
-                  <div cdkDrag [cdkDragData]="spell" [cdkDragDisabled]="!editing()">
+                  <div cdkDrag [cdkDragData]="spell" [cdkDragDisabled]="!editing()" cdkDragLockAxis="y">
                     <p-accordion-panel [value]="'spell-' + levelGroup.level + '-' + $index">
                       <p-accordion-header>
                         <div class="flex items-center gap-1 w-full text-xs">
