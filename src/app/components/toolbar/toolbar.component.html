@@ -31,23 +31,34 @@
         pTooltip="In Google Drive speichern"
         tooltipPosition="bottom"
       />
+      <p-button
+        icon="pi pi-sync"
+        size="small"
+        severity="secondary"
+        [loading]="drive.loading()"
+        (onClick)="reloadFromRemote()"
+        pTooltip="Datei aus Google Drive neu laden"
+        tooltipPosition="bottom"
+      />
     }
-    <p-button
-      icon="pi pi-folder-open"
-      size="small"
-      severity="secondary"
-      (onClick)="openPickerForFile()"
-      pTooltip="Datei aus Google Drive öffnen"
-      tooltipPosition="bottom"
-    />
-    <p-button
-      icon="pi pi-file-plus"
-      size="small"
-      severity="secondary"
-      (onClick)="showNewDriveFile = true"
-      pTooltip="Neue Datei in Google Drive erstellen"
-      tooltipPosition="bottom"
-    />
+    @if (!drive.currentFile()) {
+      <p-button
+        icon="pi pi-folder-open"
+        size="small"
+        severity="secondary"
+        (onClick)="openPickerForFile()"
+        pTooltip="Datei aus Google Drive öffnen"
+        tooltipPosition="bottom"
+      />
+      <p-button
+        icon="pi pi-file-plus"
+        size="small"
+        severity="secondary"
+        (onClick)="showNewDriveFile = true"
+        pTooltip="Neue Datei in Google Drive erstellen"
+        tooltipPosition="bottom"
+      />
+    }
   } @else if (drive.tokenExpired()) {
     <span class="text-xs text-yellow-300 hidden md:inline">
       <i class="pi pi-exclamation-triangle mr-1"></i>Sitzung abgelaufen
@@ -139,5 +150,28 @@
   <ng-template pTemplate="footer">
     <p-button label="Abbrechen" [text]="true" (onClick)="showReset = false" />
     <p-button label="Zurücksetzen" icon="pi pi-refresh" severity="danger" (onClick)="doReset()" />
+  </ng-template>
+</p-dialog>
+
+<!-- Remote Update Available Modal -->
+<p-dialog header="Neuere Version verfügbar" [(visible)]="showRemoteUpdate" [modal]="true" [style]="{ width: '450px' }">
+  <div class="space-y-2">
+    <p class="text-sm">
+      <i class="pi pi-cloud-download mr-1 text-blue-500"></i>
+      In Google Drive ist eine neuere Version deines Charakterbogens verfügbar.
+    </p>
+    @if (drive.remoteUpdateAvailable(); as info) {
+      <p class="text-xs text-gray-500">
+        Lokale Version: {{ info.localVersion }} — Remote Version: {{ info.remoteVersion }}
+      </p>
+    }
+    <p class="text-sm text-amber-600">
+      <i class="pi pi-exclamation-triangle mr-1"></i>
+      Beim Laden werden lokale Änderungen überschrieben.
+    </p>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Später" [text]="true" (onClick)="showRemoteUpdate = false" />
+    <p-button label="Jetzt laden" icon="pi pi-cloud-download" (onClick)="reloadFromRemote()" [loading]="drive.loading()" />
   </ng-template>
 </p-dialog>
