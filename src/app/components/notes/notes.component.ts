@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, SecurityContext } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { marked } from 'marked';
+import { Marked } from 'marked';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -15,8 +15,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { CharacterService } from '../../services/character.service';
 import { NoteNode } from '../../models/character.model';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
-
-marked.use(markedAccordionExtension());
+import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
 
 function generateId(): string {
   return `note-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -87,6 +86,7 @@ export class NotesComponent {
   private cs = inject(CharacterService);
   private sanitizer = inject(DomSanitizer);
   private confirmationService = inject(ConfirmationService);
+  private marked = new Marked(markedAccordionExtension(), markedPlaceholderExtension(this.cs));
 
   selectedTreeNode: TreeNode | null = null;
   selectedNote = signal<NoteNode | null>(null);
@@ -120,7 +120,7 @@ export class NotesComponent {
   renderedHtml = computed(() => {
     const note = this.selectedNote();
     if (!note?.content) return '';
-    const html = marked.parse(note.content, { async: false }) as string;
+    const html = this.marked.parse(note.content, { async: false }) as string;
     const sanitized =
       this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
     return this.sanitizer.bypassSecurityTrustHtml(sanitized);
