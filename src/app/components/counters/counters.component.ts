@@ -40,7 +40,7 @@ import { CharacterService } from '../../services/character.service';
                 />
                 <p-input-number
                   [ngModel]="counter.maxValue"
-                  (ngModelChange)="updateCounter($index, { maxValue: $event ?? 1, currentValue: $event ?? 1 })"
+                  (ngModelChange)="updateMaxValue($index, $event ?? 1)"
                   [showButtons]="false"
                   [min]="1"
                   [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.875rem' }"
@@ -131,9 +131,20 @@ export class CountersComponent {
     const counters = [...this.cs.character().counters];
     counters.splice(index, 1);
     this.cs.update({ counters });
-    if (this.editingIndex() === index) {
+    const editing = this.editingIndex();
+    if (editing === index) {
       this.editingIndex.set(-1);
+    } else if (editing > index) {
+      this.editingIndex.set(editing - 1);
     }
+  }
+
+  updateMaxValue(index: number, newMax: number): void {
+    const counter = this.cs.character().counters[index];
+    this.updateCounter(index, {
+      maxValue: newMax,
+      currentValue: Math.min(counter.currentValue, newMax),
+    });
   }
 
   updateCounter(index: number, partial: Partial<Counter>): void {
