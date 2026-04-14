@@ -51,9 +51,18 @@ function formatModifier(value: number): string {
   return value >= 0 ? `+${value}` : `${value}`;
 }
 
+/** Escape special characters for safe insertion into HTML. */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 /** Wrap a resolved value in a <span> with a tooltip. */
 function withTooltip(value: string, tooltip: string): string {
-  return `<span title="${tooltip}" class="placeholder-value">${value}</span>`;
+  return `<span title="${escapeHtml(tooltip)}" class="placeholder-value">${escapeHtml(value)}</span>`;
 }
 
 /**
@@ -98,7 +107,7 @@ function resolvePlaceholder(key: string, cs: CharacterService): string | null {
   // 3. Skill modifiers by German label (e.g. "arkane kunde" → arcana)
   const skillKey = SKILL_LABEL_TO_KEY[key];
   if (skillKey) {
-    const label = Object.entries(SKILL_LABELS).find(([k]) => k === skillKey)?.[1] ?? key;
+    const label = SKILL_LABELS[skillKey] ?? key;
     return withTooltip(formatModifier(cs.getSkillModifier(skillKey)), label);
   }
 
