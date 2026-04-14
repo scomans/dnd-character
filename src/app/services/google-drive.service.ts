@@ -235,8 +235,9 @@ export class GoogleDriveService {
       } else {
         this.remoteUpdateAvailable.set(null);
       }
-    } catch {
-      // Silently ignore check failures (e.g. network errors, expired tokens)
+    } catch (e) {
+      // Log but don't bubble up check failures (e.g. network errors, expired tokens)
+      console.warn('Failed to check remote version:', e);
     }
   }
 
