@@ -102,7 +102,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
           pTooltip="8 + Übungsbonus + Zauberattribut-Modifikator"
           tooltipPosition="top"
         >
-          <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">{{ cs.getSpellSaveDC() || '--' }}</span>
+          <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">{{ cs.getSpellSaveDC() || '-' }}</span>
           <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 mt-1">Zauber-SG</span>
         </div>
         <div
@@ -114,17 +114,16 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
             @if (cs.getSpellAttackBonus()) {
               {{ cs.getSpellAttackBonus() >= 0 ? '+' : '' }}{{ cs.getSpellAttackBonus() }}
             } @else {
-              --
+              -
             }
           </span>
           <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 mt-1">Zauber-Angriff</span>
         </div>
       </div>
 
-      <p-divider />
       <!-- Spell Slots -->
+      <p-divider><span class="font-bold">Zauberplätze</span></p-divider>
       <div>
-        <span class="text-xs font-bold text-gray-600 dark:text-gray-400">Zauberplätze</span>
         <div class="grid grid-cols-9 gap-1 mt-1">
           @for (level of spellLevels; track level) {
             <div class="flex flex-col items-center text-xs">
@@ -156,6 +155,8 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
           }
         </div>
       </div>
+
+      <p-divider><span class="font-bold">Verfügbare Zauber</span></p-divider>
 
       <!-- Filter for prepared spells + expand/collapse -->
       <div class="flex items-center gap-2 mt-2">
@@ -192,10 +193,8 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
       <!-- Spells List with Accordions -->
       <div>
         @for (levelGroup of groupedSpellLevels; track levelGroup.level) {
-          <div class="border-t border-gray-200 dark:border-gray-700 pt-1 mt-1">
-            <span class="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1 block">
-              {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
-            </span>
+          <div class="pt-1 mt-1">
+            <p-divider>{{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}</p-divider>
             <p-accordion [multiple]="true" [value]="expandedPanels()" (valueChange)="onAccordionChange($event)">
               <div
                 cdkDropList
@@ -206,7 +205,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                   <div cdkDrag [cdkDragData]="spell" [cdkDragDisabled]="!editing()">
                     <p-accordion-panel [value]="'spell-' + levelGroup.level + '-' + $index">
                       <p-accordion-header>
-                        <div class="flex items-center gap-1 w-full text-xs" (click)="$event.stopPropagation()">
+                        <div class="flex items-center gap-1 w-full text-xs">
                           @if (editing()) {
                             <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
                           }
@@ -215,6 +214,9 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                               [ngModel]="spell.prepared"
                               (ngModelChange)="updateSpellPreparedByRef(spell, $event)"
                               [binary]="true"
+                              pTooltip="Vorbereitet"
+                              tooltipPosition="top"
+                              (click)="$event.stopPropagation()"
                             />
                           }
                           <span class="flex-1 text-xs font-medium text-slate-700 dark:text-slate-300">{{ spell.name || 'Unbenannt' }}</span>

@@ -182,20 +182,20 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                       optionLabel="label"
                       optionValue="value"
                       [style]="{ width: '5rem', fontSize: '0.7rem' }"
-                      placeholder="--"
+                      placeholder="-"
                       appendTo="body"
                       size="small"
                       class="attack-input"
                     >
                       <ng-template #selectedItem let-selectedOption>
-                        <span>{{ selectedOption?.value || '--' }}</span>
+                        <span>{{ selectedOption?.value || '-' }}</span>
                       </ng-template>
                       <ng-template #item let-option>
                         <span [pTooltip]="option.description" tooltipPosition="right">{{ option.label }}</span>
                       </ng-template>
                     </p-select>
                   } @else {
-                    <span class="text-center block text-slate-600 dark:text-slate-400">{{ attack.mastery || '--' }}</span>
+                    <span class="text-center block text-slate-600 dark:text-slate-400">{{ attack.mastery || '-' }}</span>
                   }
                 </td>
                 <td class="p-1">
@@ -213,7 +213,7 @@ import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '..
                       class="attack-input"
                     />
                   } @else {
-                    <span class="text-center block text-slate-600 dark:text-slate-400">{{ attack.magicBonus ? '+' + attack.magicBonus : '--' }}</span>
+                    <span class="text-center block text-slate-600 dark:text-slate-400">{{ attack.magicBonus ? '+' + attack.magicBonus : '-' }}</span>
                   }
                 </td>
                 <td class="p-1">
