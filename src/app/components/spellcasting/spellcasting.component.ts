@@ -3,16 +3,18 @@ import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Divider } from 'primeng/divider';
 import { CharacterService } from '../../services/character.service';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { FieldsetModule } from 'primeng/fieldset';
-import { AccordionModule } from 'primeng/accordion';
-import { TooltipModule } from 'primeng/tooltip';
-import { IftaLabelModule } from 'primeng/iftalabel';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { InputText } from 'primeng/inputtext';
+import { InputNumber } from 'primeng/inputnumber';
+import { Checkbox } from 'primeng/checkbox';
+import { Button } from 'primeng/button';
+import { Select } from 'primeng/select';
+import { Fieldset } from 'primeng/fieldset';
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
+import { Tooltip } from 'primeng/tooltip';
+import { IftaLabel } from 'primeng/iftalabel';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
 
@@ -21,21 +23,27 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
   standalone: true,
   imports: [
     FormsModule,
-    InputTextModule,
-    InputNumberModule,
-    CheckboxModule,
-    ButtonModule,
-    SelectModule,
-    FieldsetModule,
-    AccordionModule,
-    TooltipModule,
-    IftaLabelModule,
-    ToggleSwitchModule,
+    InputText,
+    InputNumber,
+    Checkbox,
+    Button,
+    Select,
+    Fieldset,
+    Accordion,
+    AccordionPanel,
+    AccordionHeader,
+    AccordionContent,
+    Tooltip,
+    IftaLabel,
+    ToggleSwitch,
     MarkdownEditorComponent,
     DragDropModule,
     Divider,
+    ConfirmDialog,
   ],
+  providers: [ConfirmationService],
   template: `
+    <p-confirmDialog />
     <p-fieldset legend="Zauberwirken" styleClass="space-y-3">
       <!-- Spellcasting Header -->
       <div class="grid grid-cols-4 gap-2">
@@ -94,7 +102,7 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
           pTooltip="8 + Übungsbonus + Zauberattribut-Modifikator"
           tooltipPosition="top"
         >
-          <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">{{ cs.getSpellSaveDC() || '--' }}</span>
+          <span class="text-2xl font-bold text-slate-700 dark:text-slate-300">{{ cs.getSpellSaveDC() || '-' }}</span>
           <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 mt-1">Zauber-SG</span>
         </div>
         <div
@@ -106,17 +114,16 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
             @if (cs.getSpellAttackBonus()) {
               {{ cs.getSpellAttackBonus() >= 0 ? '+' : '' }}{{ cs.getSpellAttackBonus() }}
             } @else {
-              --
+              -
             }
           </span>
           <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400 mt-1">Zauber-Angriff</span>
         </div>
       </div>
 
-      <p-divider />
       <!-- Spell Slots -->
+      <p-divider><span class="font-bold">Zauberplätze</span></p-divider>
       <div>
-        <span class="text-xs font-bold text-gray-600 dark:text-gray-400">Zauberplätze</span>
         <div class="grid grid-cols-9 gap-1 mt-1">
           @for (level of spellLevels; track level) {
             <div class="flex flex-col items-center text-xs">
@@ -149,6 +156,8 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
         </div>
       </div>
 
+      <p-divider><span class="font-bold">Verfügbare Zauber</span></p-divider>
+
       <!-- Filter for prepared spells + expand/collapse -->
       <div class="flex items-center gap-2 mt-2">
         <p-toggleswitch [(ngModel)]="showPreparedOnly" />
@@ -170,15 +179,22 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
           tooltipPosition="top"
           (onClick)="collapseAll()"
         />
+        <p-button
+          [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+          [rounded]="true"
+          [text]="true"
+          size="small"
+          (onClick)="editing.set(!editing())"
+          [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
+          tooltipPosition="top"
+        />
       </div>
 
       <!-- Spells List with Accordions -->
       <div>
         @for (levelGroup of groupedSpellLevels; track levelGroup.level) {
-          <div class="border-t border-gray-200 dark:border-gray-700 pt-1 mt-1">
-            <span class="text-xs font-bold text-gray-600 dark:text-gray-400 mb-1 block">
-              {{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}
-            </span>
+          <div class="pt-1 mt-1">
+            <p-divider>{{ levelGroup.level === 0 ? 'Zaubertricks' : 'Stufe ' + levelGroup.level }}</p-divider>
             <p-accordion [multiple]="true" [value]="expandedPanels()" (valueChange)="onAccordionChange($event)">
               <div
                 cdkDropList
@@ -186,43 +202,56 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                 (cdkDropListDropped)="dropSpell($event, levelGroup.level)"
               >
                 @for (spell of getFilteredSpellsForLevel(levelGroup.level); track $index) {
-                  <div cdkDrag [cdkDragData]="spell">
+                  <div cdkDrag [cdkDragData]="spell" [cdkDragDisabled]="!editing()">
                     <p-accordion-panel [value]="'spell-' + levelGroup.level + '-' + $index">
                       <p-accordion-header>
-                        <div class="flex items-center gap-1 w-full text-xs" (click)="$event.stopPropagation()">
-                          <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
+                        <div class="flex items-center gap-1 w-full text-xs">
+                          @if (editing()) {
+                            <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
+                          }
                           @if (levelGroup.level > 0) {
                             <p-checkbox
                               [ngModel]="spell.prepared"
                               (ngModelChange)="updateSpellPreparedByRef(spell, $event)"
                               [binary]="true"
+                              pTooltip="Vorbereitet"
+                              tooltipPosition="top"
+                              (click)="$event.stopPropagation()"
                             />
                           }
-                          <input
-                            pInputText
-                            [(ngModel)]="spell.name"
-                            (ngModelChange)="updateSpells()"
-                            (keydown.space)="$event.stopPropagation()"
-                            class="flex-1 text-xs"
-                            placeholder="Zaubername"
-                          />
-                          <p-button
-                            icon="pi pi-trash"
-                            [rounded]="true"
-                            [text]="true"
-                            severity="danger"
-                            size="small"
-                            (onClick)="removeSpell(spell)"
-                          />
+                          <span class="flex-1 text-xs font-medium text-slate-700 dark:text-slate-300">{{ spell.name || 'Unbenannt' }}</span>
                         </div>
                       </p-accordion-header>
                       <p-accordion-content>
-                        <div class="p-2">
+                        <div class="p-2 space-y-2">
+                          @if (editing()) {
+                            <div class="flex items-center gap-2">
+                              <input
+                                pInputText
+                                [(ngModel)]="spell.name"
+                                (ngModelChange)="updateSpells()"
+                                (keydown.space)="$event.stopPropagation()"
+                                class="flex-1 text-xs"
+                                placeholder="Zaubername"
+                              />
+                              <p-button
+                                icon="pi pi-trash"
+                                [rounded]="true"
+                                [text]="true"
+                                severity="danger"
+                                size="small"
+                                (onClick)="confirmRemoveSpell(spell)"
+                                pTooltip="Zauber löschen"
+                                tooltipPosition="top"
+                              />
+                            </div>
+                          }
                           <app-markdown-editor
                             [value]="spell.description"
                             (valueChange)="spell.description = $event; updateSpells()"
                             placeholder="Beschreibung eingeben..."
                             [minRows]="3"
+                            [readonly]="!editing()"
                           />
                         </div>
                       </p-accordion-content>
@@ -233,20 +262,22 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
             </p-accordion>
           </div>
         }
-        <p-divider />
-        <div class="flex gap-2 mt-8 justify-center">
-          <p-select
-            [(ngModel)]="newSpellLevel"
-            [options]="spellLevelOptions"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Stufe"
-            [style]="{ width: '14rem', fontSize: '0.75rem' }"
-            appendTo="body"
-            size="small"
-          />
-          <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
-        </div>
+        @if (editing()) {
+          <p-divider />
+          <div class="flex gap-2 mt-8 justify-center">
+            <p-select
+              [(ngModel)]="newSpellLevel"
+              [options]="spellLevelOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Stufe"
+              [style]="{ width: '14rem', fontSize: '0.75rem' }"
+              appendTo="body"
+              size="small"
+            />
+            <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
+          </div>
+        }
       </div>
 
     </p-fieldset>
@@ -254,11 +285,13 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
 })
 export class SpellcastingComponent {
   cs = inject(CharacterService);
+  private confirmationService = inject(ConfirmationService);
   spellcastingClasses = SPELLCASTING_CLASSES;
   spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   newSpellLevel = 0;
   showPreparedOnly = false;
   editingField = signal<string | null>(null);
+  editing = signal(false);
   expandedPanels = signal<string[]>([]);
 
   abilityOptions = [
@@ -393,6 +426,17 @@ export class SpellcastingComponent {
       prepared: false,
     };
     this.cs.update({ spells: [...char.spells, newSpell] });
+  }
+
+  confirmRemoveSpell(spell: Spell): void {
+    this.confirmationService.confirm({
+      message: `„${spell.name || 'Unbenannt'}" wirklich löschen?`,
+      header: 'Zauber löschen',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Löschen',
+      rejectLabel: 'Abbrechen',
+      accept: () => this.removeSpell(spell),
+    });
   }
 
   removeSpell(spell: Spell): void {

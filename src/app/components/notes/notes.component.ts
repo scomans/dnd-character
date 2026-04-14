@@ -9,8 +9,9 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ContextMenuModule } from 'primeng/contextmenu';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { CharacterService } from '../../services/character.service';
 import { NoteNode } from '../../models/character.model';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
@@ -77,8 +78,11 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
     TextareaModule,
     ContextMenuModule,
     TooltipModule,
+    ConfirmDialog,
   ],
+  providers: [ConfirmationService],
   template: `
+    <p-confirmDialog />
     <div class="flex gap-4 mt-4" style="min-height: 500px;">
       <!-- Left: Tree View -->
       <div
@@ -186,7 +190,7 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
                 [text]="true"
                 severity="danger"
                 size="small"
-                (onClick)="deleteSelectedNote()"
+                (onClick)="confirmDeleteSelectedNote()"
                 pTooltip="Löschen"
                 tooltipPosition="top"
               />
@@ -258,6 +262,7 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
 export class NotesComponent {
   private cs = inject(CharacterService);
   private sanitizer = inject(DomSanitizer);
+  private confirmationService = inject(ConfirmationService);
 
   selectedTreeNode: TreeNode | null = null;
   selectedNote = signal<NoteNode | null>(null);
@@ -279,7 +284,7 @@ export class NotesComponent {
     {
       label: 'Löschen',
       icon: 'pi pi-trash',
-      command: () => this.deleteSelectedNote(),
+      command: () => this.confirmDeleteSelectedNote(),
     },
   ];
 
@@ -361,6 +366,19 @@ export class NotesComponent {
     this.cs.updateNested('notes', notes);
     this.selectNodeById(newNote.id);
     this.startRename();
+  }
+
+  confirmDeleteSelectedNote(): void {
+    const selected = this.selectedNote();
+    if (!selected) return;
+    this.confirmationService.confirm({
+      message: `„${selected.label || 'Unbenannt'}" wirklich löschen?`,
+      header: 'Notiz löschen',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Löschen',
+      rejectLabel: 'Abbrechen',
+      accept: () => this.deleteSelectedNote(),
+    });
   }
 
   deleteSelectedNote(): void {

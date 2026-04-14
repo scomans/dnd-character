@@ -5,7 +5,7 @@ import {
   signal,
   SecurityContext,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
@@ -20,9 +20,9 @@ marked.use(markedAccordionExtension());
 @Component({
   selector: 'app-markdown-editor',
   standalone: true,
-  imports: [FormsModule, TextareaModule, ClickOutside, Button, Tooltip],
+  imports: [FormsModule, NgClass, TextareaModule, ClickOutside, Button, Tooltip],
   template: `
-    @if (editing()) {
+    @if (editing() && !readonly()) {
       <div (clickOutside)="editing.set(false)">
         <textarea
           pTextarea
@@ -36,23 +36,26 @@ marked.use(markedAccordionExtension());
       </div>
     } @else {
       <div
-        class="relative group min-h-8 p-1 border border-transparent rounded hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700 text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        class="relative group min-h-8 p-1 border border-transparent rounded text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+        [ngClass]="readonly() ? '' : 'hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700'"
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
       >
-        <p-button
-          class="absolute top-1 right-1"
-          [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
-          [rounded]="true"
-          [text]="true"
-          size="small"
-          (onClick)="editing.set(true)"
-          [pTooltip]="'Bearbeiten'"
-          tooltipPosition="top"
-        />
+        @if (!readonly()) {
+          <p-button
+            class="absolute top-1 right-1"
+            [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+            [rounded]="true"
+            [text]="true"
+            size="small"
+            (onClick)="editing.set(true)"
+            [pTooltip]="'Bearbeiten'"
+            tooltipPosition="top"
+          />
+        }
         @if (value()) {
           <span [innerHTML]="renderedHtml()"></span>
-        } @else {
+        } @else if (!readonly()) {
           <button
             type="button"
             class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer bg-transparent border-none p-0"
@@ -68,6 +71,7 @@ export class MarkdownEditorComponent {
   value = input<string>('');
   placeholder = input<string>('');
   minRows = input<number>(3);
+  readonly = input<boolean>(false);
   valueChange = output<string>();
 
   editing = signal(false);
