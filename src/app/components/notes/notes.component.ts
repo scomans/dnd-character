@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Marked } from 'marked';
 import { ConfirmationService, MenuItem, TreeNode } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
+import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
-import { ContextMenuModule } from 'primeng/contextmenu';
+import { ContextMenu } from 'primeng/contextmenu';
 import { Drawer } from 'primeng/drawer';
-import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { TooltipModule } from 'primeng/tooltip';
-import { TreeModule } from 'primeng/tree';
+import { InputText } from 'primeng/inputtext';
+import { Textarea } from 'primeng/textarea';
+import { Tooltip } from 'primeng/tooltip';
+import { Tree } from 'primeng/tree';
 import { NoteNode } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
@@ -79,12 +79,12 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
   imports: [
     NgTemplateOutlet,
     FormsModule,
-    TreeModule,
-    ButtonModule,
-    InputTextModule,
-    TextareaModule,
-    ContextMenuModule,
-    TooltipModule,
+    Tree,
+    Button,
+    InputText,
+    Textarea,
+    ContextMenu,
+    Tooltip,
     ConfirmDialog,
     Drawer,
   ],

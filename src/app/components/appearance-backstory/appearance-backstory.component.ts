@@ -1,15 +1,12 @@
 import { Component, effect, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { FieldsetModule } from 'primeng/fieldset';
-import { IftaLabelModule } from 'primeng/iftalabel';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { AutoComplete } from 'primeng/autocomplete';
+import { Fieldset } from 'primeng/fieldset';
+import { IftaLabel } from 'primeng/iftalabel';
 import { InputNumber } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TooltipModule } from 'primeng/tooltip';
-import { TreeSelectModule } from 'primeng/treeselect';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { TreeSelect } from 'primeng/treeselect';
 import { ALIGNMENTS, DND_BACKGROUNDS, DND_CLASS_TREE, DND_RACES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { ImagePickerComponent } from '../image-picker/image-picker.component';
@@ -20,15 +17,12 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
   selector: 'app-appearance-backstory',
   imports: [
     FormsModule,
-    InputTextModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    SelectModule,
-    AutoCompleteModule,
-    TreeSelectModule,
-    FieldsetModule,
-    TooltipModule,
-    IftaLabelModule,
+    InputText,
+    Select,
+    AutoComplete,
+    TreeSelect,
+    Fieldset,
+    IftaLabel,
     MarkdownEditorComponent,
     ImagePickerComponent,
     InputNumber,

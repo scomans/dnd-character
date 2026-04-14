@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClickOutside } from 'ngxtension/click-outside';
-import { IftaLabelModule } from 'primeng/iftalabel';
-import { ImageModule } from 'primeng/image';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
+import { IftaLabel } from 'primeng/iftalabel';
+import { Image } from 'primeng/image';
+import { InputNumber } from 'primeng/inputnumber';
+import { InputText } from 'primeng/inputtext';
+import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
 
 
@@ -13,11 +13,11 @@ import { CharacterService } from '../../services/character.service';
   selector: 'app-header',
   imports: [
     FormsModule,
-    InputTextModule,
-    InputNumberModule,
-    TooltipModule,
-    IftaLabelModule,
-    ImageModule,
+    InputText,
+    InputNumber,
+    Tooltip,
+    IftaLabel,
+    Image,
     ClickOutside,
   ],
   templateUrl: './header.component.html',

@@ -1,17 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
-import { InputTextModule } from 'primeng/inputtext';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { TooltipModule } from 'primeng/tooltip';
+import { InputText } from 'primeng/inputtext';
+import { Checkbox } from 'primeng/checkbox';
+import { Button } from 'primeng/button';
+import { Fieldset } from 'primeng/fieldset';
+import { Tooltip } from 'primeng/tooltip';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
 @Component({
   selector: 'app-proficiencies-languages',
-  imports: [FormsModule, InputTextModule, CheckboxModule, ButtonModule, FieldsetModule, TooltipModule, MarkdownEditorComponent],
+  imports: [FormsModule, InputText, Checkbox, Button, Fieldset, Tooltip, MarkdownEditorComponent],
   templateUrl: './proficiencies-languages.component.html',
   styleUrl: './proficiencies-languages.component.scss',
 })

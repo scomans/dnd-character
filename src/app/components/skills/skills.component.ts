@@ -1,16 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
-import { CheckboxModule } from 'primeng/checkbox';
-import { ButtonModule } from 'primeng/button';
-import { FieldsetModule } from 'primeng/fieldset';
-import { TooltipModule } from 'primeng/tooltip';
+import { Checkbox } from 'primeng/checkbox';
+import { Button } from 'primeng/button';
+import { Fieldset } from 'primeng/fieldset';
+import { Tooltip } from 'primeng/tooltip';
 import { SKILL_LABELS, SKILL_ABILITY_MAP, ABILITY_SHORT_LABELS, ABILITY_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-skills',
-  imports: [FormsModule, CheckboxModule, ButtonModule, FieldsetModule, TooltipModule],
+  imports: [FormsModule, Checkbox, Button, Fieldset, Tooltip],
   templateUrl: './skills.component.html',
   styleUrl: './skills.component.scss',
 })

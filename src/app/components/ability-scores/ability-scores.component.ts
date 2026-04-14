@@ -1,16 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClickOutside } from 'ngxtension/click-outside';
-import { CheckboxModule } from 'primeng/checkbox';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { TooltipModule } from 'primeng/tooltip';
+import { Checkbox } from 'primeng/checkbox';
+import { InputNumber } from 'primeng/inputnumber';
+import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_LABELS } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
 
 @Component({
   selector: 'app-ability-scores',
-  imports: [FormsModule, InputNumberModule, CheckboxModule, TooltipModule, ClickOutside],
+  imports: [FormsModule, InputNumber, Checkbox, Tooltip, ClickOutside],
   templateUrl: './ability-scores.component.html',
   styleUrl: './ability-scores.component.scss',
 })
