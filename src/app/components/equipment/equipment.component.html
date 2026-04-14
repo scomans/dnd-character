@@ -1,7 +1,7 @@
 <p-confirmDialog />
 <div class="space-y-3">
   <p-fieldset legend="Ausrüstung">
-    <div class="flex gap-4">
+    <div class="flex max-sm:flex-col-reverse gap-4">
       <!-- Equipment List (left) -->
       <div class="flex-1 min-w-0">
         <div cdkDropList (cdkDropListDropped)="dropEquipment($event)" class="space-y-1">
@@ -38,7 +38,7 @@
       </div>
 
       <!-- Currency (right, vertical) - reversed order: highest value first -->
-      <div class="shrink-0 flex flex-col gap-1 border-l border-gray-200 dark:border-gray-700 pl-4">
+      <div class="shrink-0 flex flex-col max-sm:items-center gap-1 max-sm:border-l-0 border-l border-gray-200 dark:border-gray-700 pl-4">
         <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400 text-center mb-1">Münzen</span>
         @for (coin of coins; track coin.key) {
           <div class="flex items-center gap-1">

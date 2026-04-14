@@ -2,10 +2,6 @@
   display: block;
   min-height: 100dvh;
   width: 100%;
-  background: #f5f5f5;
+  background: var(--dnd-bg);
   transition: background-color 0.2s ease;
-}
-
-:host-context(.dark-mode) {
-  background: #1a1d23;
 }
