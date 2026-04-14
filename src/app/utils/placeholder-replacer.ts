@@ -1,10 +1,26 @@
+import { type MarkedExtension, type Tokens } from 'marked';
 import { CharacterService } from '../services/character.service';
 import { SKILL_LABELS } from '../models/character.model';
 
 /**
- * Maps German short-form placeholder keys (lowercase) to ability keys
- * used in CharacterService.
+ * Custom marked inline extension for character-value placeholders.
+ *
+ * Syntax:  {{key}}
+ *
+ * Supported keys (case-insensitive):
+ *   Ability modifiers:  stä, ges, kon, int, wei, cha
+ *   Combat / special:   üb, rk, br, ini, tp, maxtp, tw, zsg, zattk, lvl
+ *   Skills (German):    e.g. "Arkane Kunde", "Heimlichkeit", …
+ *
+ * Renders as:  <span title="Full Name" class="placeholder-value">value</span>
+ *
+ * Unknown keys are rendered as the original {{key}} text.
  */
+
+// ---------------------------------------------------------------------------
+// Lookup tables
+// ---------------------------------------------------------------------------
+
 const ABILITY_PLACEHOLDER_MAP: Record<string, string> = {
   'stä': 'str',
   'ges': 'dex',
@@ -14,7 +30,6 @@ const ABILITY_PLACEHOLDER_MAP: Record<string, string> = {
   'cha': 'cha',
 };
 
-/** Full German labels for ability placeholders (used in tooltips). */
 const ABILITY_TOOLTIP: Record<string, string> = {
   'stä': 'Stärke',
   'ges': 'Geschicklichkeit',
@@ -24,7 +39,6 @@ const ABILITY_TOOLTIP: Record<string, string> = {
   'cha': 'Charisma',
 };
 
-/** Tooltip labels for special (non-ability, non-skill) placeholders. */
 const SPECIAL_TOOLTIP: Record<string, string> = {
   'üb': 'Übungsbonus',
   'rk': 'Rüstungsklasse',
@@ -35,23 +49,23 @@ const SPECIAL_TOOLTIP: Record<string, string> = {
   'tw': 'Trefferwürfel',
   'zsg': 'Zauber-SG',
   'zattk': 'Zauberangriff',
+  'lvl': 'Level',
 };
 
-/**
- * Reverse map: German skill label (lowercase) → internal skill key.
- * Built once from the canonical SKILL_LABELS export.
- */
+/** Reverse map: German skill label (lowercase) → internal skill key. */
 const SKILL_LABEL_TO_KEY: Record<string, string> = {};
 for (const [key, label] of Object.entries(SKILL_LABELS)) {
   SKILL_LABEL_TO_KEY[label.toLowerCase()] = key;
 }
 
-/** Format a numeric modifier with explicit sign: +3, -1, +0. */
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 function formatModifier(value: number): string {
   return value >= 0 ? `+${value}` : `${value}`;
 }
 
-/** Escape special characters for safe insertion into HTML. */
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, '&amp;')
@@ -60,69 +74,104 @@ function escapeHtml(text: string): string {
     .replace(/"/g, '&quot;');
 }
 
-/** Wrap a resolved value in a <span> with a tooltip. */
 function withTooltip(value: string, tooltip: string): string {
   return `<span title="${escapeHtml(tooltip)}" class="placeholder-value">${escapeHtml(value)}</span>`;
 }
 
 /**
- * Resolve a single placeholder key against the current character state.
- * Returns the HTML snippet (with tooltip) or `null` if the key is unknown.
+ * Resolve a placeholder key to { value, tooltip } or null if unknown.
  */
-function resolvePlaceholder(key: string, cs: CharacterService): string | null {
+function resolvePlaceholder(
+  key: string,
+  cs: CharacterService,
+): { value: string; tooltip: string } | null {
   // 1. Ability modifiers
   const abilityKey = ABILITY_PLACEHOLDER_MAP[key];
   if (abilityKey) {
-    return withTooltip(
-      formatModifier(cs.getAbilityModifier(abilityKey)),
-      ABILITY_TOOLTIP[key],
-    );
+    return {
+      value: formatModifier(cs.getAbilityModifier(abilityKey)),
+      tooltip: ABILITY_TOOLTIP[key],
+    };
   }
 
   // 2. Special / combat placeholders
   const char = cs.character();
   switch (key) {
     case 'üb':
-      return withTooltip(formatModifier(cs.getProficiencyBonus()), SPECIAL_TOOLTIP[key]);
+      return { value: formatModifier(cs.getProficiencyBonus()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'rk':
-      return withTooltip(String(cs.getComputedArmorClass()), SPECIAL_TOOLTIP[key]);
+      return { value: String(cs.getComputedArmorClass()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'br':
-      return withTooltip(String(char.speed), SPECIAL_TOOLTIP[key]);
+      return { value: String(char.speed), tooltip: SPECIAL_TOOLTIP[key] };
     case 'ini':
-      return withTooltip(formatModifier(cs.getInitiative()), SPECIAL_TOOLTIP[key]);
+      return { value: formatModifier(cs.getInitiative()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'tp':
-      return withTooltip(String(char.hitPointsCurrent), SPECIAL_TOOLTIP[key]);
+      return { value: String(char.hitPointsCurrent), tooltip: SPECIAL_TOOLTIP[key] };
     case 'maxtp':
-      return withTooltip(String(char.hitPointsMax), SPECIAL_TOOLTIP[key]);
+      return { value: String(char.hitPointsMax), tooltip: SPECIAL_TOOLTIP[key] };
     case 'tw':
-      return withTooltip(char.hitDiceTotal || '—', SPECIAL_TOOLTIP[key]);
+      return { value: char.hitDiceTotal || '—', tooltip: SPECIAL_TOOLTIP[key] };
     case 'zsg':
-      return withTooltip(String(cs.getSpellSaveDC()), SPECIAL_TOOLTIP[key]);
+      return { value: String(cs.getSpellSaveDC()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'zattk':
-      return withTooltip(formatModifier(cs.getSpellAttackBonus()), SPECIAL_TOOLTIP[key]);
+      return { value: formatModifier(cs.getSpellAttackBonus()), tooltip: SPECIAL_TOOLTIP[key] };
+    case 'lvl':
+      return { value: String(cs.getLevel()), tooltip: SPECIAL_TOOLTIP[key] };
     default:
       break;
   }
 
-  // 3. Skill modifiers by German label (e.g. "arkane kunde" → arcana)
+  // 3. Skill modifiers by German label
   const skillKey = SKILL_LABEL_TO_KEY[key];
   if (skillKey) {
-    const label = SKILL_LABELS[skillKey] ?? key;
-    return withTooltip(formatModifier(cs.getSkillModifier(skillKey)), label);
+    return {
+      value: formatModifier(cs.getSkillModifier(skillKey)),
+      tooltip: SKILL_LABELS[skillKey] ?? key,
+    };
   }
 
   return null;
 }
 
+// ---------------------------------------------------------------------------
+// Marked extension factory
+// ---------------------------------------------------------------------------
+
 /**
- * Replace all `{{placeholder}}` tokens in the given text with the
- * corresponding character values (wrapped in a tooltip span).
+ * Creates a markedjs inline extension that replaces `{{key}}` placeholders
+ * with live character values.
  *
- * Unknown placeholders are left unchanged.
+ * The returned extension captures the `CharacterService` via closure so that
+ * every call to `marked.parse()` resolves against the current character state.
  */
-export function replacePlaceholders(text: string, cs: CharacterService): string {
-  return text.replace(/\{\{([^}]+)\}\}/g, (match, placeholder: string) => {
-    const key = placeholder.trim().toLowerCase();
-    return resolvePlaceholder(key, cs) ?? match;
-  });
+export function markedPlaceholderExtension(cs: CharacterService): MarkedExtension {
+  return {
+    extensions: [
+      {
+        name: 'placeholder',
+        level: 'inline' as const,
+        start(src: string) {
+          return src.indexOf('{{');
+        },
+        tokenizer(src: string) {
+          const match = /^\{\{([^}]+)\}\}/.exec(src);
+          if (!match) return undefined;
+          return {
+            type: 'placeholder',
+            raw: match[0],
+            key: match[1].trim().toLowerCase(),
+          };
+        },
+        renderer(token: Tokens.Generic) {
+          const key = token['key'] as string;
+          const resolved = resolvePlaceholder(key, cs);
+          if (resolved) {
+            return withTooltip(resolved.value, resolved.tooltip);
+          }
+          // Unknown placeholder – render as-is
+          return escapeHtml(token['raw'] as string);
+        },
+      },
+    ],
+  };
 }
