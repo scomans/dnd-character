@@ -9,6 +9,11 @@ export interface DriveFileInfo {
   name: string;
 }
 
+export interface RemoteVersionInfo {
+  remoteVersion: number;
+  localVersion: number;
+}
+
 /**
  * Public OAuth Client ID for the Google Drive Picker.
  * This is NOT a secret - it is restricted by authorized JavaScript origins
@@ -31,6 +36,7 @@ export class GoogleDriveService {
   readonly currentFile = signal<DriveFileInfo | null>(null);
   readonly loading = signal(false);
   readonly tokenExpired = signal(false);
+  readonly remoteUpdateAvailable = signal<RemoteVersionInfo | null>(null);
 
   /** Always configured since the Client ID is embedded */
   readonly configured = signal(true);
@@ -211,6 +217,26 @@ export class GoogleDriveService {
       return fileInfo;
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  /**
+   * Check the remote file version against the local version.
+   * Sets remoteUpdateAvailable signal if remote is newer.
+   */
+  async checkRemoteVersion(fileId: string, localVersion: number): Promise<void> {
+    if (!this._accessToken) return;
+    try {
+      const content = await this.readFile(fileId);
+      const parsed = JSON.parse(content);
+      const remoteVersion = parsed.version ?? 0;
+      if (remoteVersion > localVersion) {
+        this.remoteUpdateAvailable.set({ remoteVersion, localVersion });
+      } else {
+        this.remoteUpdateAvailable.set(null);
+      }
+    } catch {
+      // Silently ignore check failures (e.g. network errors, expired tokens)
     }
   }
 

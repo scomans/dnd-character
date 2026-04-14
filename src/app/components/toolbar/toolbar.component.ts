@@ -1,5 +1,4 @@
-import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { CharacterService } from '../../services/character.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
@@ -18,7 +17,7 @@ import '@googleworkspace/drive-picker-element';
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
 })
-export class ToolbarComponent implements AfterViewInit, OnDestroy {
+export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   cs = inject(CharacterService);
   drive = inject(GoogleDriveService);
   theme = inject(ThemeService);
@@ -29,6 +28,7 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
   showReset = false;
   showNewDriveFile = false;
   showPicker = false;
+  showRemoteUpdate = false;
   importText = '';
   importError = '';
   newDriveFileName = '';
@@ -36,6 +36,13 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
   /** Whether we want to open the picker to select a file (vs auth-only) */
   private wantFilePicker = false;
   private pickerListenersAttached = false;
+
+  ngOnInit(): void {
+    // On page load, check for remote updates if connected and a file is selected
+    if (this.drive.connected() && this.drive.currentFile()) {
+      this.checkForRemoteUpdate();
+    }
+  }
 
   // Bound event handlers for cleanup
   private onOAuthResponse = (e: Event) => {
@@ -46,6 +53,8 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
       if (!this.wantFilePicker) {
         this.closePicker();
       }
+      // Check for remote updates after authentication
+      this.checkForRemoteUpdate();
     }
   };
 
@@ -59,9 +68,6 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
         this.cs.importJSON(content);
       } catch (err) {
         console.error('Error reading file from Google Drive:', err);
-        if (this.drive.tokenExpired()) {
-          // Token expired - UI will update to show re-auth button
-        }
       }
     }
     this.closePicker();
@@ -176,8 +182,13 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
     const currentFile = this.drive.currentFile();
     if (!currentFile) return;
     try {
+      // Increment version before saving
+      const currentVersion = this.cs.character().version ?? 0;
+      this.cs.update({ version: currentVersion + 1 });
       const json = this.cs.exportJSON();
       await this.drive.saveFile(currentFile.id, json, currentFile.name);
+      // Clear any remote update notification after successful save
+      this.drive.remoteUpdateAvailable.set(null);
     } catch (err) {
       console.error('Error saving to Google Drive:', err);
       if (this.drive.tokenExpired()) {
@@ -193,6 +204,9 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
       fileName = fileName + '.json';
     }
     try {
+      // Increment version before creating
+      const currentVersion = this.cs.character().version ?? 0;
+      this.cs.update({ version: currentVersion + 1 });
       const json = this.cs.exportJSON();
       await this.drive.createFile(json, fileName);
       this.showNewDriveFile = false;
@@ -203,6 +217,36 @@ export class ToolbarComponent implements AfterViewInit, OnDestroy {
         this.showNewDriveFile = false;
         return;
       }
+    }
+  }
+
+  /**
+   * Check if the remote file has a newer version than the local one.
+   * Shows the update modal if remote is newer.
+   */
+  async checkForRemoteUpdate(): Promise<void> {
+    const currentFile = this.drive.currentFile();
+    if (!currentFile) return;
+    const localVersion = this.cs.character().version ?? 0;
+    await this.drive.checkRemoteVersion(currentFile.id, localVersion);
+    if (this.drive.remoteUpdateAvailable()) {
+      this.showRemoteUpdate = true;
+    }
+  }
+
+  /**
+   * Reload the character data from the remote Google Drive file.
+   */
+  async reloadFromRemote(): Promise<void> {
+    const currentFile = this.drive.currentFile();
+    if (!currentFile) return;
+    try {
+      const content = await this.drive.readFile(currentFile.id);
+      this.cs.importJSON(content);
+      this.drive.remoteUpdateAvailable.set(null);
+      this.showRemoteUpdate = false;
+    } catch (err) {
+      console.error('Error reloading from Google Drive:', err);
     }
   }
 }
