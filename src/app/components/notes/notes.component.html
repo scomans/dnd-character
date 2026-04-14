@@ -1,61 +1,77 @@
 <p-confirmDialog />
+
+<!-- Tree content shared between desktop sidebar and mobile drawer -->
+<ng-template #treeContent>
+  <div class="flex items-center justify-between px-3 py-2 border-b border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
+    <span class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Notizen</span>
+    <div class="flex gap-1">
+      <p-button
+        icon="pi pi-plus"
+        [rounded]="true"
+        [text]="true"
+        size="small"
+        (onClick)="addRootNote()"
+        pTooltip="Neue Notiz"
+        tooltipPosition="top"
+      />
+    </div>
+  </div>
+  <div class="flex-1 overflow-y-auto p-1">
+    @if (treeNodes().length) {
+      <p-tree
+        [value]="treeNodes()"
+        selectionMode="single"
+        [(selection)]="selectedTreeNode"
+        (selectionChange)="onNodeSelect($event)"
+        (onNodeExpand)="onNodeToggle()"
+        (onNodeCollapse)="onNodeToggle()"
+        [contextMenu]="cm"
+        [metaKeySelection]="false"
+        class="notes-tree"
+      >
+        <ng-template #nodeTemplate let-node>
+          <div class="flex items-center gap-1 w-full">
+            <span class="flex-1 truncate text-sm">{{ node.label }}</span>
+            <button
+              type="button"
+              class="pi pi-plus text-xs text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400 bg-transparent border-none cursor-pointer p-0.5 rounded hover:bg-slate-200 dark:hover:bg-gray-600"
+              (click)="addChildNoteById(node.key); $event.stopPropagation()"
+              title="Unternotiz hinzufügen"
+            ></button>
+          </div>
+        </ng-template>
+      </p-tree>
+    } @else {
+      <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 text-sm p-4 text-center">
+        <i class="pi pi-file-edit text-3xl mb-2"></i>
+        <span>Noch keine Notizen.</span>
+        <button
+          type="button"
+          class="mt-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 text-xs cursor-pointer bg-transparent border-none"
+          (click)="addRootNote()"
+        >Erste Notiz erstellen</button>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<!-- Mobile Drawer (visible on small/medium screens) -->
+<p-drawer
+  [(visible)]="sidebarVisible"
+  header="Notizen"
+  [style]="{ width: '280px' }"
+  [showCloseIcon]="true"
+>
+  <ng-container *ngTemplateOutlet="treeContent" />
+</p-drawer>
+
 <div class="flex gap-4 mt-4" style="min-height: 500px;">
-  <!-- Left: Tree View -->
+  <!-- Left: Tree View (hidden on small/medium screens) -->
   <div
-    class="flex flex-col border border-slate-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 overflow-hidden"
+    class="hidden md:flex flex-col border border-slate-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 overflow-hidden"
     style="width: 280px; min-width: 220px;"
   >
-    <div class="flex items-center justify-between px-3 py-2 border-b border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
-      <span class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Notizen</span>
-      <div class="flex gap-1">
-        <p-button
-          icon="pi pi-plus"
-          [rounded]="true"
-          [text]="true"
-          size="small"
-          (onClick)="addRootNote()"
-          pTooltip="Neue Notiz"
-          tooltipPosition="top"
-        />
-      </div>
-    </div>
-    <div class="flex-1 overflow-y-auto p-1">
-      @if (treeNodes().length) {
-        <p-tree
-          [value]="treeNodes()"
-          selectionMode="single"
-          [(selection)]="selectedTreeNode"
-          (selectionChange)="onNodeSelect($event)"
-          (onNodeExpand)="onNodeToggle()"
-          (onNodeCollapse)="onNodeToggle()"
-          [contextMenu]="cm"
-          [metaKeySelection]="false"
-          class="notes-tree"
-        >
-          <ng-template #nodeTemplate let-node>
-            <div class="flex items-center gap-1 w-full">
-              <span class="flex-1 truncate text-sm">{{ node.label }}</span>
-              <button
-                type="button"
-                class="pi pi-plus text-xs text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400 bg-transparent border-none cursor-pointer p-0.5 rounded hover:bg-slate-200 dark:hover:bg-gray-600"
-                (click)="addChildNoteById(node.key); $event.stopPropagation()"
-                title="Unternotiz hinzufügen"
-              ></button>
-            </div>
-          </ng-template>
-        </p-tree>
-      } @else {
-        <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 text-sm p-4 text-center">
-          <i class="pi pi-file-edit text-3xl mb-2"></i>
-          <span>Noch keine Notizen.</span>
-          <button
-            type="button"
-            class="mt-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 text-xs cursor-pointer bg-transparent border-none"
-            (click)="addRootNote()"
-          >Erste Notiz erstellen</button>
-        </div>
-      }
-    </div>
+    <ng-container *ngTemplateOutlet="treeContent" />
   </div>
 
   <!-- Right: Editor -->
@@ -63,6 +79,17 @@
     @if (selectedNote()) {
       <!-- Note title bar -->
       <div class="flex items-center gap-2 px-3 py-2 border-b border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
+        <!-- Toggle sidebar button (visible only on small/medium screens) -->
+        <p-button
+          icon="pi pi-bars"
+          [rounded]="true"
+          [text]="true"
+          size="small"
+          (onClick)="sidebarVisible.set(true)"
+          pTooltip="Notizen-Liste"
+          tooltipPosition="top"
+          styleClass="md:hidden"
+        />
         @if (renamingNote()) {
           <input
             pInputText
@@ -153,6 +180,15 @@
       <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500">
         <i class="pi pi-file-edit text-5xl mb-3"></i>
         <span class="text-sm">Wähle eine Notiz aus oder erstelle eine neue.</span>
+        <!-- Open sidebar button on small screens when no note is selected -->
+        <p-button
+          label="Notizen-Liste öffnen"
+          icon="pi pi-bars"
+          [text]="true"
+          size="small"
+          (onClick)="sidebarVisible.set(true)"
+          styleClass="mt-3 md:hidden"
+        />
       </div>
     }
   </div>

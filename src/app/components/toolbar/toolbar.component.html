@@ -89,9 +89,18 @@
 
   <span class="border-l border-slate-500 h-6 mx-1"></span>
 
-  <p-button label="Export JSON" icon="pi pi-download" size="small" severity="secondary" (onClick)="exportJSON()" />
-  <p-button label="Import JSON" icon="pi pi-upload" size="small" severity="secondary" (onClick)="showImport = true" />
-  <p-button label="Zurücksetzen" icon="pi pi-refresh" size="small" severity="danger" (onClick)="showReset = true" />
+  <p-button
+    icon="pi pi-ellipsis-v"
+    size="small"
+    severity="secondary"
+    [rounded]="true"
+    [text]="true"
+    (onClick)="moreMenu.toggle($event)"
+    pTooltip="Weitere Aktionen"
+    tooltipPosition="bottom"
+    class="text-white"
+  />
+  <p-menu #moreMenu [model]="moreMenuItems" [popup]="true" />
 </div>
 
 <!-- Drive Picker element (always in DOM but hidden, controls auth + picker) -->

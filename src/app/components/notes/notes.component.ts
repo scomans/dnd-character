@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, SecurityContext, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -7,6 +7,7 @@ import { ConfirmationService, MenuItem, TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ContextMenuModule } from 'primeng/contextmenu';
+import { Drawer } from 'primeng/drawer';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
@@ -76,7 +77,7 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
 @Component({
   selector: 'app-notes',
   imports: [
-    CommonModule,
+    NgTemplateOutlet,
     FormsModule,
     TreeModule,
     ButtonModule,
@@ -85,6 +86,7 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
     ContextMenuModule,
     TooltipModule,
     ConfirmDialog,
+    Drawer,
   ],
   providers: [ConfirmationService],
   templateUrl: './notes.component.html',
@@ -100,6 +102,7 @@ export class NotesComponent {
   selectedNote = signal<NoteNode | null>(null);
   editingContent = signal(false);
   renamingNote = signal(false);
+  sidebarVisible = signal(false);
   renameValue = '';
 
   contextMenuItems: MenuItem[] = [
@@ -145,6 +148,7 @@ export class NotesComponent {
     this.selectedNote.set(noteData);
     this.editingContent.set(false);
     this.renamingNote.set(false);
+    this.sidebarVisible.set(false);
   }
 
   onNodeToggle(): void {
