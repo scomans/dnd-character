@@ -1,6 +1,7 @@
 @use "tailwindcss";
 
 @use "includes/markdown";
+@use "includes/font";
 
 /* Configure Tailwind dark mode to use .dark-mode selector (matching PrimeNG config) */
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
@@ -24,11 +25,12 @@ html.dark-mode {
 
 html, body {
   @apply m-0 p-0 w-full h-full overflow-x-hidden;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Bookinsanity, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 14px;
   background: var(--dnd-bg);
   color: var(--dnd-text);
   transition: background-color 0.2s ease, color 0.2s ease;
+  letter-spacing: 0.85px;
 }
 
 /* PrimeNG input overrides for DnD theme */
@@ -53,9 +55,11 @@ html.dark-mode .p-textarea {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--dnd-bg);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--dnd-border);
   border-radius: 4px;

@@ -20,13 +20,13 @@
           [ngModel]="cs.character().characterName"
           (ngModelChange)="cs.update({ characterName: $event })"
           placeholder="Charaktername"
-          class="text-2xl font-bold font-serif tracking-wide w-full"
+          class="text-2xl font-bold tracking-wide w-full"
           (clickOutside)="editingName.set(false)"
           autofocus
         />
       } @else {
         <span
-          class="text-2xl font-bold text-slate-800 dark:text-slate-200 tracking-wide font-serif cursor-pointer hover:text-slate-500 block"
+          class="text-2xl font-bold text-slate-800 dark:text-slate-200 tracking-wide cursor-pointer hover:text-slate-500 block"
           (click)="editingName.set(true)"
           pTooltip="Klicken zum Bearbeiten"
           tooltipPosition="top"
