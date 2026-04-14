@@ -10,42 +10,9 @@ import { ABILITY_SHORT_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-saving-throws',
-  standalone: true,
   imports: [FormsModule, CheckboxModule, ButtonModule, FieldsetModule, TooltipModule],
-  template: `
-    <p-fieldset styleClass="relative">
-      <ng-template pTemplate="header">
-        <div class="flex items-center gap-2 w-full">
-          <span class="font-bold">Rettungswürfe</span>
-          <p-button
-            [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
-            [rounded]="true"
-            [text]="true"
-            size="small"
-            (onClick)="editing.set(!editing())"
-            [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
-            tooltipPosition="top"
-          />
-        </div>
-      </ng-template>
-      <div class="space-y-0.5">
-        @for (ability of abilities; track ability) {
-          <div class="flex items-center gap-1.5 text-sm">
-            <p-checkbox
-              [ngModel]="isProficient(ability)"
-              (ngModelChange)="toggleProficiency(ability, $event)"
-              [binary]="true"
-              [disabled]="!editing()"
-            />
-            <span class="font-bold w-6 text-right text-slate-700 dark:text-slate-300">
-              {{ cs.getSavingThrowModifier(ability) >= 0 ? '+' : '' }}{{ cs.getSavingThrowModifier(ability) }}
-            </span>
-            <span class="text-xs">{{ getLabel(ability) }} (<span class="font-bold" [pTooltip]="getLabel(ability)" tooltipPosition="right">{{ getShort(ability) }}</span>)</span>
-          </div>
-        }
-      </div>
-    </p-fieldset>
-  `,
+  templateUrl: './saving-throws.component.html',
+  styleUrl: './saving-throws.component.scss',
 })
 export class SavingThrowsComponent {
   cs = inject(CharacterService);

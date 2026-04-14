@@ -1,0 +1,43 @@
+@if (editing() && !readonly()) {
+  <div (clickOutside)="editing.set(false)">
+    <textarea
+      pTextarea
+      [autoResize]="true"
+      [rows]="minRows()"
+      [ngModel]="value()"
+      (ngModelChange)="onValueChange($event)"
+      class="w-full text-sm"
+      [placeholder]="placeholder()"
+    ></textarea>
+  </div>
+} @else {
+  <div
+    class="relative group min-h-8 p-1 border border-transparent rounded text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
+    [ngClass]="readonly() ? '' : 'hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700'"
+    [class.text-gray-400]="!value()"
+    [class.italic]="!value()"
+  >
+    @if (!readonly()) {
+      <p-button
+        class="absolute top-1 right-1"
+        [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+        [rounded]="true"
+        [text]="true"
+        size="small"
+        (onClick)="editing.set(true)"
+        [pTooltip]="'Bearbeiten'"
+        tooltipPosition="top"
+      />
+    }
+    @if (value()) {
+      <span [innerHTML]="renderedHtml()"></span>
+    } @else if (!readonly()) {
+      <button
+        type="button"
+        class="text-gray-400 dark:text-gray-500 italic text-xs cursor-pointer bg-transparent border-none p-0"
+        (click)="editing.set(true)"
+      >Klicken zum Bearbeiten...
+      </button>
+    }
+  </div>
+}

@@ -10,77 +10,9 @@ import { CharacterService } from '../../services/character.service';
 
 @Component({
   selector: 'app-ability-scores',
-  standalone: true,
   imports: [FormsModule, InputNumberModule, CheckboxModule, TooltipModule, ClickOutside],
-  template: `
-    <div class="space-y-2">
-      <!-- Inspiration -->
-      <div class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2">
-        <p-checkbox
-          [ngModel]="cs.character().inspiration"
-          (ngModelChange)="cs.update({ inspiration: $event })"
-          [binary]="true"
-        />
-        <span class="text-xs font-bold">Inspiration</span>
-      </div>
-
-      <!-- Proficiency Bonus (click-to-edit) -->
-      <div
-        class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2 overflow-hidden" pTooltip="Übungsbonus" tooltipPosition="right"
-      >
-        @if (editingProficiency()) {
-          <p-input-number
-            [ngModel]="cs.character().proficiencyBonusOverride ?? cs.getProficiencyBonus()"
-            (ngModelChange)="updateProficiency($event)"
-            [min]="1"
-            [max]="10"
-            [showButtons]="false"
-            [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
-            (clickOutside)="editingProficiency.set(false)"
-            class="w-full"
-          />
-        } @else {
-          <span
-            class="text-xl font-bold text-slate-700 dark:text-slate-300 w-10 text-center cursor-pointer hover:text-slate-500"
-            (click)="editingProficiency.set(true)"
-          >+{{ cs.getProficiencyBonus() }}</span>
-        }
-        @if (!editingProficiency()) {
-          <span class="text-xs font-bold">Übungsb.</span>
-        }
-      </div>
-
-      <!-- Ability Scores (click-to-edit) -->
-      <div class="grid grid-cols-2 sm:grid-cols-1 gap-2">
-        @for (ability of abilities; track ability) {
-          <div class="bg-white dark:bg-gray-800 border-2 border-slate-700 dark:border-slate-500 rounded-lg p-2 flex flex-col items-center">
-            <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400">{{ getLabel(ability) }}</span>
-            <span class="text-3xl font-bold text-slate-700 dark:text-slate-300">
-              {{ cs.getAbilityModifier(ability) >= 0 ? '+' : '' }}{{ cs.getAbilityModifier(ability) }}
-            </span>
-            <div class="mt-1">
-              @if (editingAbility() === ability) {
-                <p-input-number
-                  [ngModel]="getAbilityBase(ability)"
-                  (ngModelChange)="updateAbility(ability, $event)"
-                  [min]="1"
-                  [max]="30"
-                  [showButtons]="true"
-                  [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
-                  (clickOutside)="editingAbility.set(null)"
-                />
-              } @else {
-                <span
-                  class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-slate-500 border border-transparent hover:border-slate-400/30 rounded px-2 py-0.5"
-                  (click)="editingAbility.set(ability)"
-                >{{ getAbilityBase(ability) }}</span>
-              }
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  `,
+  templateUrl: './ability-scores.component.html',
+  styleUrl: './ability-scores.component.scss',
 })
 export class AbilityScoresComponent {
   cs = inject(CharacterService);

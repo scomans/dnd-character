@@ -1,0 +1,26 @@
+<div class="space-y-3">
+  <p-fieldset legend="Klassenmerkmale">
+    <app-markdown-editor
+      [value]="cs.character().featuresAndTraits"
+      (valueChange)="cs.update({ featuresAndTraits: $event })"
+      placeholder="Klassenmerkmale, Fähigkeiten und Talente..."
+      [minRows]="10"
+    />
+  </p-fieldset>
+  <p-fieldset legend="Volksmerkmale">
+    <app-markdown-editor
+      [value]="cs.character().racialTraits"
+      (valueChange)="cs.update({ racialTraits: $event })"
+      placeholder="Volksmerkmale und rassische Fähigkeiten..."
+      [minRows]="6"
+    />
+  </p-fieldset>
+  <p-fieldset legend="Sinne">
+    <app-markdown-editor
+      [value]="cs.character().senses"
+      (valueChange)="cs.update({ senses: $event })"
+      placeholder="Sinne (z.B. Dunkelsicht 18m, Passive Wahrnehmung)..."
+      [minRows]="3"
+    />
+  </p-fieldset>
+</div>
