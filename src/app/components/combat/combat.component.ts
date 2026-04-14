@@ -11,6 +11,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
+import { CountersComponent } from '../counters/counters.component';
 
 
 @Component({
@@ -28,6 +29,7 @@ import { CharacterService } from '../../services/character.service';
     TooltipModule,
     ClickOutside,
     InputText,
+    CountersComponent,
   ],
   template: `
     <!-- AC / Initiative / Speed Row -->
@@ -185,6 +187,7 @@ import { CharacterService } from '../../services/character.service';
           </div>
         </p-fieldset>
       </div>
+      <app-counters />
     </div>
 
   `,
