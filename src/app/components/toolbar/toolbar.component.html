@@ -57,7 +57,7 @@
         icon="pi pi-file-plus"
         size="small"
         severity="secondary"
-        (onClick)="showNewDriveFile = true"
+        (onClick)="showNewDriveFile.set(true)"
         pTooltip="Neue Datei in Google Drive erstellen"
         tooltipPosition="bottom"
       />
@@ -93,8 +93,6 @@
     icon="pi pi-ellipsis-v"
     size="small"
     severity="secondary"
-    [rounded]="true"
-    [text]="true"
     (onClick)="moreMenu.toggle($event)"
     pTooltip="Weitere Aktionen"
     tooltipPosition="bottom"
@@ -104,7 +102,7 @@
 </div>
 
 <!-- Drive Picker element (always in DOM but hidden, controls auth + picker) -->
-@if (showPicker) {
+@if (showPicker()) {
   <drive-picker
     #drivePicker
     [attr.client-id]="drive.clientId"
@@ -130,7 +128,7 @@
     </div>
   </div>
   <ng-template #footer>
-    <p-button label="Abbrechen" [text]="true" (onClick)="showNewDriveFile = false" />
+    <p-button label="Abbrechen" [text]="true" (onClick)="showNewDriveFile.set(false)" />
     <p-button label="Erstellen & Speichern" icon="pi pi-check" [loading]="drive.loading()" (onClick)="createDriveFile()" />
   </ng-template>
 </p-dialog>
@@ -146,12 +144,12 @@
       class="w-full font-mono text-xs"
       placeholder="JSON hier einfügen..."
     ></textarea>
-    @if (importError) {
-      <p class="text-red-600 text-sm">{{ importError }}</p>
+    @if (importError()) {
+      <p class="text-red-600 text-sm">{{ importError() }}</p>
     }
   </div>
   <ng-template #footer>
-    <p-button label="Abbrechen" [text]="true" (onClick)="showImport = false; importError = ''" />
+    <p-button label="Abbrechen" [text]="true" (onClick)="showImport.set(false); importError.set('')" />
     <p-button label="Importieren" icon="pi pi-check" (onClick)="doImport()" />
   </ng-template>
 </p-dialog>
@@ -160,7 +158,7 @@
 <p-dialog header="Charakter zurücksetzen?" [(visible)]="showReset" [modal]="true" [style]="{ width: '400px' }">
   <p class="text-sm">Möchtest du wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.</p>
   <ng-template #footer>
-    <p-button label="Abbrechen" [text]="true" (onClick)="showReset = false" />
+    <p-button label="Abbrechen" [text]="true" (onClick)="showReset.set(false)" />
     <p-button label="Zurücksetzen" icon="pi pi-refresh" severity="danger" (onClick)="doReset()" />
   </ng-template>
 </p-dialog>
@@ -183,7 +181,7 @@
     </p>
   </div>
   <ng-template #footer>
-    <p-button label="Später" [text]="true" (onClick)="showRemoteUpdate = false" />
+    <p-button label="Später" [text]="true" (onClick)="showRemoteUpdate.set(false)" />
     <p-button label="Jetzt laden" icon="pi pi-cloud-download" (onClick)="reloadFromRemote()" [loading]="drive.loading()" />
   </ng-template>
 </p-dialog>

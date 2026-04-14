@@ -7,7 +7,6 @@
           [src]="cs.character().characterImage"
           alt="Charakter"
           [preview]="true"
-          width="96"
           imageClass="w-20 h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
         />
       </div>
@@ -29,7 +28,7 @@
           class="text-2xl font-bold text-slate-800 dark:text-slate-200 tracking-wide cursor-pointer hover:text-slate-500 block"
           (click)="editingName.set(true)"
           pTooltip="Klicken zum Bearbeiten"
-          tooltipPosition="top"
+          tooltipPosition="left"
         >{{ cs.character().characterName || 'Charaktername' }}</span>
       }
       @if (cs.character().className) {

@@ -1,4 +1,4 @@
-import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CharacterService } from '../../services/character.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
@@ -26,14 +26,14 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('drivePicker') drivePickerRef?: ElementRef;
 
-  showImport = false;
-  showReset = false;
-  showNewDriveFile = false;
-  showPicker = false;
-  showRemoteUpdate = false;
-  importText = '';
-  importError = '';
-  newDriveFileName = '';
+  showImport = signal(false);
+  showReset = signal(false);
+  showNewDriveFile = signal(false);
+  showPicker = signal(false);
+  showRemoteUpdate = signal(false);
+  importText = signal('');
+  importError = signal('');
+  newDriveFileName = signal('');
 
   moreMenuItems: MenuItem[] = [
     {
@@ -44,7 +44,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       label: 'Import JSON',
       icon: 'pi pi-upload',
-      command: () => (this.showImport = true),
+      command: () => this.showImport.set(true),
     },
     {
       separator: true,
@@ -52,8 +52,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       label: 'Zurücksetzen',
       icon: 'pi pi-refresh',
-      styleClass: 'text-red-500',
-      command: () => (this.showReset = true),
+      command: () => this.showReset.set(true),
     },
   ];
 
@@ -64,7 +63,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     // On page load, check for remote updates if connected and a file is selected
     if (this.drive.connected() && this.drive.currentFile()) {
-      this.checkForRemoteUpdate();
+      void this.checkForRemoteUpdate();
     }
   }
 
@@ -78,7 +77,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
         this.closePicker();
       }
       // Check for remote updates after authentication
-      this.checkForRemoteUpdate();
+      void this.checkForRemoteUpdate();
     }
   };
 
@@ -134,7 +133,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     if (el) {
       el.visible = false;
     }
-    this.showPicker = false;
+    this.showPicker.set(false);
     this.pickerListenersAttached = false;
     this.wantFilePicker = false;
   }
@@ -144,7 +143,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   authenticateOnly(): void {
     this.wantFilePicker = false;
-    this.showPicker = true;
+    this.showPicker.set(true);
     setTimeout(() => {
       this.attachPickerListeners();
       const el = this.drivePickerRef?.nativeElement;
@@ -159,7 +158,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   openPickerForFile(): void {
     this.wantFilePicker = true;
-    this.showPicker = true;
+    this.showPicker.set(true);
     setTimeout(() => {
       this.attachPickerListeners();
       const el = this.drivePickerRef?.nativeElement;
@@ -175,36 +174,38 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${this.cs.character().characterName || 'character'}.json`;
+    a.download = `${ this.cs.character().characterName || 'character' }.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
   doImport(): void {
-    this.importError = '';
-    if (!this.importText.trim()) {
-      this.importError = 'Bitte JSON-Text eingeben.';
+    this.importError.set('');
+    if (!this.importText().trim()) {
+      this.importError.set('Bitte JSON-Text eingeben.');
       return;
     }
-    const success = this.cs.importJSON(this.importText);
+    const success = this.cs.importJSON(this.importText());
     if (success) {
-      this.showImport = false;
-      this.importText = '';
+      this.showImport.set(false);
+      this.importText.set('');
     } else {
-      this.importError = 'Ungültiges JSON-Format.';
+      this.importError.set('Ungültiges JSON-Format.');
     }
   }
 
   doReset(): void {
     this.cs.resetCharacter();
-    this.showReset = false;
+    this.showReset.set(false);
   }
 
   // === Google Drive ===
 
   async saveToDrive(): Promise<void> {
     const currentFile = this.drive.currentFile();
-    if (!currentFile) return;
+    if (!currentFile) {
+      return;
+    }
     try {
       // Increment version before saving
       const currentVersion = this.cs.character().version ?? 0;
@@ -223,7 +224,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async createDriveFile(): Promise<void> {
-    let fileName = this.newDriveFileName.trim() || `${this.cs.character().characterName || 'character'}.json`;
+    let fileName = this.newDriveFileName().trim() || `${ this.cs.character().characterName || 'character' }.json`;
     if (!fileName.endsWith('.json')) {
       fileName = fileName + '.json';
     }
@@ -233,12 +234,12 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cs.update({ version: currentVersion + 1 });
       const json = this.cs.exportJSON();
       await this.drive.createFile(json, fileName);
-      this.showNewDriveFile = false;
-      this.newDriveFileName = '';
+      this.showNewDriveFile.set(false);
+      this.newDriveFileName.set('');
     } catch (err) {
       console.error('Error creating file on Google Drive:', err);
       if (this.drive.tokenExpired()) {
-        this.showNewDriveFile = false;
+        this.showNewDriveFile.set(false);
         return;
       }
     }
@@ -250,11 +251,13 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   async checkForRemoteUpdate(): Promise<void> {
     const currentFile = this.drive.currentFile();
-    if (!currentFile) return;
+    if (!currentFile) {
+      return;
+    }
     const localVersion = this.cs.character().version ?? 0;
     await this.drive.checkRemoteVersion(currentFile.id, localVersion);
     if (this.drive.remoteUpdateAvailable()) {
-      this.showRemoteUpdate = true;
+      this.showRemoteUpdate.set(true);
     }
   }
 
@@ -263,12 +266,14 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   async reloadFromRemote(): Promise<void> {
     const currentFile = this.drive.currentFile();
-    if (!currentFile) return;
+    if (!currentFile) {
+      return;
+    }
     try {
       const content = await this.drive.readFile(currentFile.id);
       this.cs.importJSON(content);
       this.drive.remoteUpdateAvailable.set(null);
-      this.showRemoteUpdate = false;
+      this.showRemoteUpdate.set(false);
     } catch (err) {
       console.error('Error reloading from Google Drive:', err);
     }
