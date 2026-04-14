@@ -12,7 +12,10 @@ import { SKILL_LABELS } from '../models/character.model';
  *   Combat / special:   üb, rk, br, ini, tp, maxtp, tw, zsg, zattk, lvl
  *   Skills (German):    e.g. "Arkane Kunde", "Heimlichkeit", …
  *
- * Renders as:  <span title="Full Name" class="placeholder-value">value</span>
+ * The extension tokenizes {{key}} during parsing and renders a safe text
+ * marker (⟦PH:key⟧) that survives Angular's HTML sanitization.
+ * Call `replacePlaceholderMarkers()` after sanitization to inject the
+ * final tooltip HTML.
  *
  * Unknown keys are rendered as the original {{key}} text.
  */
@@ -134,17 +137,21 @@ function resolvePlaceholder(
 }
 
 // ---------------------------------------------------------------------------
-// Marked extension factory
+// Marker format: ⟦PH:key⟧  (uses Unicode brackets to avoid collisions)
 // ---------------------------------------------------------------------------
 
+const MARKER_PREFIX = '\u27E6PH:';
+const MARKER_SUFFIX = '\u27E7';
+const MARKER_REGEX = /\u27E6PH:([^\u27E7]+)\u27E7/g;
+
 /**
- * Creates a markedjs inline extension that replaces `{{key}}` placeholders
- * with live character values.
+ * Creates a markedjs inline extension that tokenizes `{{key}}` placeholders
+ * and renders safe text markers during parsing.
  *
- * The returned extension captures the `CharacterService` via closure so that
- * every call to `marked.parse()` resolves against the current character state.
+ * The markers survive Angular's HTML sanitization and are later replaced
+ * with tooltip HTML by `replacePlaceholderMarkers()`.
  */
-export function markedPlaceholderExtension(cs: CharacterService): MarkedExtension {
+export function markedPlaceholderExtension(): MarkedExtension {
   return {
     extensions: [
       {
@@ -164,14 +171,25 @@ export function markedPlaceholderExtension(cs: CharacterService): MarkedExtensio
         },
         renderer(token: Tokens.Generic) {
           const key = token['key'] as string;
-          const resolved = resolvePlaceholder(key, cs);
-          if (resolved) {
-            return withTooltip(resolved.value, resolved.tooltip);
-          }
-          // Unknown placeholder – render as-is
-          return escapeHtml(token['raw'] as string);
+          // Emit a safe text marker that survives sanitization.
+          return `${MARKER_PREFIX}${escapeHtml(key)}${MARKER_SUFFIX}`;
         },
       },
     ],
   };
+}
+
+/**
+ * Replace placeholder markers (emitted by the marked extension) with
+ * the actual tooltip HTML. Call this **after** Angular HTML sanitization.
+ */
+export function replacePlaceholderMarkers(html: string, cs: CharacterService): string {
+  return html.replace(MARKER_REGEX, (_, key: string) => {
+    const resolved = resolvePlaceholder(key, cs);
+    if (resolved) {
+      return withTooltip(resolved.value, resolved.tooltip);
+    }
+    // Unknown placeholder – render original syntax
+    return escapeHtml(`{{${key}}}`);
+  });
 }

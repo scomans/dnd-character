@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, SecurityContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -15,7 +15,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { CharacterService } from '../../services/character.service';
 import { NoteNode } from '../../models/character.model';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
-import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
+import { markedPlaceholderExtension, replacePlaceholderMarkers } from '../../utils/placeholder-replacer';
 
 function generateId(): string {
   return `note-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -86,7 +86,7 @@ export class NotesComponent {
   private cs = inject(CharacterService);
   private sanitizer = inject(DomSanitizer);
   private confirmationService = inject(ConfirmationService);
-  private marked = new Marked(markedAccordionExtension(), markedPlaceholderExtension(this.cs));
+  private marked = new Marked(markedAccordionExtension(), markedPlaceholderExtension());
 
   selectedTreeNode: TreeNode | null = null;
   selectedNote = signal<NoteNode | null>(null);
@@ -121,7 +121,10 @@ export class NotesComponent {
     const note = this.selectedNote();
     if (!note?.content) return '';
     const html = this.marked.parse(note.content, { async: false }) as string;
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    const sanitized =
+      this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
+    const withPlaceholders = replacePlaceholderMarkers(sanitized, this.cs);
+    return this.sanitizer.bypassSecurityTrustHtml(withPlaceholders);
   });
 
   onNodeSelect(node: TreeNode | TreeNode[] | null | undefined): void {
