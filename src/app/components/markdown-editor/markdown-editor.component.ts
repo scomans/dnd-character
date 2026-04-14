@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, input, output, SecurityContext, signal } from '@angular/core';
+import { Component, inject, input, output, SecurityContext, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
@@ -7,7 +7,9 @@ import { ClickOutside } from 'ngxtension/click-outside';
 import { Button } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
+import { CharacterService } from '../../services/character.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
+import { replacePlaceholders } from '../../utils/placeholder-replacer';
 
 
 marked.use(markedAccordionExtension());
@@ -27,7 +29,8 @@ export class MarkdownEditorComponent {
 
   editing = signal(false);
 
-  constructor(private sanitizer: DomSanitizer) {}
+  private sanitizer = inject(DomSanitizer);
+  private cs = inject(CharacterService);
 
   renderedHtml(): SafeHtml {
     let val = this.value();
@@ -35,7 +38,8 @@ export class MarkdownEditorComponent {
     val = val.replace(/\n(?=\n)/g, '\n\n<br/>\n');
     const html = marked.parse(val, { async: false, gfm: true, breaks: true }) as string;
     const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
-    return this.sanitizer.bypassSecurityTrustHtml(sanitized);
+    const withPlaceholders = replacePlaceholders(sanitized, this.cs);
+    return this.sanitizer.bypassSecurityTrustHtml(withPlaceholders);
   }
 
   onValueChange(newValue: string): void {

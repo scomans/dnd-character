@@ -15,6 +15,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { CharacterService } from '../../services/character.service';
 import { NoteNode } from '../../models/character.model';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
+import { replacePlaceholders } from '../../utils/placeholder-replacer';
 
 marked.use(markedAccordionExtension());
 
@@ -123,7 +124,8 @@ export class NotesComponent {
     const html = marked.parse(note.content, { async: false }) as string;
     const sanitized =
       this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
-    return this.sanitizer.bypassSecurityTrustHtml(sanitized);
+    const withPlaceholders = replacePlaceholders(sanitized, this.cs);
+    return this.sanitizer.bypassSecurityTrustHtml(withPlaceholders);
   });
 
   onNodeSelect(node: TreeNode | TreeNode[] | null | undefined): void {

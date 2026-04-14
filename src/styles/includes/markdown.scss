@@ -432,4 +432,10 @@ html.dark-mode .markdown-content {
   details.accordion > .accordion-content {
     padding: 0.3em 0.5em;
   }
+
+  .placeholder-value {
+    font-weight: 600;
+    cursor: help;
+    border-bottom: 1px dotted currentColor;
+  }
 }
