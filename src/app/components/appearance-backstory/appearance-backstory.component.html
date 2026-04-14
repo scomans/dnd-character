@@ -2,6 +2,106 @@
   <!-- Physical Characteristics + Character Image at top -->
   <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
     <p-fieldset legend="Merkmale">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3">
+        <!-- Klasse -->
+        <p-iftalabel>
+          <p-tree-select
+            [ngModel]="selectedClassNode()"
+            (ngModelChange)="onClassNodeSelect($event)"
+            [options]="classTree"
+            ariaLabel="Klasse"
+            [style]="{ width: '100%', fontSize: '0.75rem' }"
+            appendTo="body"
+            [showClear]="false"
+            id="merkmale-class"
+          />
+          <label for="merkmale-class">Klasse</label>
+        </p-iftalabel>
+        <!-- Hintergrund -->
+        <p-iftalabel>
+          @if (editingField() === 'background') {
+            <p-auto-complete
+              [ngModel]="cs.character().background"
+              (ngModelChange)="cs.update({ background: $event })"
+              [suggestions]="filteredBackgrounds"
+              (completeMethod)="filterBackgrounds($event)"
+              (onSelect)="editingField.set(null)"
+              [dropdown]="true"
+              [forceSelection]="false"
+              placeholder=" "
+              [inputStyle]="{ width: '100%', fontSize: '0.75rem' }"
+              [style]="{ width: '100%' }"
+              appendTo="body"
+              inputId="merkmale-bg"
+            />
+          } @else {
+            <input
+              pInputText
+              [value]="cs.character().background || ''"
+              (click)="editingField.set('background')"
+              readonly
+              class="w-full text-xs cursor-pointer"
+              id="merkmale-bg"
+            />
+          }
+          <label for="merkmale-bg">Hintergrund</label>
+        </p-iftalabel>
+        <!-- Volk -->
+        <p-iftalabel>
+          @if (editingField() === 'race') {
+            <p-auto-complete
+              [ngModel]="cs.character().race"
+              (ngModelChange)="cs.update({ race: $event })"
+              [suggestions]="filteredRaces"
+              (completeMethod)="filterRaces($event)"
+              (onSelect)="editingField.set(null)"
+              [dropdown]="true"
+              [forceSelection]="false"
+              placeholder=" "
+              [inputStyle]="{ width: '100%', fontSize: '0.75rem' }"
+              [style]="{ width: '100%' }"
+              appendTo="body"
+              inputId="merkmale-race"
+            />
+          } @else {
+            <input
+              pInputText
+              [value]="cs.character().race || ''"
+              (click)="editingField.set('race')"
+              readonly
+              class="w-full text-xs cursor-pointer"
+              id="merkmale-race"
+            />
+          }
+          <label for="merkmale-race">Volk</label>
+        </p-iftalabel>
+        <!-- Gesinnung -->
+        <p-iftalabel>
+          @if (editingField() === 'alignment') {
+            <p-select
+              [ngModel]="cs.character().alignment"
+              (ngModelChange)="onAlignmentChange($event)"
+              [options]="alignments"
+              optionLabel="label"
+              optionValue="value"
+              placeholder=" "
+              [style]="{ width: '100%', fontSize: '0.75rem' }"
+              appendTo="body"
+              inputId="merkmale-alignment"
+            />
+          } @else {
+            <input
+              pInputText
+              [value]="getAlignmentLabel() || ''"
+              (click)="editingField.set('alignment')"
+              readonly
+              class="w-full text-xs cursor-pointer"
+              id="merkmale-alignment"
+            />
+          }
+          <label for="merkmale-alignment">Gesinnung</label>
+        </p-iftalabel>
+      </div>
       <div class="grid grid-cols-3 gap-2 text-xs">
         <p-iftalabel>
           <p-input-number
