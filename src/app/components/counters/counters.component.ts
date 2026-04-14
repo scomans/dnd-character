@@ -10,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Counter } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
+
 @Component({
   selector: 'app-counters',
   standalone: true,
@@ -30,6 +31,16 @@ import { CharacterService } from '../../services/character.service';
           <div class="flex flex-wrap items-center gap-2 border border-gray-200 dark:border-gray-700 rounded-lg p-2">
             @if (editingIndex() === $index) {
               <div class="flex flex-wrap items-center gap-2 flex-1" (clickOutside)="editingIndex.set(-1)">
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  size="small"
+                  (onClick)="remove($index)"
+                  pTooltip="Entfernen"
+                  tooltipPosition="top"
+                />
                 <input
                   pInputText
                   [ngModel]="counter.name"
@@ -90,16 +101,6 @@ import { CharacterService } from '../../services/character.service';
                 size="small"
                 (onClick)="reset($index)"
                 pTooltip="Zurücksetzen"
-                tooltipPosition="top"
-              />
-              <p-button
-                icon="pi pi-trash"
-                [rounded]="true"
-                [text]="true"
-                severity="danger"
-                size="small"
-                (onClick)="remove($index)"
-                pTooltip="Entfernen"
                 tooltipPosition="top"
               />
             </div>
