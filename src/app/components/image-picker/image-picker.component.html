@@ -1,0 +1,34 @@
+<div class="flex flex-col items-center gap-2">
+  @if (imageData()) {
+    <img
+      [src]="imageData()"
+      [alt]="alt()"
+      [class]="imageClass()"
+      class="object-cover rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer"
+      (click)="openFilePicker()"
+    />
+    <p-button
+      icon="pi pi-trash"
+      size="small"
+      severity="danger"
+      [text]="true"
+      (onClick)="removeImage()"
+    />
+  } @else {
+    <div
+      class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors"
+      [class]="placeholderClass()"
+      (click)="openFilePicker()"
+    >
+      <i class="pi pi-image text-2xl text-gray-400 dark:text-gray-500 mb-1"></i>
+      <span class="text-xs text-gray-500 dark:text-gray-400">{{ placeholder() }}</span>
+    </div>
+  }
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="hidden"
+    (change)="onFileSelected($event)"
+  />
+</div>

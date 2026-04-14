@@ -1,6 +1,6 @@
-@import "tailwindcss";
+@use "tailwindcss";
 
-@import "includes/markdown";
+@use "includes/markdown";
 
 /* Configure Tailwind dark mode to use .dark-mode selector (matching PrimeNG config) */
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));
