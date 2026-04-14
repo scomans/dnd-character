@@ -8,12 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { TextareaModule } from 'primeng/textarea';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { Menu } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
 import '@googleworkspace/drive-picker-element';
 
 @Component({
   selector: 'app-toolbar',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule],
+  imports: [FormsModule, ButtonModule, DialogModule, TextareaModule, InputTextModule, TooltipModule, Menu],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
 })
@@ -32,6 +34,28 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   importText = '';
   importError = '';
   newDriveFileName = '';
+
+  moreMenuItems: MenuItem[] = [
+    {
+      label: 'Export JSON',
+      icon: 'pi pi-download',
+      command: () => this.exportJSON(),
+    },
+    {
+      label: 'Import JSON',
+      icon: 'pi pi-upload',
+      command: () => (this.showImport = true),
+    },
+    {
+      separator: true,
+    },
+    {
+      label: 'Zurücksetzen',
+      icon: 'pi pi-refresh',
+      styleClass: 'text-red-500',
+      command: () => (this.showReset = true),
+    },
+  ];
 
   /** Whether we want to open the picker to select a file (vs auth-only) */
   private wantFilePicker = false;
