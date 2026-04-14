@@ -5,7 +5,7 @@ import {
   signal,
   SecurityContext,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
@@ -20,7 +20,7 @@ marked.use(markedAccordionExtension());
 @Component({
   selector: 'app-markdown-editor',
   standalone: true,
-  imports: [FormsModule, TextareaModule, ClickOutside, Button, Tooltip],
+  imports: [FormsModule, NgClass, TextareaModule, ClickOutside, Button, Tooltip],
   template: `
     @if (editing() && !readonly()) {
       <div (clickOutside)="editing.set(false)">
@@ -37,9 +37,7 @@ marked.use(markedAccordionExtension());
     } @else {
       <div
         class="relative group min-h-8 p-1 border border-transparent rounded text-sm leading-snug whitespace-pre-wrap break-words markdown-content"
-        [class.hover:border-slate-400\/30]="!readonly()"
-        [class.hover:bg-slate-50]="!readonly()"
-        [class.dark:hover:bg-gray-700]="!readonly()"
+        [ngClass]="readonly() ? '' : 'hover:border-slate-400/30 hover:bg-slate-50 dark:hover:bg-gray-700'"
         [class.text-gray-400]="!value()"
         [class.italic]="!value()"
       >
