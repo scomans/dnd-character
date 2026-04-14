@@ -178,6 +178,15 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
           tooltipPosition="top"
           (onClick)="collapseAll()"
         />
+        <p-button
+          [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+          [rounded]="true"
+          [text]="true"
+          size="small"
+          (onClick)="editing.set(!editing())"
+          [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
+          tooltipPosition="top"
+        />
       </div>
 
       <!-- Spells List with Accordions -->
@@ -194,11 +203,13 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                 (cdkDropListDropped)="dropSpell($event, levelGroup.level)"
               >
                 @for (spell of getFilteredSpellsForLevel(levelGroup.level); track $index) {
-                  <div cdkDrag [cdkDragData]="spell">
+                  <div cdkDrag [cdkDragData]="spell" [cdkDragDisabled]="!editing()">
                     <p-accordion-panel [value]="'spell-' + levelGroup.level + '-' + $index">
                       <p-accordion-header>
                         <div class="flex items-center gap-1 w-full text-xs" (click)="$event.stopPropagation()">
-                          <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
+                          @if (editing()) {
+                            <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
+                          }
                           @if (levelGroup.level > 0) {
                             <p-checkbox
                               [ngModel]="spell.prepared"
@@ -211,31 +222,34 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
                       </p-accordion-header>
                       <p-accordion-content>
                         <div class="p-2 space-y-2">
-                          <div class="flex items-center gap-2">
-                            <input
-                              pInputText
-                              [(ngModel)]="spell.name"
-                              (ngModelChange)="updateSpells()"
-                              (keydown.space)="$event.stopPropagation()"
-                              class="flex-1 text-xs"
-                              placeholder="Zaubername"
-                            />
-                            <p-button
-                              icon="pi pi-trash"
-                              [rounded]="true"
-                              [text]="true"
-                              severity="danger"
-                              size="small"
-                              (onClick)="confirmRemoveSpell(spell)"
-                              pTooltip="Zauber löschen"
-                              tooltipPosition="top"
-                            />
-                          </div>
+                          @if (editing()) {
+                            <div class="flex items-center gap-2">
+                              <input
+                                pInputText
+                                [(ngModel)]="spell.name"
+                                (ngModelChange)="updateSpells()"
+                                (keydown.space)="$event.stopPropagation()"
+                                class="flex-1 text-xs"
+                                placeholder="Zaubername"
+                              />
+                              <p-button
+                                icon="pi pi-trash"
+                                [rounded]="true"
+                                [text]="true"
+                                severity="danger"
+                                size="small"
+                                (onClick)="confirmRemoveSpell(spell)"
+                                pTooltip="Zauber löschen"
+                                tooltipPosition="top"
+                              />
+                            </div>
+                          }
                           <app-markdown-editor
                             [value]="spell.description"
                             (valueChange)="spell.description = $event; updateSpells()"
                             placeholder="Beschreibung eingeben..."
                             [minRows]="3"
+                            [readonly]="!editing()"
                           />
                         </div>
                       </p-accordion-content>
@@ -246,20 +260,22 @@ import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/charac
             </p-accordion>
           </div>
         }
-        <p-divider />
-        <div class="flex gap-2 mt-8 justify-center">
-          <p-select
-            [(ngModel)]="newSpellLevel"
-            [options]="spellLevelOptions"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Stufe"
-            [style]="{ width: '14rem', fontSize: '0.75rem' }"
-            appendTo="body"
-            size="small"
-          />
-          <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
-        </div>
+        @if (editing()) {
+          <p-divider />
+          <div class="flex gap-2 mt-8 justify-center">
+            <p-select
+              [(ngModel)]="newSpellLevel"
+              [options]="spellLevelOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Stufe"
+              [style]="{ width: '14rem', fontSize: '0.75rem' }"
+              appendTo="body"
+              size="small"
+            />
+            <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
+          </div>
+        }
       </div>
 
     </p-fieldset>
@@ -273,6 +289,7 @@ export class SpellcastingComponent {
   newSpellLevel = 0;
   showPreparedOnly = false;
   editingField = signal<string | null>(null);
+  editing = signal(false);
   expandedPanels = signal<string[]>([]);
 
   abilityOptions = [
