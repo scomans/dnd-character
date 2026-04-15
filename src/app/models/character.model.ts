@@ -245,6 +245,7 @@ export interface DndCharacter {
   appearance: string;
   backstory: string;
   alliesAndOrganizations: string;
+  enemies: string;
   treasure: string;
   characterImage: string;
   organizationLogo: string;
@@ -690,6 +691,7 @@ export function createDefaultCharacter(): DndCharacter {
     appearance: '',
     backstory: '',
     alliesAndOrganizations: '',
+    enemies: '',
     treasure: '',
     characterImage: '',
     organizationLogo: '',

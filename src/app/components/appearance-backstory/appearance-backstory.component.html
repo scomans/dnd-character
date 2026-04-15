@@ -160,7 +160,9 @@
           <label for="phys-hair">Haarfarbe</label>
         </p-iftalabel>
         <p-iftalabel>
-          <input pInputText [ngModel]="cs.character().gender" (ngModelChange)="cs.update({ gender: $event })" class="w-full text-xs" id="phys-gender" />
+          <input
+            pInputText [ngModel]="cs.character().gender" (ngModelChange)="cs.update({ gender: $event })" class="w-full text-xs" id="phys-gender"
+          />
           <label for="phys-gender">Geschlecht</label>
         </p-iftalabel>
         <p-iftalabel>
@@ -234,6 +236,16 @@
         (imageChange)="cs.update({ organizationLogo: $event })"
       />
     </div>
+  </p-fieldset>
+
+  <!-- Enemies -->
+  <p-fieldset legend="Feinde">
+    <app-markdown-editor
+      [value]="cs.character().enemies"
+      (valueChange)="cs.update({ enemies: $event })"
+      placeholder="Feinde..."
+      [minRows]="4"
+    />
   </p-fieldset>
 
   <!-- Treasure -->
