@@ -46,7 +46,7 @@ export class ImagePickerComponent {
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          const maxSize = 400;
+          const maxSize = 600;
           let { width, height } = img;
           if (width > maxSize || height > maxSize) {
             if (width > height) {
