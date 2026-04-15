@@ -1,9 +1,11 @@
-import { Component, input, output, ElementRef, viewChild, inject, NgZone } from '@angular/core';
+import { Component, ElementRef, inject, input, NgZone, output, viewChild } from '@angular/core';
 import { Button } from 'primeng/button';
+import { Image as PrimeImage } from 'primeng/image';
+
 
 @Component({
   selector: 'app-image-picker',
-  imports: [Button],
+  imports: [Button, PrimeImage],
   templateUrl: './image-picker.component.html',
   styleUrl: './image-picker.component.scss',
 })
