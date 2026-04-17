@@ -1,49 +1,102 @@
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import {
+  faCheck,
+  faCloudDownloadAlt,
+  faDownload,
+  faEllipsisV,
+  faExclamationTriangle,
+  faFileCirclePlus,
+  faFolderOpen,
+  faMoon,
+  faRefresh,
+  faSave,
+  faSun,
+  faSync,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
+import { MenuItem } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Dialog } from 'primeng/dialog';
+import { InputText } from 'primeng/inputtext';
+import { Menu } from 'primeng/menu';
+import { Textarea } from 'primeng/textarea';
+import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
-import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
-import { Textarea } from 'primeng/textarea';
-import { InputText } from 'primeng/inputtext';
-import { Tooltip } from 'primeng/tooltip';
-import { Menu } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
 import '@googleworkspace/drive-picker-element';
+import { Ripple } from 'primeng/ripple';
+import { DrivePickerElement } from '@googleworkspace/drive-picker-element';
 
 @Component({
   selector: 'app-toolbar',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [FormsModule, Button, Dialog, Textarea, InputText, Tooltip, Menu],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [
+    Button,
+    Dialog,
+    FaIconComponent,
+    FormsModule,
+    InputText,
+    Menu,
+    Ripple,
+    Textarea,
+    Tooltip,
+  ],
 })
 export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
-  cs = inject(CharacterService);
-  drive = inject(GoogleDriveService);
-  theme = inject(ThemeService);
+  private readonly cs = inject(CharacterService);
+  protected readonly drive = inject(GoogleDriveService);
+  protected readonly theme = inject(ThemeService);
+  protected readonly fasCheck = faCheck;
+  protected readonly fasRefresh = faRefresh;
+  protected readonly fabGoogle = faGoogle;
+  protected readonly fasExclamationTriangle = faExclamationTriangle;
+  protected readonly fasCloudDownloadAlt = faCloudDownloadAlt;
+  protected readonly fasSun = faSun;
+  protected readonly fasMoon = faMoon;
+  protected readonly fasSave = faSave;
+  protected readonly fasSync = faSync;
+  protected readonly fasFolderOpen = faFolderOpen;
+  protected readonly fasFilePlus = faFileCirclePlus;
+  protected readonly fasEllipsisV = faEllipsisV;
 
-  @ViewChild('drivePicker') drivePickerRef?: ElementRef;
+  protected readonly drivePickerRef = viewChild<ElementRef<DrivePickerElement>>('drivePicker');
 
-  showImport = signal(false);
-  showReset = signal(false);
-  showNewDriveFile = signal(false);
-  showPicker = signal(false);
-  showRemoteUpdate = signal(false);
-  importText = signal('');
-  importError = signal('');
-  newDriveFileName = signal('');
+  protected readonly showImport = signal(false);
+  protected readonly showReset = signal(false);
+  protected readonly showNewDriveFile = signal(false);
+  protected readonly showPicker = signal(false);
+  protected readonly showRemoteUpdate = signal(false);
+  protected readonly importText = signal('');
+  protected readonly importError = signal('');
+  protected readonly newDriveFileName = signal('');
 
   moreMenuItems: MenuItem[] = [
     {
       label: 'Export JSON',
-      icon: 'pi pi-download',
+      faIcon: faDownload,
       command: () => this.exportJSON(),
     },
     {
       label: 'Import JSON',
-      icon: 'pi pi-upload',
+      faIcon: faUpload,
       command: () => this.showImport.set(true),
     },
     {
@@ -51,7 +104,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       label: 'Zurücksetzen',
-      icon: 'pi pi-refresh',
+      faIcon: faRefresh,
       command: () => this.showReset.set(true),
     },
   ];
@@ -109,7 +162,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private attachPickerListeners(): void {
-    const el = this.drivePickerRef?.nativeElement;
+    const el = this.drivePickerRef()?.nativeElement;
     if (el && !this.pickerListenersAttached) {
       el.addEventListener('picker-oauth-response', this.onOAuthResponse);
       el.addEventListener('picker-picked', this.onFilePicked);
@@ -119,7 +172,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private detachPickerListeners(): void {
-    const el = this.drivePickerRef?.nativeElement;
+    const el = this.drivePickerRef()?.nativeElement;
     if (el) {
       el.removeEventListener('picker-oauth-response', this.onOAuthResponse);
       el.removeEventListener('picker-picked', this.onFilePicked);
@@ -129,7 +182,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private closePicker(): void {
-    const el = this.drivePickerRef?.nativeElement;
+    const el = this.drivePickerRef()?.nativeElement;
     if (el) {
       el.visible = false;
     }
@@ -146,7 +199,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showPicker.set(true);
     setTimeout(() => {
       this.attachPickerListeners();
-      const el = this.drivePickerRef?.nativeElement;
+      const el = this.drivePickerRef()?.nativeElement;
       if (el) {
         el.visible = true;
       }
@@ -161,7 +214,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showPicker.set(true);
     setTimeout(() => {
       this.attachPickerListeners();
-      const el = this.drivePickerRef?.nativeElement;
+      const el = this.drivePickerRef()?.nativeElement;
       if (el) {
         el.visible = true;
       }
@@ -174,7 +227,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${ this.cs.character().characterName || 'character' }.json`;
+    a.download = `${this.cs.character().characterName || 'character'}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -224,7 +277,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async createDriveFile(): Promise<void> {
-    let fileName = this.newDriveFileName().trim() || `${ this.cs.character().characterName || 'character' }.json`;
+    let fileName =
+      this.newDriveFileName().trim() || `${this.cs.character().characterName || 'character'}.json`;
     if (!fileName.endsWith('.json')) {
       fileName = fileName + '.json';
     }

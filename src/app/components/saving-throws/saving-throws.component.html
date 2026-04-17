@@ -3,14 +3,16 @@
     <div class="flex items-center gap-2 w-full">
       <span class="font-bold">Rettungswürfe</span>
       <p-button
-        [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+        icon="fa"
         [rounded]="true"
         [text]="true"
         size="small"
         (onClick)="editing.set(!editing())"
         [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
         tooltipPosition="top"
-      />
+      >
+        <fa-icon [icon]="editing() ? fasCheck : fasPencil" class="mr-1" />
+      </p-button>
     </div>
   </ng-template>
   <div class="space-y-0.5">

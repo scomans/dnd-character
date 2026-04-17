@@ -3,14 +3,16 @@
     <div class="flex items-center gap-2 w-full">
       <span class="font-bold">Übung und Sprachen</span>
       <p-button
-        [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+        icon="fa"
         [rounded]="true"
         [text]="true"
         size="small"
         (onClick)="editing.set(!editing())"
         [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
         tooltipPosition="top"
-      />
+      >
+        <fa-icon [icon]="editing() ? fasCheck : fasPencil" />
+      </p-button>
     </div>
   </ng-template>
   <div class="space-y-3">
@@ -19,19 +21,29 @@
       <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400">Rüstung</span>
       <div class="flex flex-wrap gap-3 mt-1">
         <label class="flex items-center gap-1 text-xs">
-          <p-checkbox [ngModel]="cs.character().armorProficiencies.light" (ngModelChange)="updateArmor('light', $event)" [binary]="true" [disabled]="!editing()" />
+          <p-checkbox
+            [ngModel]="cs.character().armorProficiencies.light" (ngModelChange)="updateArmor('light', $event)" [binary]="true" [disabled]="!editing()"
+          />
           Leichte
         </label>
         <label class="flex items-center gap-1 text-xs">
-          <p-checkbox [ngModel]="cs.character().armorProficiencies.medium" (ngModelChange)="updateArmor('medium', $event)" [binary]="true" [disabled]="!editing()" />
+          <p-checkbox
+            [ngModel]="cs.character().armorProficiencies.medium" (ngModelChange)="updateArmor('medium', $event)" [binary]="true"
+            [disabled]="!editing()"
+          />
           Mittlere
         </label>
         <label class="flex items-center gap-1 text-xs">
-          <p-checkbox [ngModel]="cs.character().armorProficiencies.heavy" (ngModelChange)="updateArmor('heavy', $event)" [binary]="true" [disabled]="!editing()" />
+          <p-checkbox
+            [ngModel]="cs.character().armorProficiencies.heavy" (ngModelChange)="updateArmor('heavy', $event)" [binary]="true" [disabled]="!editing()"
+          />
           Schwere
         </label>
         <label class="flex items-center gap-1 text-xs">
-          <p-checkbox [ngModel]="cs.character().armorProficiencies.shields" (ngModelChange)="updateArmor('shields', $event)" [binary]="true" [disabled]="!editing()" />
+          <p-checkbox
+            [ngModel]="cs.character().armorProficiencies.shields" (ngModelChange)="updateArmor('shields', $event)" [binary]="true"
+            [disabled]="!editing()"
+          />
           Schilde
         </label>
       </div>
@@ -42,11 +54,17 @@
       <span class="text-[0.65rem] font-bold text-gray-600 dark:text-gray-400">Waffen</span>
       <div class="flex flex-wrap gap-3 mt-1">
         <label class="flex items-center gap-1 text-xs">
-          <p-checkbox [ngModel]="cs.character().weaponProficiencies.simple" (ngModelChange)="updateWeapon('simple', $event)" [binary]="true" [disabled]="!editing()" />
+          <p-checkbox
+            [ngModel]="cs.character().weaponProficiencies.simple" (ngModelChange)="updateWeapon('simple', $event)" [binary]="true"
+            [disabled]="!editing()"
+          />
           Einfache
         </label>
         <label class="flex items-center gap-1 text-xs">
-          <p-checkbox [ngModel]="cs.character().weaponProficiencies.martial" (ngModelChange)="updateWeapon('martial', $event)" [binary]="true" [disabled]="!editing()" />
+          <p-checkbox
+            [ngModel]="cs.character().weaponProficiencies.martial" (ngModelChange)="updateWeapon('martial', $event)" [binary]="true"
+            [disabled]="!editing()"
+          />
           Kriegswaffen
         </label>
       </div>

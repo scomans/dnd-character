@@ -17,19 +17,28 @@
           <th class="p-1 text-right">
             @if (editing()) {
               <p-button
-                icon="pi pi-plus" [rounded]="true" [text]="true" size="small" (onClick)="addAttack()" pTooltip="Angriff hinzufügen"
+                icon="fa"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                pTooltip="Angriff hinzufügen"
                 tooltipPosition="top"
-              />
+                (onClick)="addAttack()"
+              >
+                <fa-icon [icon]="fasPlus" />
+              </p-button>
             }
             <p-button
-              [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
+              icon="fa"
               [rounded]="true"
               [text]="true"
               size="small"
               (onClick)="editing.set(!editing())"
               [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
               tooltipPosition="top"
-            />
+            >
+              <fa-icon [icon]="editing() ? fasCheck : fasPencil" />
+            </p-button>
           </th>
         </tr>
       </thead>
@@ -184,7 +193,16 @@
             </td>
             <td class="p-1">
               @if (editing()) {
-                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small" (onClick)="confirmRemoveAttack(i, attack.name)" />
+                <p-button
+                  icon="fa"
+                  [rounded]="true"
+                  [text]="true"
+                  severity="danger"
+                  size="small"
+                  (onClick)="confirmRemoveAttack(i, attack.name)"
+                >
+                  <fa-icon [icon]="fasTrash" />
+                </p-button>
               }
             </td>
           </tr>

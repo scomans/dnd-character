@@ -1,4 +1,4 @@
-<p-confirmDialog />
+<p-confirmDialog/>
 
 <!-- Tree content shared between desktop sidebar and mobile drawer -->
 <ng-template #treeContent>
@@ -6,14 +6,16 @@
     <span class="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Notizen</span>
     <div class="flex gap-1">
       <p-button
-        icon="pi pi-plus"
+        icon="fa"
         [rounded]="true"
         [text]="true"
         size="small"
         (onClick)="addRootNote()"
         pTooltip="Neue Notiz"
         tooltipPosition="top"
-      />
+      >
+        <fa-icon [icon]="fasPlus"/>
+      </p-button>
     </div>
   </div>
   <div class="flex-1 overflow-y-auto p-1">
@@ -34,22 +36,25 @@
             <span class="flex-1 truncate text-sm">{{ node.label }}</span>
             <button
               type="button"
-              class="pi pi-plus text-xs text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400 bg-transparent border-none cursor-pointer p-0.5 rounded hover:bg-slate-200 dark:hover:bg-gray-600"
+              class="text-xs text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400 bg-transparent border-none cursor-pointer p-0.5 rounded hover:bg-slate-200 dark:hover:bg-gray-600"
               (click)="addChildNoteById(node.key); $event.stopPropagation()"
               title="Unternotiz hinzufügen"
-            ></button>
+            >
+              <fa-icon [icon]="fasPlus"/>
+            </button>
           </div>
         </ng-template>
       </p-tree>
     } @else {
       <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 text-sm p-4 text-center">
-        <i class="pi pi-file-edit text-3xl mb-2"></i>
+        <fa-icon [icon]="farFileEdit" class="text-3xl mb-2"/>
         <span>Noch keine Notizen.</span>
         <button
           type="button"
           class="mt-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 text-xs cursor-pointer bg-transparent border-none"
           (click)="addRootNote()"
-        >Erste Notiz erstellen</button>
+        >Erste Notiz erstellen
+        </button>
       </div>
     }
   </div>
@@ -62,7 +67,7 @@
   [style]="{ width: '280px' }"
   [closable]="true"
 >
-  <ng-container *ngTemplateOutlet="treeContent" />
+  <ng-container *ngTemplateOutlet="treeContent"/>
 </p-drawer>
 
 <div class="flex gap-4 mt-4" style="min-height: 500px;">
@@ -71,7 +76,7 @@
     class="hidden md:flex flex-col border border-slate-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 overflow-hidden"
     style="width: 280px; min-width: 220px;"
   >
-    <ng-container *ngTemplateOutlet="treeContent" />
+    <ng-container *ngTemplateOutlet="treeContent"/>
   </div>
 
   <!-- Right: Editor -->
@@ -81,7 +86,7 @@
       <div class="flex items-center gap-2 px-3 py-2 border-b border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
         <!-- Toggle sidebar button (visible only on small/medium screens) -->
         <p-button
-          icon="pi pi-bars"
+          icon="fa"
           [rounded]="true"
           [text]="true"
           size="small"
@@ -89,7 +94,9 @@
           pTooltip="Notizen-Liste"
           tooltipPosition="top"
           class="md:hidden"
-        />
+        >
+          <fa-icon [icon]="fasBars"/>
+        </p-button>
         @if (renamingNote()) {
           <input
             pInputText
@@ -110,25 +117,29 @@
         }
         <div class="flex gap-1">
           <p-button
-            icon="pi pi-plus"
+            icon="fa"
             [rounded]="true"
             [text]="true"
             size="small"
             (onClick)="addChildNote()"
             pTooltip="Unternotiz hinzufügen"
             tooltipPosition="top"
-          />
+          >
+            <fa-icon [icon]="fasPlus"/>
+          </p-button>
           <p-button
-            icon="pi pi-pencil"
+            icon="fa"
             [rounded]="true"
             [text]="true"
             size="small"
             (onClick)="startRename()"
             pTooltip="Umbenennen"
             tooltipPosition="top"
-          />
+          >
+            <fa-icon [icon]="fasPencil"/>
+          </p-button>
           <p-button
-            icon="pi pi-trash"
+            icon="fa"
             [rounded]="true"
             [text]="true"
             severity="danger"
@@ -136,7 +147,9 @@
             (onClick)="confirmDeleteSelectedNote()"
             pTooltip="Löschen"
             tooltipPosition="top"
-          />
+          >
+            <fa-icon [icon]="fasTrash"/>
+          </p-button>
         </div>
       </div>
       <!-- Editor area -->
@@ -153,12 +166,14 @@
           ></textarea>
           <div class="flex justify-end px-3 py-1 border-t border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
             <p-button
+              icon="fa"
               label="Vorschau"
-              icon="pi pi-eye"
               [text]="true"
               size="small"
               (onClick)="editingContent.set(false)"
-            />
+            >
+              <fa-icon [icon]="fasEye"/>
+            </p-button>
           </div>
         } @else {
           <div
@@ -168,30 +183,40 @@
           <div class="flex justify-end px-3 py-1 border-t border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
             <p-button
               label="Bearbeiten"
-              icon="pi pi-pencil"
               [text]="true"
               size="small"
               (onClick)="editingContent.set(true)"
-            />
+            >
+              <fa-icon [icon]="fasPencil" class="mr-1"/>
+            </p-button>
           </div>
         }
       </div>
     } @else {
       <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500">
-        <i class="pi pi-file-edit text-5xl mb-3"></i>
+        <fa-icon [icon]="farFileEdit" class="text-5xl mb-3"/>
         <span class="text-sm">Wähle eine Notiz aus oder erstelle eine neue.</span>
         <!-- Open sidebar button on small screens when no note is selected -->
         <p-button
+          icon="fa"
           label="Notizen-Liste öffnen"
-          icon="pi pi-bars"
           [text]="true"
           size="small"
           (onClick)="sidebarVisible.set(true)"
           class="mt-3 md:hidden"
-        />
+        >
+          <fa-icon [icon]="fasBars"/>
+        </p-button>
       </div>
     }
   </div>
 </div>
 
-<p-context-menu #cm [model]="contextMenuItems" />
+<p-context-menu #cm [model]="contextMenuItems">
+  <ng-template #item let-item>
+    <a pRipple class="flex items-center px-3 py-2 cursor-pointer" [class]="item.linkClass">
+      <fa-icon [icon]="item.faIcon"/>
+      <span class="ms-2">{{ item.label }}</span>
+    </a>
+  </ng-template>
+</p-context-menu>

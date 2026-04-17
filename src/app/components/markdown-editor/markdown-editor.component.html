@@ -19,15 +19,17 @@
   >
     @if (!readonly()) {
       <p-button
+        icon="fa"
         class="absolute top-1 right-1"
-        [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
         [rounded]="true"
         [text]="true"
         size="small"
         (onClick)="editing.set(true)"
         [pTooltip]="'Bearbeiten'"
         tooltipPosition="top"
-      />
+      >
+        <fa-icon [icon]="editing() ? fasCheck : fasPencil"/>
+      </p-button>
     }
     @if (value()) {
       <span [innerHTML]="renderedHtml()"></span>

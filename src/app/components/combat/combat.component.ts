@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClickOutside } from 'ngxtension/click-outside';
 import { Checkbox } from 'primeng/checkbox';
@@ -9,29 +9,34 @@ import { InputText } from 'primeng/inputtext';
 import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
 import { CountersComponent } from '../counters/counters.component';
-
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-combat',
-  imports: [
-    FormsModule,
-    InputNumber,
-    InputGroup,
-    Checkbox,
-    Fieldset,
-    Tooltip,
-    ClickOutside,
-    InputText,
-    CountersComponent,
-  ],
   templateUrl: './combat.component.html',
   styleUrl: './combat.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    Checkbox,
+    ClickOutside,
+    CountersComponent,
+    FaIconComponent,
+    Fieldset,
+    FormsModule,
+    InputGroup,
+    InputNumber,
+    InputText,
+    Tooltip,
+  ],
 })
 export class CombatComponent {
   cs = inject(CharacterService);
   editingAC = signal(false);
   editingSpeed = signal(false);
   editingMaxHP = signal(false);
+  public readonly fasPlus = faPlus;
+  public readonly fasMinus = faMinus;
 
   updateDeathSaves(type: 'successes' | 'failures', index: number, checked: boolean): void {
     const char = this.cs.character();

@@ -32,7 +32,11 @@
     </p-fieldset>
     <p-fieldset legend="Initiative" class="flex-1 text-center">
       <div class="flex flex-col items-center">
-        <span class="text-2xl font-bold text-slate-700 dark:text-slate-300" pTooltip="Geschicklichkeits-Modifikator" tooltipPosition="top">
+        <span
+          class="text-2xl font-bold text-slate-700 dark:text-slate-300"
+          pTooltip="Geschicklichkeits-Modifikator"
+          tooltipPosition="top"
+        >
           {{ cs.getInitiative() >= 0 ? '+' : '' }}{{ cs.getInitiative() }}
         </span>
       </div>
@@ -69,13 +73,18 @@
           (ngModelChange)="cs.update({ hitPointsCurrent: $event ?? 0 })"
           [showButtons]="true"
           buttonLayout="horizontal"
-          incrementButtonIcon="pi pi-plus"
-          decrementButtonIcon="pi pi-minus"
           [min]="0"
           [max]="cs.character().hitPointsMax"
           [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
           size="small"
-        />
+        >
+          <ng-template #incrementbuttonicon>
+            <fa-icon [icon]="fasPlus"/>
+          </ng-template>
+          <ng-template #decrementbuttonicon>
+            <fa-icon [icon]="fasMinus"/>
+          </ng-template>
+        </p-input-number>
         <span class="text-xl font-bold text-gray-400 dark:text-gray-500">/</span>
         @if (editingMaxHP()) {
           <div (clickOutside)="editingMaxHP.set(false)">
@@ -105,12 +114,17 @@
           (ngModelChange)="cs.update({ hitPointsTemp: $event ?? 0 })"
           [showButtons]="true"
           buttonLayout="horizontal"
-          incrementButtonIcon="pi pi-plus"
-          decrementButtonIcon="pi pi-minus"
           [min]="0"
           size="small"
           [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
-        />
+        >
+          <ng-template #incrementbuttonicon>
+            <fa-icon [icon]="fasPlus"/>
+          </ng-template>
+          <ng-template #decrementbuttonicon>
+            <fa-icon [icon]="fasMinus"/>
+          </ng-template>
+        </p-input-number>
       </div>
     </p-fieldset>
   </div>
@@ -153,5 +167,5 @@
       </div>
     </p-fieldset>
   </div>
-  <app-counters />
+  <app-counters/>
 </div>

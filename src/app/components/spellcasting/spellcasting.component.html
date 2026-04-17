@@ -80,29 +80,29 @@
   <p-divider><span class="font-bold">Zauberplätze</span></p-divider>
   <div>
     <div class="grid grid-cols-9 gap-1 mt-1">
-      @for (level of spellLevels; track level) {
+      @for (level of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track level) {
         <div class="flex flex-col items-center text-xs">
           <span class="font-bold text-slate-700 dark:text-slate-300 mb-0.5">{{ level }}</span>
           <p-input-number
-            [ngModel]="getSlotMax(level)"
-            (ngModelChange)="updateSlotMax(level, $event)"
             [showButtons]="false"
             [min]="0"
             [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.7rem' }"
             pTooltip="Max. Plätze"
             tooltipPosition="top"
+            [ngModel]="getSlotMax(level)"
+            (ngModelChange)="updateSlotMax(level, $event)"
           />
           <div class="flex flex-wrap justify-center gap-0.5 mt-1">
             @for (i of getSlotRange(level); track i) {
               <span
-                class="w-3.5 h-3.5 rounded-full border border-slate-400 dark:border-slate-500 cursor-pointer flex items-center justify-center text-[0.5rem]"
-                [class.bg-slate-700]="i < getSlotUsed(level)"
-                [class.border-slate-700]="i < getSlotUsed(level)"
-                [class.bg-white]="i >= getSlotUsed(level)"
-                [class.dark:bg-gray-700]="i >= getSlotUsed(level)"
-                (click)="toggleSlotUsed(level, i)"
+                class="w-3.5 h-3.5 rounded-full border cursor-pointer flex items-center justify-center text-[0.5rem]"
+                [class.bg-orange-500]="i < getSlotUsed(level)"
+                [class.border-orange-700]="i < getSlotUsed(level)"
+                [class.bg-transparent]="i >= getSlotUsed(level)"
+                [class.border-slate-400]="i >= getSlotUsed(level)"
                 [pTooltip]="i < getSlotUsed(level) ? 'Verbraucht' : 'Verfügbar'"
                 tooltipPosition="top"
+                (click)="toggleSlotUsed(level, i)"
               ></span>
             }
           </div>
@@ -119,30 +119,32 @@
     <span class="text-xs text-gray-600 dark:text-gray-400">Nur vorbereitete Zauber anzeigen</span>
     <span class="flex-1"></span>
     <p-button
-      icon="pi pi-angle-double-down"
       size="small"
       [text]="true"
       pTooltip="Alle aufklappen"
       tooltipPosition="top"
       (onClick)="expandAll()"
-    />
+    >
+      <fa-icon [icon]="fasDownLeftAndUpRightToCenter"/>
+    </p-button>
     <p-button
-      icon="pi pi-angle-double-up"
       size="small"
       [text]="true"
       pTooltip="Alle zuklappen"
       tooltipPosition="top"
       (onClick)="collapseAll()"
-    />
+    >
+      <fa-icon [icon]="fasUpRightAndDownLeftFromCenter"/>
+    </p-button>
     <p-button
-      [icon]="editing() ? 'pi pi-check' : 'pi pi-pencil'"
-      [rounded]="true"
       [text]="true"
       size="small"
-      (onClick)="editing.set(!editing())"
       [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
       tooltipPosition="top"
-    />
+      (onClick)="editing.set(!editing())"
+    >
+      <fa-icon [icon]="editing() ? fasCheck : fasPencil" />
+    </p-button>
   </div>
 
   <!-- Spells List with Accordions -->
@@ -162,7 +164,7 @@
                   <p-accordion-header>
                     <div class="flex items-center gap-1 w-full text-xs">
                       @if (editing()) {
-                        <i class="pi pi-bars text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></i>
+                        <fa-icon [icon]="fasBars" class="text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></fa-icon>
                       }
                       @if (levelGroup.level > 0) {
                         <p-checkbox
@@ -190,15 +192,15 @@
                             placeholder="Zaubername"
                           />
                           <p-button
-                            icon="pi pi-trash"
-                            [rounded]="true"
                             [text]="true"
                             severity="danger"
                             size="small"
                             (onClick)="confirmRemoveSpell(spell)"
                             pTooltip="Zauber löschen"
                             tooltipPosition="top"
-                          />
+                          >
+                            <fa-icon [icon]="fasTrash" />
+                          </p-button>
                         </div>
                       }
                       <app-markdown-editor
@@ -230,7 +232,10 @@
           appendTo="body"
           size="small"
         />
-        <p-button label="Zauber hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addSpell()" />
+        <p-button size="small" [outlined]="true" (onClick)="addSpell()">
+          <fa-icon [icon]="fasPlus" class="mr-1" />
+          Zauber hinzufügen
+        </p-button>
       </div>
     }
   </div>

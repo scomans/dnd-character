@@ -1,104 +1,122 @@
 <div class="flex items-center gap-2 bg-slate-700 dark:bg-slate-800 text-white px-4 py-2 rounded-lg mb-4 shadow-md flex-wrap">
   <span class="text-lg font-bold flex-1">
-    <img src="favicon.svg" alt="Logo" class="inline-block w-8 h-8 mr-2 -mt-1" />
+    <img src="favicon.svg" alt="Logo" class="inline-block w-8 h-8 mr-2 -mt-1"/>
     D&D Charakterbogen
   </span>
 
   <!-- Dark Mode Toggle -->
   <p-button
-    [icon]="theme.darkMode() ? 'pi pi-sun' : 'pi pi-moon'"
     size="small"
     severity="secondary"
     (onClick)="theme.toggleDarkMode()"
     [pTooltip]="theme.darkMode() ? 'Heller Modus' : 'Dunkler Modus'"
     tooltipPosition="bottom"
-  />
+  >
+    <fa-icon [icon]="theme.darkMode() ? fasSun : fasMoon"/>
+  </p-button>
 
   <span class="border-l border-slate-500 h-6 mx-1"></span>
 
   <!-- Google Drive Section -->
   @if (drive.connected()) {
     @if (drive.currentFile()) {
-      <span class="text-xs text-slate-300 hidden md:inline" pTooltip="Verbundene Google Drive Datei" tooltipPosition="bottom">
+      <span
+        class="text-xs text-slate-300 hidden md:inline"
+        pTooltip="Verbundene Google Drive Datei"
+        tooltipPosition="bottom"
+      >
         <span class="flex items-center">
-          <i class="pi pi-google text-xs mr-1"></i>
+          <fa-icon [icon]="fabGoogle" class="text-xs mr-1"/>
           {{ drive.currentFile()!.name }}
         </span>
       </span>
       <p-button
-        icon="pi pi-save"
         size="small"
         severity="success"
         [loading]="drive.loading()"
         (onClick)="saveToDrive()"
         pTooltip="In Google Drive speichern"
         tooltipPosition="bottom"
-      />
+      >
+        <fa-icon [icon]="fasSave"/>
+      </p-button>
       <p-button
-        icon="pi pi-sync"
         size="small"
         severity="secondary"
         [loading]="drive.loading()"
         (onClick)="reloadFromRemote()"
         pTooltip="Datei aus Google Drive neu laden"
         tooltipPosition="bottom"
-      />
+      >
+        <fa-icon [icon]="fasSync"/>
+      </p-button>
     }
     @if (!drive.currentFile()) {
       <p-button
-        icon="pi pi-folder-open"
         size="small"
         severity="secondary"
         (onClick)="openPickerForFile()"
         pTooltip="Datei aus Google Drive öffnen"
         tooltipPosition="bottom"
-      />
+      >
+        <fa-icon [icon]="fasFolderOpen"/>
+      </p-button>
       <p-button
-        icon="pi pi-file-plus"
         size="small"
         severity="secondary"
         (onClick)="showNewDriveFile.set(true)"
         pTooltip="Neue Datei in Google Drive erstellen"
         tooltipPosition="bottom"
-      />
+      >
+        <fa-icon [icon]="fasFilePlus"/>
+      </p-button>
     }
   } @else if (drive.tokenExpired()) {
     <span class="text-xs text-yellow-300 hidden md:inline">
-      <i class="pi pi-exclamation-triangle mr-1"></i>Sitzung abgelaufen
+      <fa-icon [icon]="fasExclamationTriangle" class="mr-1"/>
+      Sitzung abgelaufen
     </span>
     <p-button
-      icon="pi pi-google"
       label="Erneut anmelden"
       size="small"
       severity="warn"
       (onClick)="authenticateOnly()"
       pTooltip="Sitzung abgelaufen – erneut anmelden"
       tooltipPosition="bottom"
-    />
+    >
+      <fa-icon [icon]="fabGoogle"/>
+    </p-button>
   } @else {
     <p-button
-      icon="pi pi-google"
       label="Mit Google anmelden"
       size="small"
       severity="secondary"
       (onClick)="authenticateOnly()"
       pTooltip="Mit Google Drive verbinden"
       tooltipPosition="bottom"
-    />
+    >
+      <fa-icon [icon]="fabGoogle"/>
+    </p-button>
   }
 
   <span class="border-l border-slate-500 h-6 mx-1"></span>
 
   <p-button
-    icon="pi pi-ellipsis-v"
     size="small"
     severity="secondary"
     (onClick)="moreMenu.toggle($event)"
-    pTooltip="Weitere Aktionen"
-    tooltipPosition="bottom"
     class="text-white"
-  />
-  <p-menu #moreMenu [model]="moreMenuItems" [popup]="true" />
+  >
+    <fa-icon [icon]="fasEllipsisV"/>
+  </p-button>
+  <p-menu #moreMenu [model]="moreMenuItems" [popup]="true">
+    <ng-template #item let-item>
+      <a pRipple class="flex items-center px-3 py-2 cursor-pointer" [class]="item.linkClass">
+        <fa-icon [icon]="item.faIcon"/>
+        <span class="ms-2">{{ item.label }}</span>
+      </a>
+    </ng-template>
+  </p-menu>
 </div>
 
 <!-- Drive Picker element (always in DOM but hidden, controls auth + picker) -->
@@ -120,16 +138,24 @@
 }
 
 <!-- New Drive File Dialog -->
-<p-dialog header="Neue Datei in Google Drive" [(visible)]="showNewDriveFile" [modal]="true" [style]="{ width: '400px' }">
+<p-dialog
+  header="Neue Datei in Google Drive"
+  [(visible)]="showNewDriveFile"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+>
   <div class="space-y-3">
     <div class="flex flex-col gap-1">
       <label class="text-sm font-bold">Dateiname</label>
-      <input pInputText [(ngModel)]="newDriveFileName" placeholder="charakter.json" class="w-full text-sm" />
+      <input pInputText [(ngModel)]="newDriveFileName" placeholder="charakter.json" class="w-full text-sm"/>
     </div>
   </div>
   <ng-template #footer>
-    <p-button label="Abbrechen" [text]="true" (onClick)="showNewDriveFile.set(false)" />
-    <p-button label="Erstellen & Speichern" icon="pi pi-check" [loading]="drive.loading()" (onClick)="createDriveFile()" />
+    <p-button label="Abbrechen" [text]="true" (onClick)="showNewDriveFile.set(false)"/>
+    <p-button [loading]="drive.loading()" (onClick)="createDriveFile()">
+      <fa-icon [icon]="fasCheck" class="mr-1"/>
+      Erstellen & Speichern
+    </p-button>
   </ng-template>
 </p-dialog>
 
@@ -149,8 +175,11 @@
     }
   </div>
   <ng-template #footer>
-    <p-button label="Abbrechen" [text]="true" (onClick)="showImport.set(false); importError.set('')" />
-    <p-button label="Importieren" icon="pi pi-check" (onClick)="doImport()" />
+    <p-button label="Abbrechen" [text]="true" (onClick)="showImport.set(false); importError.set('')"/>
+    <p-button (onClick)="doImport()">
+      <fa-icon [icon]="fasCheck" class="mr-1"/>
+      Importieren
+    </p-button>
   </ng-template>
 </p-dialog>
 
@@ -158,8 +187,11 @@
 <p-dialog header="Charakter zurücksetzen?" [(visible)]="showReset" [modal]="true" [style]="{ width: '400px' }">
   <p class="text-sm">Möchtest du wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.</p>
   <ng-template #footer>
-    <p-button label="Abbrechen" [text]="true" (onClick)="showReset.set(false)" />
-    <p-button label="Zurücksetzen" icon="pi pi-refresh" severity="danger" (onClick)="doReset()" />
+    <p-button label="Abbrechen" [text]="true" (onClick)="showReset.set(false)"/>
+    <p-button severity="danger" (onClick)="doReset()">
+      <fa-icon [icon]="fasRefresh" class="mr-1"/>
+      Zurücksetzen
+    </p-button>
   </ng-template>
 </p-dialog>
 
@@ -167,7 +199,7 @@
 <p-dialog header="Neuere Version verfügbar" [(visible)]="showRemoteUpdate" [modal]="true" [style]="{ width: '450px' }">
   <div class="space-y-2">
     <p class="text-sm">
-      <i class="pi pi-cloud-download mr-1 text-blue-500"></i>
+      <fa-icon [icon]="fasCloudDownloadAlt" class="mr-1 text-blue-500"/>
       In Google Drive ist eine neuere Version deines Charakterbogens verfügbar.
     </p>
     @if (drive.remoteUpdateAvailable(); as info) {
@@ -176,12 +208,15 @@
       </p>
     }
     <p class="text-sm text-amber-600">
-      <i class="pi pi-exclamation-triangle mr-1"></i>
+      <fa-icon [icon]="fasExclamationTriangle" class="mr-1"/>
       Beim Laden werden lokale Änderungen überschrieben.
     </p>
   </div>
   <ng-template #footer>
-    <p-button label="Später" [text]="true" (onClick)="showRemoteUpdate.set(false)" />
-    <p-button label="Jetzt laden" icon="pi pi-cloud-download" (onClick)="reloadFromRemote()" [loading]="drive.loading()" />
+    <p-button label="Später" [text]="true" (onClick)="showRemoteUpdate.set(false)"/>
+    <p-button (onClick)="reloadFromRemote()" [loading]="drive.loading()">
+      <fa-icon [icon]="fasCloudDownloadAlt" class="mr-1"/>
+      Jetzt laden
+    </p-button>
   </ng-template>
 </p-dialog>

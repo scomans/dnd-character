@@ -1,15 +1,19 @@
 import { Component, ElementRef, inject, input, NgZone, output, viewChild } from '@angular/core';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'primeng/button';
 import { Image as PrimeImage } from 'primeng/image';
 
-
 @Component({
   selector: 'app-image-picker',
-  imports: [Button, PrimeImage],
+  imports: [Button, PrimeImage, FaIconComponent],
   templateUrl: './image-picker.component.html',
   styleUrl: './image-picker.component.scss',
 })
 export class ImagePickerComponent {
+  protected readonly farImage = faImage;
+  protected readonly fasTrash = faTrash;
   private ngZone = inject(NgZone);
   imageData = input<string>('');
   alt = input<string>('Bild');
@@ -50,10 +54,10 @@ export class ImagePickerComponent {
           let { width, height } = img;
           if (width > maxSize || height > maxSize) {
             if (width > height) {
-              height = Math.round(height * maxSize / width);
+              height = Math.round((height * maxSize) / width);
               width = maxSize;
             } else {
-              width = Math.round(width * maxSize / height);
+              width = Math.round((width * maxSize) / height);
               height = maxSize;
             }
           }

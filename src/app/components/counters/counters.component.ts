@@ -1,28 +1,35 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import {
+  faMinus as fasMinus,
+  faPlus as fasPlus,
+  faRotateRight as fasRefresh,
+  faTrash as fasTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { ClickOutside } from 'ngxtension/click-outside';
+import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Fieldset } from 'primeng/fieldset';
 import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
 import { Tooltip } from 'primeng/tooltip';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
 import { Counter } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
-
 
 @Component({
   selector: 'app-counters',
   imports: [
-    FormsModule,
     Button,
+    ClickOutside,
+    ConfirmDialog,
+    FaIconComponent,
     Fieldset,
+    FormsModule,
     InputNumber,
     InputText,
     Tooltip,
-    ClickOutside,
-    ConfirmDialog,
   ],
   providers: [ConfirmationService],
   templateUrl: './counters.component.html',
@@ -32,6 +39,11 @@ export class CountersComponent {
   cs = inject(CharacterService);
   private confirmationService = inject(ConfirmationService);
   editingIndex = signal(-1);
+
+  protected readonly fasMinus = fasMinus;
+  protected readonly fasPlus = fasPlus;
+  protected readonly fasRefresh = fasRefresh;
+  protected readonly fasTrash = fasTrash;
 
   add(): void {
     const counters = [...this.cs.character().counters];
@@ -44,7 +56,6 @@ export class CountersComponent {
     this.confirmationService.confirm({
       message: `„${name || 'Unbenannt'}" wirklich löschen?`,
       header: 'Zähler löschen',
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Löschen',
       rejectLabel: 'Abbrechen',
       accept: () => this.remove(index),
@@ -72,9 +83,9 @@ export class CountersComponent {
   }
 
   updateCounter(index: number, partial: Partial<Counter>): void {
-    const counters = this.cs.character().counters.map((c, i) =>
-      i === index ? { ...c, ...partial } : c
-    );
+    const counters = this.cs
+      .character()
+      .counters.map((c, i) => (i === index ? { ...c, ...partial } : c));
     this.cs.update({ counters });
   }
 

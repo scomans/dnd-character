@@ -6,7 +6,7 @@
         @if (editingIndex() === $index) {
           <div class="flex flex-wrap items-center gap-2 flex-1" (clickOutside)="editingIndex.set(-1)">
             <p-button
-              icon="pi pi-trash"
+              icon="fa"
               [rounded]="true"
               [text]="true"
               severity="danger"
@@ -14,7 +14,9 @@
               (onClick)="confirmRemove($index, counter.name)"
               pTooltip="Entfernen"
               tooltipPosition="top"
-            />
+            >
+              <fa-icon [icon]="fasTrash" />
+            </p-button>
             <input
               pInputText
               [ngModel]="counter.name"
@@ -43,7 +45,7 @@
         }
         <div class="flex items-center gap-1">
           <p-button
-            icon="pi pi-minus"
+            icon="fa"
             [rounded]="true"
             [text]="true"
             severity="secondary"
@@ -52,12 +54,14 @@
             [disabled]="counter.currentValue <= 0"
             pTooltip="Verringern"
             tooltipPosition="top"
-          />
+          >
+            <fa-icon [icon]="fasMinus" />
+          </p-button>
           <span class="text-lg font-bold text-slate-700 dark:text-slate-300 min-w-[3rem] text-center">
             {{ counter.currentValue }} / {{ counter.maxValue }}
           </span>
           <p-button
-            icon="pi pi-plus"
+            icon="fa"
             [rounded]="true"
             [text]="true"
             severity="secondary"
@@ -66,9 +70,11 @@
             [disabled]="counter.currentValue >= counter.maxValue"
             pTooltip="Erhöhen"
             tooltipPosition="top"
-          />
+          >
+            <fa-icon [icon]="fasPlus" />
+          </p-button>
           <p-button
-            icon="pi pi-refresh"
+            icon="fa"
             [rounded]="true"
             [text]="true"
             severity="info"
@@ -76,16 +82,20 @@
             (onClick)="reset($index)"
             pTooltip="Zurücksetzen"
             tooltipPosition="top"
-          />
+          >
+            <fa-icon [icon]="fasRefresh" />
+          </p-button>
         </div>
       </div>
     }
     <p-button
+      icon="fa"
       label="Zähler hinzufügen"
-      icon="pi pi-plus"
       [text]="true"
       size="small"
       (onClick)="add()"
-    />
+    >
+      <fa-icon [icon]="fasPlus" />
+    </p-button>
   </div>
 </p-fieldset>

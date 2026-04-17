@@ -1,61 +1,85 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Divider } from 'primeng/divider';
-import { CharacterService } from '../../services/character.service';
-import { InputText } from 'primeng/inputtext';
-import { InputNumber } from 'primeng/inputnumber';
-import { Checkbox } from 'primeng/checkbox';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
-import { Fieldset } from 'primeng/fieldset';
-import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from 'primeng/accordion';
-import { Tooltip } from 'primeng/tooltip';
-import { IftaLabel } from 'primeng/iftalabel';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { ConfirmDialog } from 'primeng/confirmdialog';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import {
+  faBars,
+  faCheck,
+  faDownLeftAndUpRightToCenter,
+  faPencil,
+  faPlus,
+  faTrash,
+  faUpRightAndDownLeftFromCenter,
+} from '@fortawesome/free-solid-svg-icons';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Divider } from 'primeng/divider';
+import { Fieldset } from 'primeng/fieldset';
+import { IftaLabel } from 'primeng/iftalabel';
+import { InputNumber } from 'primeng/inputnumber';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { ToggleSwitch } from 'primeng/toggleswitch';
+import { Tooltip } from 'primeng/tooltip';
+import { ABILITY_LABELS, Spell, SPELLCASTING_CLASSES } from '../../models/character.model';
+import { CharacterService } from '../../services/character.service';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { Spell, SPELLCASTING_CLASSES, ABILITY_LABELS } from '../../models/character.model';
 
 @Component({
   selector: 'app-spellcasting',
-  imports: [
-    FormsModule,
-    InputText,
-    InputNumber,
-    Checkbox,
-    Button,
-    Select,
-    Fieldset,
-    Accordion,
-    AccordionPanel,
-    AccordionHeader,
-    AccordionContent,
-    Tooltip,
-    IftaLabel,
-    ToggleSwitch,
-    MarkdownEditorComponent,
-    CdkDropList,
-    CdkDrag,
-    CdkDragHandle,
-    Divider,
-    ConfirmDialog,
-  ],
-  providers: [ConfirmationService],
   templateUrl: './spellcasting.component.html',
   styleUrl: './spellcasting.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    Accordion,
+    AccordionContent,
+    AccordionHeader,
+    AccordionPanel,
+    Button,
+    CdkDrag,
+    CdkDragHandle,
+    CdkDropList,
+    Checkbox,
+    ConfirmDialog,
+    Divider,
+    FaIconComponent,
+    Fieldset,
+    FormsModule,
+    IftaLabel,
+    InputNumber,
+    InputText,
+    MarkdownEditorComponent,
+    Select,
+    ToggleSwitch,
+    Tooltip,
+  ],
+  providers: [ConfirmationService],
 })
 export class SpellcastingComponent {
-  cs = inject(CharacterService);
-  private confirmationService = inject(ConfirmationService);
-  spellcastingClasses = SPELLCASTING_CLASSES;
-  spellLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  newSpellLevel = 0;
-  showPreparedOnly = false;
-  editingField = signal<string | null>(null);
-  editing = signal(false);
-  expandedPanels = signal<string[]>([]);
+  protected readonly cs = inject(CharacterService);
+  private readonly confirmationService = inject(ConfirmationService);
+  protected readonly fasBars = faBars;
+  protected readonly fasCheck = faCheck;
+  protected readonly fasDownLeftAndUpRightToCenter = faDownLeftAndUpRightToCenter;
+  protected readonly fasPencil = faPencil;
+  protected readonly fasPlus = faPlus;
+  protected readonly fasTrash = faTrash;
+  protected readonly fasUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
+  protected spellcastingClasses = SPELLCASTING_CLASSES;
+  protected newSpellLevel = 0;
+  protected showPreparedOnly = false;
+  protected readonly editingField = signal<string | null>(null);
+  protected readonly editing = signal(false);
+  protected readonly expandedPanels = signal<string[]>([]);
 
   abilityOptions = [
     { label: 'Keine', value: '' },
@@ -74,7 +98,7 @@ export class SpellcastingComponent {
 
   getSpellcastingClassLabel(): string {
     const value = this.cs.character().spellcastingClass;
-    return this.spellcastingClasses.find(c => c.value === value)?.label ?? value;
+    return this.spellcastingClasses.find((c) => c.value === value)?.label ?? value;
   }
 
   getAbilityLabel(ability: string): string {
@@ -83,23 +107,23 @@ export class SpellcastingComponent {
 
   get groupedSpellLevels() {
     const spells = this.cs.character().spells;
-    const allLevels = [...new Set(spells.map(s => s.level))].sort((a, b) => a - b);
+    const allLevels = [...new Set(spells.map((s) => s.level))].sort((a, b) => a - b);
     if (this.showPreparedOnly) {
       return allLevels
-        .filter(level => spells.some(s => s.level === level && (s.prepared || level === 0)))
-        .map(level => ({ level }));
+        .filter((level) => spells.some((s) => s.level === level && (s.prepared || level === 0)))
+        .map((level) => ({ level }));
     }
-    return allLevels.map(level => ({ level }));
+    return allLevels.map((level) => ({ level }));
   }
 
   getSpellsForLevel(level: number): Spell[] {
-    return this.cs.character().spells.filter(s => s.level === level);
+    return this.cs.character().spells.filter((s) => s.level === level);
   }
 
   getFilteredSpellsForLevel(level: number): Spell[] {
     const spells = this.getSpellsForLevel(level);
     if (this.showPreparedOnly && level > 0) {
-      return spells.filter(s => s.prepared);
+      return spells.filter((s) => s.prepared);
     }
     return spells;
   }
@@ -119,7 +143,7 @@ export class SpellcastingComponent {
 
   onAccordionChange(value: string | number | string[] | number[] | null | undefined): void {
     if (Array.isArray(value)) {
-      this.expandedPanels.set(value.map(v => String(v)));
+      this.expandedPanels.set(value.map((v) => String(v)));
     } else if (value != null) {
       this.expandedPanels.set([String(value)]);
     } else {
@@ -156,12 +180,12 @@ export class SpellcastingComponent {
 
   toggleSlotUsed(level: number, index: number): void {
     const currentUsed = this.getSlotUsed(level);
-    const newUsed = (index < currentUsed) ? index : index + 1;
+    const newUsed = index < currentUsed ? index : index + 1;
     this.updateSlotUsed(level, newUsed);
   }
 
   onSpellcastingClassChange(value: string): void {
-    const found = this.spellcastingClasses.find(c => c.value === value);
+    const found = this.spellcastingClasses.find((c) => c.value === value);
     const updates: Partial<any> = { spellcastingClass: value };
     if (found) {
       updates['spellcastingAbility'] = found.ability;
@@ -195,7 +219,6 @@ export class SpellcastingComponent {
     this.confirmationService.confirm({
       message: `„${spell.name || 'Unbenannt'}" wirklich löschen?`,
       header: 'Zauber löschen',
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Löschen',
       rejectLabel: 'Abbrechen',
       accept: () => this.removeSpell(spell),
@@ -224,7 +247,7 @@ export class SpellcastingComponent {
 
   dropSpell(event: CdkDragDrop<number>, level: number): void {
     const char = this.cs.character();
-    const spellsOfLevel = char.spells.filter(s => s.level === level);
+    const spellsOfLevel = char.spells.filter((s) => s.level === level);
 
     if (event.previousIndex === event.currentIndex) return;
 
@@ -232,8 +255,8 @@ export class SpellcastingComponent {
     moveItemInArray(spellsOfLevel, event.previousIndex, event.currentIndex);
 
     // Compute insertion index before filtering
-    const firstIndex = char.spells.findIndex(s => s.level === level);
-    const newSpells = char.spells.filter(s => s.level !== level);
+    const firstIndex = char.spells.findIndex((s) => s.level === level);
+    const newSpells = char.spells.filter((s) => s.level !== level);
     newSpells.splice(firstIndex >= 0 ? firstIndex : newSpells.length, 0, ...spellsOfLevel);
 
     this.cs.update({ spells: newSpells });

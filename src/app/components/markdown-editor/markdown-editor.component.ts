@@ -10,10 +10,12 @@ import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
 import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
+import { faCheck, faPencil } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-markdown-editor',
-  imports: [FormsModule, NgClass, Textarea, ClickOutside, Button, Tooltip],
+  imports: [FaIconComponent, FormsModule, NgClass, Textarea, ClickOutside, Button, Tooltip],
   templateUrl: './markdown-editor.component.html',
   styleUrl: './markdown-editor.component.scss',
 })
@@ -26,9 +28,15 @@ export class MarkdownEditorComponent {
 
   editing = signal(false);
 
-  private sanitizer = inject(DomSanitizer);
-  private cs = inject(CharacterService);
-  private marked = new Marked(markedAccordionExtension(), markedPlaceholderExtension(this.cs));
+  public readonly fasCheck = faCheck;
+  public readonly fasPencil = faPencil;
+
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly cs = inject(CharacterService);
+  private readonly marked = new Marked(
+    markedAccordionExtension(),
+    markedPlaceholderExtension(this.cs),
+  );
 
   renderedHtml(): SafeHtml {
     let val = this.value();

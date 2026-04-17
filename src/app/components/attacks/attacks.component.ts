@@ -1,37 +1,41 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CharacterService } from '../../services/character.service';
-import { InputText } from 'primeng/inputtext';
-import { InputNumber } from 'primeng/inputnumber';
-import { Checkbox } from 'primeng/checkbox';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
-import { Fieldset } from 'primeng/fieldset';
-import { Tooltip } from 'primeng/tooltip';
-import { InputGroup } from 'primeng/inputgroup';
-import { ConfirmDialog } from 'primeng/confirmdialog';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCheck, faPencil, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Fieldset } from 'primeng/fieldset';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputNumber } from 'primeng/inputnumber';
+import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { Tooltip } from 'primeng/tooltip';
+import { ABILITY_SHORT_LABELS, DAMAGE_TYPES, WEAPON_MASTERIES } from '../../models/character.model';
+import { CharacterService } from '../../services/character.service';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
-import { Attack, DAMAGE_TYPES, ABILITY_SHORT_LABELS, WEAPON_MASTERIES } from '../../models/character.model';
 
 @Component({
   selector: 'app-attacks',
+  templateUrl: './attacks.component.html',
+  styleUrl: './attacks.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    InputText,
-    InputNumber,
-    Checkbox,
     Button,
-    Select,
-    Fieldset,
-    Tooltip,
-    InputGroup,
-    MarkdownEditorComponent,
+    Checkbox,
     ConfirmDialog,
+    FaIconComponent,
+    Fieldset,
+    FormsModule,
+    InputGroup,
+    InputNumber,
+    InputText,
+    MarkdownEditorComponent,
+    Select,
+    Tooltip,
   ],
   providers: [ConfirmationService],
-  templateUrl: './attacks.component.html',
-  styleUrl: './attacks.component.scss'
 })
 export class AttacksComponent {
   cs = inject(CharacterService);
@@ -50,6 +54,11 @@ export class AttacksComponent {
     { label: 'Charisma', value: 'cha' },
   ];
 
+  public readonly fasCheck = faCheck;
+  public readonly fasPencil = faPencil;
+  public readonly fasPlus = faPlus;
+  public readonly fasTrash = faTrash;
+
   getShortLabel(value: string | undefined): string {
     return value ? (ABILITY_SHORT_LABELS[value] ?? value) : '';
   }
@@ -61,17 +70,20 @@ export class AttacksComponent {
 
   addAttack(): void {
     const char = this.cs.character();
-    const attacks = [...char.attacks, {
-      name: '',
-      proficient: true,
-      attribute: 'str',
-      range: '1.5',
-      damageDice: '1W8',
-      damageType: 'Hieb',
-      description: '',
-      mastery: '',
-      magicBonus: 0,
-    }];
+    const attacks = [
+      ...char.attacks,
+      {
+        name: '',
+        proficient: true,
+        attribute: 'str',
+        range: '1.5',
+        damageDice: '1W8',
+        damageType: 'Hieb',
+        description: '',
+        mastery: '',
+        magicBonus: 0,
+      },
+    ];
     this.cs.update({ attacks });
   }
 
@@ -79,7 +91,6 @@ export class AttacksComponent {
     this.confirmationService.confirm({
       message: `„${name || 'Unbenannt'}" wirklich löschen?`,
       header: 'Angriff löschen',
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Löschen',
       rejectLabel: 'Abbrechen',
       accept: () => this.removeAttack(index),

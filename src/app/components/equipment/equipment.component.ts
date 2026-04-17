@@ -1,7 +1,15 @@
-import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDragHandle,
+  CdkDropList,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { DecimalPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faBars, faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -12,17 +20,34 @@ import { Tooltip } from 'primeng/tooltip';
 import { Equipment } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
-
 @Component({
   selector: 'app-equipment',
-  imports: [FormsModule, InputText, InputNumber, Button, Fieldset, Tooltip, CdkDropList, CdkDrag, CdkDragHandle, DecimalPipe, ConfirmDialog],
-  providers: [ConfirmationService],
   templateUrl: './equipment.component.html',
   styleUrl: './equipment.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    Button,
+    CdkDrag,
+    CdkDragHandle,
+    CdkDropList,
+    ConfirmDialog,
+    DecimalPipe,
+    FaIconComponent,
+    Fieldset,
+    FormsModule,
+    InputNumber,
+    InputText,
+    Tooltip,
+  ],
+  providers: [ConfirmationService],
 })
 export class EquipmentComponent {
-  cs = inject(CharacterService);
-  private confirmationService = inject(ConfirmationService);
+  public readonly fasBars = faBars;
+  public readonly fasPlus = faPlus;
+  public readonly fasTrash = faTrash;
+  public readonly fasMinus = faMinus;
+  protected readonly cs = inject(CharacterService);
+  private readonly confirmationService = inject(ConfirmationService);
 
   // Reversed order: highest value first
   coins = [
@@ -55,7 +80,6 @@ export class EquipmentComponent {
     this.confirmationService.confirm({
       message: `„${name || 'Unbenannt'}" wirklich löschen?`,
       header: 'Gegenstand löschen',
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Löschen',
       rejectLabel: 'Abbrechen',
       accept: () => this.removeItem(index),
@@ -81,14 +105,19 @@ export class EquipmentComponent {
   }
 
   getTotalWeight(): number {
-    return this.cs.character().equipment.reduce((sum, item) => sum + item.weight * item.quantity, 0);
+    return this.cs
+      .character()
+      .equipment.reduce((sum, item) => sum + item.weight * item.quantity, 0);
   }
 
   // === Additional Equipment ===
 
   addAdditionalItem(): void {
     const char = this.cs.character();
-    const additionalEquipment = [...(char.additionalEquipment ?? []), { name: '', quantity: 1, weight: 0, description: '' }];
+    const additionalEquipment = [
+      ...(char.additionalEquipment ?? []),
+      { name: '', quantity: 1, weight: 0, description: '' },
+    ];
     this.cs.update({ additionalEquipment });
   }
 
@@ -96,7 +125,6 @@ export class EquipmentComponent {
     this.confirmationService.confirm({
       message: `„${name || 'Unbenannt'}" wirklich löschen?`,
       header: 'Gegenstand löschen',
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Löschen',
       rejectLabel: 'Abbrechen',
       accept: () => this.removeAdditionalItem(index),
@@ -122,6 +150,9 @@ export class EquipmentComponent {
   }
 
   getAdditionalTotalWeight(): number {
-    return (this.cs.character().additionalEquipment ?? []).reduce((sum, item) => sum + item.weight * item.quantity, 0);
+    return (this.cs.character().additionalEquipment ?? []).reduce(
+      (sum, item) => sum + item.weight * item.quantity,
+      0,
+    );
   }
 }

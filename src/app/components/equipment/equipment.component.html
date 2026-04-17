@@ -7,8 +7,8 @@
         <div cdkDropList (cdkDropListDropped)="dropEquipment($event)" class="space-y-1">
           @for (item of cs.character().equipment; track $index; let i = $index) {
             <div cdkDrag class="flex items-center gap-1 text-xs" cdkDragLockAxis="y">
-              <div class="cursor-move mr-1 w-7 h-7 flex justify-center items-center" cdkDragHandle>
-                <i class="pi pi-bars text-gray-400 dark:text-gray-500"></i>
+              <div class="cursor-move mr-1 w-7 h-7 flex justify-center items-center mr-1" cdkDragHandle>
+                <fa-icon [icon]="fasBars" class="text-gray-400 dark:text-gray-500 cursor-move" cdkDragHandle></fa-icon>
               </div>
               <input
                 pInputText
@@ -34,18 +34,23 @@
               />
               <span class="text-gray-400 dark:text-gray-500 text-[0.6rem]">kg</span>
               <p-button
-                icon="pi pi-trash"
+                icon="fa"
                 [rounded]="true"
                 [text]="true"
                 severity="danger"
                 size="small"
                 (onClick)="confirmRemoveItem(i, item.name)"
-              />
+              >
+                <fa-icon [icon]="fasTrash"/>
+              </p-button>
             </div>
           }
         </div>
         <div class="flex justify-between items-center mt-2">
-          <p-button label="Hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addItem()"/>
+          <p-button size="small" [outlined]="true" (onClick)="addItem()">
+            <fa-icon [icon]="fasPlus" class="mr-1"/>
+            Hinzufügen
+          </p-button>
           <span class="text-xs text-gray-500 dark:text-gray-400">
             Gewicht: {{ getTotalWeight() | number:'1.1-1' }} kg
           </span>
@@ -67,11 +72,16 @@
               (ngModelChange)="updateCurrency(coin.key, $event)"
               [showButtons]="true"
               buttonLayout="horizontal"
-              incrementButtonIcon="pi pi-plus"
-              decrementButtonIcon="pi pi-minus"
               [min]="0"
               [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
-            />
+            >
+              <ng-template #incrementbuttonicon>
+                <fa-icon [icon]="fasPlus"/>
+              </ng-template>
+              <ng-template #decrementbuttonicon>
+                <fa-icon [icon]="fasMinus"/>
+              </ng-template>
+            </p-input-number>
           </div>
         }
       </div>
@@ -82,8 +92,8 @@
     <div cdkDropList (cdkDropListDropped)="dropAdditionalEquipment($event)" class="space-y-1">
       @for (item of cs.character().additionalEquipment; track $index; let i = $index) {
         <div cdkDrag class="flex items-center gap-1 text-xs" cdkDragLockAxis="y">
-          <div class="cursor-move mr-1 w-7 h-7 flex justify-center items-center" cdkDragHandle>
-            <i class="pi pi-bars text-gray-400 dark:text-gray-500"></i>
+          <div class="cursor-move mr-1 w-7 h-7 flex justify-center items-cente mr-1r" cdkDragHandle>
+            <fa-icon [icon]="fasBars" class="text-gray-400 dark:text-gray-500 cursor-move"/>
           </div>
           <input
             pInputText
@@ -109,18 +119,23 @@
           />
           <span class="text-gray-400 dark:text-gray-500 text-[0.6rem]">kg</span>
           <p-button
-            icon="pi pi-trash"
+            icon="fa"
             [rounded]="true"
             [text]="true"
             severity="danger"
             size="small"
             (onClick)="confirmRemoveAdditionalItem(i, item.name)"
-          />
+          >
+            <fa-icon [icon]="fasTrash"/>
+          </p-button>
         </div>
       }
     </div>
     <div class="flex justify-between items-center mt-2">
-      <p-button label="Hinzufügen" icon="pi pi-plus" size="small" [outlined]="true" (onClick)="addAdditionalItem()"/>
+      <p-button size="small" [outlined]="true" (onClick)="addAdditionalItem()">
+        <fa-icon [icon]="fasPlus" class="mr-1"/>
+        Hinzufügen
+      </p-button>
       <span class="text-xs text-gray-500 dark:text-gray-400">
         Gewicht: {{ getAdditionalTotalWeight() | number:'1.1-1' }} kg
       </span>

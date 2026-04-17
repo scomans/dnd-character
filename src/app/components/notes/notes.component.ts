@@ -1,7 +1,17 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, SecurityContext, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  SecurityContext,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faFile } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faEye, faPencil, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Marked } from 'marked';
 import { ConfirmationService, MenuItem, TreeNode } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -16,10 +26,10 @@ import { NoteNode } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
 import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
-
+import { Ripple } from 'primeng/ripple';
 
 function generateId(): string {
-  return `note-${ Date.now() }-${ Math.random().toString(36).substring(2, 9) }`;
+  return `note-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
 /** Convert NoteNode[] to PrimeNG TreeNode[] */
@@ -51,10 +61,7 @@ function findNode(nodes: NoteNode[], id: string): NoteNode | null {
 }
 
 /** Find parent array & index for a node */
-function findParent(
-  nodes: NoteNode[],
-  id: string,
-): { parent: NoteNode[]; index: number } | null {
+function findParent(nodes: NoteNode[], id: string): { parent: NoteNode[]; index: number } | null {
   for (let i = 0; i < nodes.length; i++) {
     if (nodes[i].id === id) {
       return { parent: nodes, index: i };
@@ -76,23 +83,33 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
 
 @Component({
   selector: 'app-notes',
-  imports: [
-    NgTemplateOutlet,
-    FormsModule,
-    Tree,
-    Button,
-    InputText,
-    Textarea,
-    ContextMenu,
-    Tooltip,
-    ConfirmDialog,
-    Drawer,
-  ],
-  providers: [ConfirmationService],
   templateUrl: './notes.component.html',
   styleUrl: './notes.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    Drawer,
+    FaIconComponent,
+    Button,
+    ConfirmDialog,
+    ContextMenu,
+    FormsModule,
+    InputText,
+    NgTemplateOutlet,
+    Textarea,
+    Tooltip,
+    Tree,
+    Ripple,
+  ],
+  providers: [ConfirmationService],
 })
 export class NotesComponent {
+  protected readonly farFileEdit = faFile;
+  protected readonly fasBars = faBars;
+  protected readonly fasEye = faEye;
+  protected readonly fasPencil = faPencil;
+  protected readonly fasPlus = faPlus;
+  protected readonly fasTrash = faTrash;
+
   private cs = inject(CharacterService);
   private sanitizer = inject(DomSanitizer);
   private confirmationService = inject(ConfirmationService);
@@ -108,17 +125,17 @@ export class NotesComponent {
   contextMenuItems: MenuItem[] = [
     {
       label: 'Unternotiz hinzufügen',
-      icon: 'pi pi-plus',
+      faIcon: faPlus,
       command: () => this.addChildNote(),
     },
     {
       label: 'Umbenennen',
-      icon: 'pi pi-pencil',
+      faIcon: faPencil,
       command: () => this.startRename(),
     },
     {
       label: 'Löschen',
-      icon: 'pi pi-trash',
+      faIcon: faTrash,
       command: () => this.confirmDeleteSelectedNote(),
     },
   ];
@@ -135,8 +152,7 @@ export class NotesComponent {
     }
     const content = note.content.replace(/\n(?=\n)/g, '\n\n<br/>\n');
     const html = this.marked.parse(content, { async: false, gfm: true, breaks: true }) as string;
-    const sanitized =
-      this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
+    const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
     return this.sanitizer.bypassSecurityTrustHtml(sanitized);
   });
 
@@ -219,9 +235,8 @@ export class NotesComponent {
       return;
     }
     this.confirmationService.confirm({
-      message: `„${ selected.label || 'Unbenannt' }" wirklich löschen?`,
+      message: `„${selected.label || 'Unbenannt'}" wirklich löschen?`,
       header: 'Notiz löschen',
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Löschen',
       rejectLabel: 'Abbrechen',
       accept: () => this.deleteSelectedNote(),
