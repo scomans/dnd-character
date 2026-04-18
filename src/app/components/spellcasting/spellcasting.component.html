@@ -92,10 +92,10 @@
             [ngModel]="getSlotMax(level)"
             (ngModelChange)="updateSlotMax(level, $event)"
           />
-          <div class="flex flex-wrap justify-center gap-0.5 mt-1">
+          <div class="flex flex-wrap justify-center gap-1 mt-1">
             @for (i of getSlotRange(level); track i) {
               <span
-                class="w-3.5 h-3.5 rounded-full border cursor-pointer flex items-center justify-center text-[0.5rem]"
+                class="w-5 h-5 rounded-full border cursor-pointer flex items-center justify-center text-[0.5rem]"
                 [class.bg-orange-500]="i < getSlotUsed(level)"
                 [class.border-orange-700]="i < getSlotUsed(level)"
                 [class.bg-transparent]="i >= getSlotUsed(level)"
