@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClickOutside } from 'ngxtension/click-outside';
 import { Checkbox } from 'primeng/checkbox';
@@ -7,12 +7,12 @@ import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_LABELS } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
-
 @Component({
   selector: 'app-ability-scores',
-  imports: [FormsModule, InputNumber, Checkbox, Tooltip, ClickOutside],
   templateUrl: './ability-scores.component.html',
   styleUrl: './ability-scores.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ClickOutside, FormsModule, InputNumber, Checkbox, Tooltip],
 })
 export class AbilityScoresComponent {
   cs = inject(CharacterService);

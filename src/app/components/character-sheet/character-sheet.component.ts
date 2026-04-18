@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { AbilityScoresComponent } from '../ability-scores/ability-scores.component';
 import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
@@ -16,9 +16,11 @@ import { SpellcastingComponent } from '../spellcasting/spellcasting.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { NotesComponent } from '../notes/notes.component';
 
-
 @Component({
   selector: 'app-character-sheet',
+  templateUrl: './character-sheet.component.html',
+  styleUrl: './character-sheet.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     Tabs,
     TabList,
@@ -41,7 +43,5 @@ import { NotesComponent } from '../notes/notes.component';
     AppearanceBackstoryComponent,
     NotesComponent,
   ],
-  templateUrl: './character-sheet.component.html',
-  styleUrl: './character-sheet.component.scss',
 })
 export class CharacterSheetComponent {}

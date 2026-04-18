@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
 import { Fieldset } from 'primeng/fieldset';
@@ -6,9 +6,10 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 
 @Component({
   selector: 'app-personality',
-  imports: [FormsModule, Fieldset, MarkdownEditorComponent],
   templateUrl: './personality.component.html',
   styleUrl: './personality.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, Fieldset, MarkdownEditorComponent],
 })
 export class PersonalityComponent {
   cs = inject(CharacterService);

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faCheck as fasCheck, faPencil as fasPencil } from '@fortawesome/free-solid-svg-icons';
@@ -16,9 +16,10 @@ import { CharacterService } from '../../services/character.service';
 
 @Component({
   selector: 'app-skills',
-  imports: [FormsModule, Checkbox, Button, Fieldset, Tooltip, FaIconComponent],
   templateUrl: './skills.component.html',
   styleUrl: './skills.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, Checkbox, Button, Fieldset, Tooltip, FaIconComponent],
 })
 export class SkillsComponent {
   cs = inject(CharacterService);

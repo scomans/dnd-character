@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faCheck as fasCheck, faPencil as fasPencil } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +12,9 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 
 @Component({
   selector: 'app-proficiencies-languages',
+  templateUrl: './proficiencies-languages.component.html',
+  styleUrl: './proficiencies-languages.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     Button,
     Checkbox,
@@ -22,8 +25,6 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
     MarkdownEditorComponent,
     Tooltip,
   ],
-  templateUrl: './proficiencies-languages.component.html',
-  styleUrl: './proficiencies-languages.component.scss',
 })
 export class ProficienciesLanguagesComponent {
   cs = inject(CharacterService);

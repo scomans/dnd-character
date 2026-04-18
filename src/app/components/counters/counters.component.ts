@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
@@ -20,6 +20,9 @@ import { CharacterService } from '../../services/character.service';
 
 @Component({
   selector: 'app-counters',
+  templateUrl: './counters.component.html',
+  styleUrl: './counters.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     Button,
     ClickOutside,
@@ -32,8 +35,6 @@ import { CharacterService } from '../../services/character.service';
     Tooltip,
   ],
   providers: [ConfirmationService],
-  templateUrl: './counters.component.html',
-  styleUrl: './counters.component.scss',
 })
 export class CountersComponent {
   cs = inject(CharacterService);

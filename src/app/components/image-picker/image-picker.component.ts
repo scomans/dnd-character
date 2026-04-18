@@ -1,4 +1,13 @@
-import { Component, ElementRef, inject, input, NgZone, output, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  NgZone,
+  output,
+  viewChild,
+} from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -7,9 +16,10 @@ import { Image as PrimeImage } from 'primeng/image';
 
 @Component({
   selector: 'app-image-picker',
-  imports: [Button, PrimeImage, FaIconComponent],
   templateUrl: './image-picker.component.html',
   styleUrl: './image-picker.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [Button, PrimeImage, FaIconComponent],
 })
 export class ImagePickerComponent {
   protected readonly farImage = faImage;

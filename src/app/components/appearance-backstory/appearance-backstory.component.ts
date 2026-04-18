@@ -1,4 +1,4 @@
-import { Component, effect, inject, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Fieldset } from 'primeng/fieldset';
@@ -7,14 +7,21 @@ import { InputNumber } from 'primeng/inputnumber';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { TreeSelect } from 'primeng/treeselect';
-import { ALIGNMENTS, DND_BACKGROUNDS, DND_CLASS_TREE, DND_RACES } from '../../models/character.model';
+import {
+  ALIGNMENTS,
+  DND_BACKGROUNDS,
+  DND_CLASS_TREE,
+  DND_RACES,
+} from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { ImagePickerComponent } from '../image-picker/image-picker.component';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
-
 @Component({
   selector: 'app-appearance-backstory',
+  templateUrl: './appearance-backstory.component.html',
+  styleUrl: './appearance-backstory.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     InputText,
@@ -27,8 +34,6 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
     ImagePickerComponent,
     InputNumber,
   ],
-  templateUrl: './appearance-backstory.component.html',
-  styleUrl: './appearance-backstory.component.scss',
 })
 export class AppearanceBackstoryComponent {
   cs = inject(CharacterService);
@@ -77,7 +82,7 @@ export class AppearanceBackstoryComponent {
 
   getAlignmentLabel(): string {
     const value = this.cs.character().alignment;
-    return this.alignments.find(a => a.value === value)?.label ?? value;
+    return this.alignments.find((a) => a.value === value)?.label ?? value;
   }
 
   onClassNodeSelect(nodeKey: any): void {
@@ -96,11 +101,11 @@ export class AppearanceBackstoryComponent {
 
   filterRaces(event: { query: string }): void {
     const query = event.query.toLowerCase();
-    this.filteredRaces = this.allRaces.filter(r => r.toLowerCase().includes(query));
+    this.filteredRaces = this.allRaces.filter((r) => r.toLowerCase().includes(query));
   }
 
   filterBackgrounds(event: { query: string }): void {
     const query = event.query.toLowerCase();
-    this.filteredBackgrounds = this.allBackgrounds.filter(b => b.toLowerCase().includes(query));
+    this.filteredBackgrounds = this.allBackgrounds.filter((b) => b.toLowerCase().includes(query));
   }
 }

@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Fieldset } from 'primeng/fieldset';
 import { Select } from 'primeng/select';
@@ -7,12 +7,12 @@ import { Tooltip } from 'primeng/tooltip';
 import { LIFESTYLES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 
-
 @Component({
   selector: 'app-lifestyle-jump',
-  imports: [DecimalPipe, FormsModule, Fieldset, Select, Tooltip],
   templateUrl: './lifestyle-jump.component.html',
   styleUrl: './lifestyle-jump.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [DecimalPipe, FormsModule, Fieldset, Select, Tooltip],
 })
 export class LifestyleJumpComponent {
   cs = inject(CharacterService);
@@ -22,7 +22,7 @@ export class LifestyleJumpComponent {
 
   getLifestyleCost(): string {
     const lifestyle = this.cs.character().lifestyle;
-    const found = this.lifestyles.find(l => l.value === lifestyle);
+    const found = this.lifestyles.find((l) => l.value === lifestyle);
     return found?.cost ?? '-';
   }
 

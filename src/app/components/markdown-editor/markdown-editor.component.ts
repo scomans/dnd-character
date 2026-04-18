@@ -1,5 +1,13 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, input, output, SecurityContext, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  output,
+  SecurityContext,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Marked } from 'marked';
@@ -15,9 +23,10 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-markdown-editor',
-  imports: [FaIconComponent, FormsModule, NgClass, Textarea, ClickOutside, Button, Tooltip],
   templateUrl: './markdown-editor.component.html',
   styleUrl: './markdown-editor.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FaIconComponent, FormsModule, NgClass, Textarea, ClickOutside, Button, Tooltip],
 })
 export class MarkdownEditorComponent {
   value = input<string>('');
