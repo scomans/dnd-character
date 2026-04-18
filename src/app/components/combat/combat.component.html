@@ -131,15 +131,60 @@
   <div class="flex flex-wrap flex-row max-sm:flex-col gap-4 max-md:w-full">
     <!-- Hit Dice & Death Saves -->
     <p-fieldset legend="Trefferwürfel" class="flex-1">
-      <div class="flex items-center justify-center gap-2">
-        <input
-          pInputText
-          [ngModel]="cs.character().hitDiceTotal"
-          (ngModelChange)="cs.update({ hitDiceTotal: $event })"
-          placeholder="1Wx"
-          class="w-full text-xs attack-input"
-          [style]="{ width: '5rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 'bold' }"
-        />
+      <div class="flex items-center justify-center">
+        @if (editingMaxHitDice()) {
+          <div class="flex items-center justify-center gap-2" (clickOutside)="editingMaxHitDice.set(false)">
+            Max:
+            <p-input-number
+              [ngModel]="cs.character().hitDiceMax"
+              (ngModelChange)="cs.update({ hitDiceMax: $event ?? 0 })"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              [min]="0"
+              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+              size="small"
+            >
+              <ng-template #incrementbuttonicon>
+                <fa-icon [icon]="fasPlus"/>
+              </ng-template>
+              <ng-template #decrementbuttonicon>
+                <fa-icon [icon]="fasMinus"/>
+              </ng-template>
+            </p-input-number>
+            <p-select
+              size="small"
+              [options]="diceTypes"
+              [ngModel]="cs.character().hitDice"
+              (ngModelChange)="cs.update({ hitDice: $event })"
+            />
+          </div>
+        } @else {
+          <div class="flex items-center justify-center gap-2">
+            <p-input-number
+              [ngModel]="cs.character().hitDiceCurrent"
+              (ngModelChange)="cs.update({ hitDiceCurrent: $event ?? 0 })"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              [min]="0"
+              [max]="cs.character().hitDiceMax"
+              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+              size="small"
+            >
+              <ng-template #incrementbuttonicon>
+                <fa-icon [icon]="fasPlus"/>
+              </ng-template>
+              <ng-template #decrementbuttonicon>
+                <fa-icon [icon]="fasMinus"/>
+              </ng-template>
+            </p-input-number>
+            <span
+              class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
+              pTooltip="Klicken zum Bearbeiten"
+              tooltipPosition="top"
+              (click)="editingMaxHitDice.set(true)"
+            >{{ cs.character().hitDice }}</span>
+          </div>
+        }
       </div>
     </p-fieldset>
     <p-fieldset legend="Todesrettungen" class="flex-1">

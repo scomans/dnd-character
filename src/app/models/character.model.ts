@@ -1,6 +1,5 @@
 import { TreeNode } from 'primeng/api';
 
-
 export interface NoteNode {
   id: string;
   label: string;
@@ -39,34 +38,49 @@ export const WEAPON_MASTERIES: { value: string; label: string; description: stri
   {
     value: 'Spalten',
     label: 'Spalten (Cleave)',
-    description: 'Bei einem Treffer: Ein weiteres Ziel in Reichweite erleidet den Fähigkeitsmodifikator als Schaden.',
+    description:
+      'Bei einem Treffer: Ein weiteres Ziel in Reichweite erleidet den Fähigkeitsmodifikator als Schaden.',
   },
-  { value: 'Streifen', label: 'Streifen (Graze)', description: 'Bei einem Fehlschlag: Das Ziel erleidet den Fähigkeitsmodifikator als Schaden.' },
+  {
+    value: 'Streifen',
+    label: 'Streifen (Graze)',
+    description: 'Bei einem Fehlschlag: Das Ziel erleidet den Fähigkeitsmodifikator als Schaden.',
+  },
   {
     value: 'Schnitt',
     label: 'Schnitt (Nick)',
-    description: 'Angriff mit dieser Waffe als Teil der Bonusaktion, wenn eine leichte Waffe im Hauptangriff genutzt wurde.',
+    description:
+      'Angriff mit dieser Waffe als Teil der Bonusaktion, wenn eine leichte Waffe im Hauptangriff genutzt wurde.',
   },
-  { value: 'Stoßen', label: 'Stoßen (Push)', description: 'Bei einem Treffer: Das Ziel wird 3m zurückgeschoben (Große oder kleinere Kreatur).' },
+  {
+    value: 'Stoßen',
+    label: 'Stoßen (Push)',
+    description:
+      'Bei einem Treffer: Das Ziel wird 3m zurückgeschoben (Große oder kleinere Kreatur).',
+  },
   {
     value: 'Schwächen',
     label: 'Schwächen (Sap)',
-    description: 'Bei einem Treffer: Das Ziel hat Nachteil auf seinen nächsten Angriffswurf vor Beginn deines nächsten Zuges.',
+    description:
+      'Bei einem Treffer: Das Ziel hat Nachteil auf seinen nächsten Angriffswurf vor Beginn deines nächsten Zuges.',
   },
   {
     value: 'Verlangsamen',
     label: 'Verlangsamen (Slow)',
-    description: 'Bei einem Treffer: Die Geschwindigkeit des Ziels wird um 3m reduziert bis zum Beginn deines nächsten Zuges.',
+    description:
+      'Bei einem Treffer: Die Geschwindigkeit des Ziels wird um 3m reduziert bis zum Beginn deines nächsten Zuges.',
   },
   {
     value: 'Umwerfen',
     label: 'Umwerfen (Topple)',
-    description: 'Bei einem Treffer: Das Ziel muss einen Konstitutions-Rettungswurf bestehen oder wird liegend.',
+    description:
+      'Bei einem Treffer: Das Ziel muss einen Konstitutions-Rettungswurf bestehen oder wird liegend.',
   },
   {
     value: 'Reizen',
     label: 'Reizen (Vex)',
-    description: 'Bei einem Treffer: Du hast Vorteil auf deinen nächsten Angriffswurf gegen das Ziel vor dem Ende deines nächsten Zuges.',
+    description:
+      'Bei einem Treffer: Du hast Vorteil auf deinen nächsten Angriffswurf gegen das Ziel vor dem Ende deines nächsten Zuges.',
   },
 ];
 
@@ -183,8 +197,9 @@ export interface DndCharacter {
   hitPointsMax: number;
   hitPointsCurrent: number;
   hitPointsTemp: number;
-  hitDiceTotal: string;
-  hitDiceUsed: number;
+  hitDice: string;
+  hitDiceCurrent: number;
+  hitDiceMax: number;
   deathSaves: DeathSaves;
 
   // Proficiency bonus override (null = auto-compute from level)
@@ -333,6 +348,16 @@ export const DAMAGE_TYPES: { value: string; label: string }[] = [
   { value: 'Donner', label: 'Donnerschaden (Thunder)' },
 ];
 
+export const DICE_TYPES: { value: string; label: string }[] = [
+  { value: 'W4', label: 'W4' },
+  { value: 'W6', label: 'W6' },
+  { value: 'W8', label: 'W8' },
+  { value: 'W10', label: 'W10' },
+  { value: 'W12', label: 'W12' },
+  { value: 'W20', label: 'W20' },
+  { value: 'W100', label: 'W100' },
+];
+
 export const ALIGNMENTS: { value: string; label: string }[] = [
   { value: 'LG', label: 'Rechtschaffen Gut' },
   { value: 'NG', label: 'Neutral Gut' },
@@ -416,10 +441,17 @@ export const DND_BACKGROUNDS: string[] = [
 
 export const DND_CLASS_TREE: TreeNode[] = [
   {
-    key: 'Barbar', label: 'Barbar', data: '', selectable: true,
+    key: 'Barbar',
+    label: 'Barbar',
+    data: '',
+    selectable: true,
   },
   {
-    key: 'Barbar', label: 'Barbar', data: 'Barbar', selectable: true, children: [
+    key: 'Barbar',
+    label: 'Barbar',
+    data: 'Barbar',
+    selectable: true,
+    children: [
       { key: 'Barbar (Berserker)', label: 'Berserker', data: 'Barbar (Berserker)' },
       { key: 'Barbar (Totemkrieger)', label: 'Totemkrieger', data: 'Barbar (Totemkrieger)' },
       { key: 'Barbar (Sturmherold)', label: 'Sturmherold', data: 'Barbar (Sturmherold)' },
@@ -429,41 +461,125 @@ export const DND_CLASS_TREE: TreeNode[] = [
     ],
   },
   {
-    key: 'Barde', label: 'Barde', data: 'Barde', selectable: true, children: [
-      { key: 'Barde (Kolleg der Kunde)', label: 'Kolleg der Kunde', data: 'Barde (Kolleg der Kunde)' },
-      { key: 'Barde (Kolleg der Tapferkeit)', label: 'Kolleg der Tapferkeit', data: 'Barde (Kolleg der Tapferkeit)' },
-      { key: 'Barde (Kolleg der Schwerter)', label: 'Kolleg der Schwerter', data: 'Barde (Kolleg der Schwerter)' },
-      { key: 'Barde (Kolleg der Flüstern)', label: 'Kolleg der Flüstern', data: 'Barde (Kolleg der Flüstern)' },
-      { key: 'Barde (Kolleg der Zauberkunst)', label: 'Kolleg der Zauberkunst', data: 'Barde (Kolleg der Zauberkunst)' },
-      { key: 'Barde (Kolleg der Geister)', label: 'Kolleg der Geister', data: 'Barde (Kolleg der Geister)' },
+    key: 'Barde',
+    label: 'Barde',
+    data: 'Barde',
+    selectable: true,
+    children: [
+      {
+        key: 'Barde (Kolleg der Kunde)',
+        label: 'Kolleg der Kunde',
+        data: 'Barde (Kolleg der Kunde)',
+      },
+      {
+        key: 'Barde (Kolleg der Tapferkeit)',
+        label: 'Kolleg der Tapferkeit',
+        data: 'Barde (Kolleg der Tapferkeit)',
+      },
+      {
+        key: 'Barde (Kolleg der Schwerter)',
+        label: 'Kolleg der Schwerter',
+        data: 'Barde (Kolleg der Schwerter)',
+      },
+      {
+        key: 'Barde (Kolleg der Flüstern)',
+        label: 'Kolleg der Flüstern',
+        data: 'Barde (Kolleg der Flüstern)',
+      },
+      {
+        key: 'Barde (Kolleg der Zauberkunst)',
+        label: 'Kolleg der Zauberkunst',
+        data: 'Barde (Kolleg der Zauberkunst)',
+      },
+      {
+        key: 'Barde (Kolleg der Geister)',
+        label: 'Kolleg der Geister',
+        data: 'Barde (Kolleg der Geister)',
+      },
     ],
   },
   {
-    key: 'Druide', label: 'Druide', data: 'Druide', selectable: true, children: [
-      { key: 'Druide (Kreis des Landes)', label: 'Kreis des Landes', data: 'Druide (Kreis des Landes)' },
-      { key: 'Druide (Kreis des Mondes)', label: 'Kreis des Mondes', data: 'Druide (Kreis des Mondes)' },
-      { key: 'Druide (Kreis der Träume)', label: 'Kreis der Träume', data: 'Druide (Kreis der Träume)' },
-      { key: 'Druide (Kreis des Hirten)', label: 'Kreis des Hirten', data: 'Druide (Kreis des Hirten)' },
-      { key: 'Druide (Kreis der Sporen)', label: 'Kreis der Sporen', data: 'Druide (Kreis der Sporen)' },
-      { key: 'Druide (Kreis der Sterne)', label: 'Kreis der Sterne', data: 'Druide (Kreis der Sterne)' },
-      { key: 'Druide (Kreis des Feuers)', label: 'Kreis des Feuers', data: 'Druide (Kreis des Feuers)' },
+    key: 'Druide',
+    label: 'Druide',
+    data: 'Druide',
+    selectable: true,
+    children: [
+      {
+        key: 'Druide (Kreis des Landes)',
+        label: 'Kreis des Landes',
+        data: 'Druide (Kreis des Landes)',
+      },
+      {
+        key: 'Druide (Kreis des Mondes)',
+        label: 'Kreis des Mondes',
+        data: 'Druide (Kreis des Mondes)',
+      },
+      {
+        key: 'Druide (Kreis der Träume)',
+        label: 'Kreis der Träume',
+        data: 'Druide (Kreis der Träume)',
+      },
+      {
+        key: 'Druide (Kreis des Hirten)',
+        label: 'Kreis des Hirten',
+        data: 'Druide (Kreis des Hirten)',
+      },
+      {
+        key: 'Druide (Kreis der Sporen)',
+        label: 'Kreis der Sporen',
+        data: 'Druide (Kreis der Sporen)',
+      },
+      {
+        key: 'Druide (Kreis der Sterne)',
+        label: 'Kreis der Sterne',
+        data: 'Druide (Kreis der Sterne)',
+      },
+      {
+        key: 'Druide (Kreis des Feuers)',
+        label: 'Kreis des Feuers',
+        data: 'Druide (Kreis des Feuers)',
+      },
     ],
   },
   {
-    key: 'Hexenmeister', label: 'Hexenmeister', data: 'Hexenmeister', selectable: true, children: [
+    key: 'Hexenmeister',
+    label: 'Hexenmeister',
+    data: 'Hexenmeister',
+    selectable: true,
+    children: [
       { key: 'Hexenmeister (Archfey)', label: 'Der Archfey', data: 'Hexenmeister (Archfey)' },
       { key: 'Hexenmeister (Einhüller)', label: 'Der Einhüller', data: 'Hexenmeister (Einhüller)' },
       { key: 'Hexenmeister (Untote)', label: 'Der Untote', data: 'Hexenmeister (Untote)' },
-      { key: 'Hexenmeister (Celestisch)', label: 'Das Celestische', data: 'Hexenmeister (Celestisch)' },
-      { key: 'Hexenmeister (Hexenklinge)', label: 'Der Hexenklinge', data: 'Hexenmeister (Hexenklinge)' },
-      { key: 'Hexenmeister (Großer Alter)', label: 'Der Große Alte', data: 'Hexenmeister (Großer Alter)' },
+      {
+        key: 'Hexenmeister (Celestisch)',
+        label: 'Das Celestische',
+        data: 'Hexenmeister (Celestisch)',
+      },
+      {
+        key: 'Hexenmeister (Hexenklinge)',
+        label: 'Der Hexenklinge',
+        data: 'Hexenmeister (Hexenklinge)',
+      },
+      {
+        key: 'Hexenmeister (Großer Alter)',
+        label: 'Der Große Alte',
+        data: 'Hexenmeister (Großer Alter)',
+      },
     ],
   },
   {
-    key: 'Kämpfer', label: 'Kämpfer', data: 'Kämpfer', selectable: true, children: [
+    key: 'Kämpfer',
+    label: 'Kämpfer',
+    data: 'Kämpfer',
+    selectable: true,
+    children: [
       { key: 'Kämpfer (Champion)', label: 'Champion', data: 'Kämpfer (Champion)' },
       { key: 'Kämpfer (Kampfmeister)', label: 'Kampfmeister', data: 'Kämpfer (Kampfmeister)' },
-      { key: 'Kämpfer (Eldritch Ritter)', label: 'Eldritch Ritter', data: 'Kämpfer (Eldritch Ritter)' },
+      {
+        key: 'Kämpfer (Eldritch Ritter)',
+        label: 'Eldritch Ritter',
+        data: 'Kämpfer (Eldritch Ritter)',
+      },
       { key: 'Kämpfer (Kavalier)', label: 'Kavalier', data: 'Kämpfer (Kavalier)' },
       { key: 'Kämpfer (Samurai)', label: 'Samurai', data: 'Kämpfer (Samurai)' },
       { key: 'Kämpfer (Psi-Krieger)', label: 'Psi-Krieger', data: 'Kämpfer (Psi-Krieger)' },
@@ -471,7 +587,11 @@ export const DND_CLASS_TREE: TreeNode[] = [
     ],
   },
   {
-    key: 'Kleriker', label: 'Kleriker', data: 'Kleriker', selectable: true, children: [
+    key: 'Kleriker',
+    label: 'Kleriker',
+    data: 'Kleriker',
+    selectable: true,
+    children: [
       { key: 'Kleriker (Leben)', label: 'Lebensdomäne', data: 'Kleriker (Leben)' },
       { key: 'Kleriker (Licht)', label: 'Lichtdomäne', data: 'Kleriker (Licht)' },
       { key: 'Kleriker (Natur)', label: 'Naturdomäne', data: 'Kleriker (Natur)' },
@@ -487,10 +607,18 @@ export const DND_CLASS_TREE: TreeNode[] = [
     ],
   },
   {
-    key: 'Magier', label: 'Magier', data: 'Magier', selectable: true, children: [
+    key: 'Magier',
+    label: 'Magier',
+    data: 'Magier',
+    selectable: true,
+    children: [
       { key: 'Magier (Bannzauberei)', label: 'Bannzauberei', data: 'Magier (Bannzauberei)' },
       { key: 'Magier (Beschwörung)', label: 'Beschwörung', data: 'Magier (Beschwörung)' },
-      { key: 'Magier (Erkenntnismagie)', label: 'Erkenntnismagie', data: 'Magier (Erkenntnismagie)' },
+      {
+        key: 'Magier (Erkenntnismagie)',
+        label: 'Erkenntnismagie',
+        data: 'Magier (Erkenntnismagie)',
+      },
       { key: 'Magier (Hervorrufung)', label: 'Hervorrufung', data: 'Magier (Hervorrufung)' },
       { key: 'Magier (Illusion)', label: 'Illusion', data: 'Magier (Illusion)' },
       { key: 'Magier (Nekromantie)', label: 'Nekromantie', data: 'Magier (Nekromantie)' },
@@ -503,19 +631,35 @@ export const DND_CLASS_TREE: TreeNode[] = [
     ],
   },
   {
-    key: 'Mönch', label: 'Mönch', data: 'Mönch', selectable: true, children: [
+    key: 'Mönch',
+    label: 'Mönch',
+    data: 'Mönch',
+    selectable: true,
+    children: [
       { key: 'Mönch (Offene Hand)', label: 'Weg der offenen Hand', data: 'Mönch (Offene Hand)' },
       { key: 'Mönch (Schatten)', label: 'Weg des Schattens', data: 'Mönch (Schatten)' },
-      { key: 'Mönch (Vier Elemente)', label: 'Weg der vier Elemente', data: 'Mönch (Vier Elemente)' },
+      {
+        key: 'Mönch (Vier Elemente)',
+        label: 'Weg der vier Elemente',
+        data: 'Mönch (Vier Elemente)',
+      },
       { key: 'Mönch (Trunkenheit)', label: 'Weg der Trunkenheit', data: 'Mönch (Trunkenheit)' },
       { key: 'Mönch (Sonne)', label: 'Weg der Sonne', data: 'Mönch (Sonne)' },
       { key: 'Mönch (Kensai)', label: 'Weg des Kensai', data: 'Mönch (Kensai)' },
-      { key: 'Mönch (Astral-Selbst)', label: 'Weg des Astral-Selbst', data: 'Mönch (Astral-Selbst)' },
+      {
+        key: 'Mönch (Astral-Selbst)',
+        label: 'Weg des Astral-Selbst',
+        data: 'Mönch (Astral-Selbst)',
+      },
       { key: 'Mönch (Gnade)', label: 'Weg der Gnade', data: 'Mönch (Gnade)' },
     ],
   },
   {
-    key: 'Paladin', label: 'Paladin', data: 'Paladin', selectable: true, children: [
+    key: 'Paladin',
+    label: 'Paladin',
+    data: 'Paladin',
+    selectable: true,
+    children: [
       { key: 'Paladin (Hingabe)', label: 'Eid der Hingabe', data: 'Paladin (Hingabe)' },
       { key: 'Paladin (Ahnen)', label: 'Eid der Ahnen', data: 'Paladin (Ahnen)' },
       { key: 'Paladin (Rache)', label: 'Eid der Rache', data: 'Paladin (Rache)' },
@@ -523,15 +667,27 @@ export const DND_CLASS_TREE: TreeNode[] = [
       { key: 'Paladin (Eroberung)', label: 'Eid der Eroberung', data: 'Paladin (Eroberung)' },
       { key: 'Paladin (Erlösung)', label: 'Eid der Erlösung', data: 'Paladin (Erlösung)' },
       { key: 'Paladin (Wächter)', label: 'Eid der Wächter', data: 'Paladin (Wächter)' },
-      { key: 'Paladin (Herrlichkeit)', label: 'Eid der Herrlichkeit', data: 'Paladin (Herrlichkeit)' },
+      {
+        key: 'Paladin (Herrlichkeit)',
+        label: 'Eid der Herrlichkeit',
+        data: 'Paladin (Herrlichkeit)',
+      },
       { key: 'Paladin (Eidbrecher)', label: 'Eidbrecher', data: 'Paladin (Eidbrecher)' },
     ],
   },
   {
-    key: 'Schurke', label: 'Schurke', data: 'Schurke', selectable: true, children: [
+    key: 'Schurke',
+    label: 'Schurke',
+    data: 'Schurke',
+    selectable: true,
+    children: [
       { key: 'Schurke (Dieb)', label: 'Dieb', data: 'Schurke (Dieb)' },
       { key: 'Schurke (Assassine)', label: 'Assassine', data: 'Schurke (Assassine)' },
-      { key: 'Schurke (Arkaner Trickser)', label: 'Arkaner Trickser', data: 'Schurke (Arkaner Trickser)' },
+      {
+        key: 'Schurke (Arkaner Trickser)',
+        label: 'Arkaner Trickser',
+        data: 'Schurke (Arkaner Trickser)',
+      },
       { key: 'Schurke (Meistergeist)', label: 'Meistergeist', data: 'Schurke (Meistergeist)' },
       { key: 'Schurke (Inquisiteur)', label: 'Inquisiteur', data: 'Schurke (Inquisiteur)' },
       { key: 'Schurke (Kundschafter)', label: 'Kundschafter', data: 'Schurke (Kundschafter)' },
@@ -541,27 +697,67 @@ export const DND_CLASS_TREE: TreeNode[] = [
     ],
   },
   {
-    key: 'Waldläufer', label: 'Waldläufer', data: 'Waldläufer', selectable: true, children: [
+    key: 'Waldläufer',
+    label: 'Waldläufer',
+    data: 'Waldläufer',
+    selectable: true,
+    children: [
       { key: 'Waldläufer (Jäger)', label: 'Jäger', data: 'Waldläufer (Jäger)' },
       { key: 'Waldläufer (Tiermeister)', label: 'Tiermeister', data: 'Waldläufer (Tiermeister)' },
-      { key: 'Waldläufer (Horizontwanderer)', label: 'Horizontwanderer', data: 'Waldläufer (Horizontwanderer)' },
+      {
+        key: 'Waldläufer (Horizontwanderer)',
+        label: 'Horizontwanderer',
+        data: 'Waldläufer (Horizontwanderer)',
+      },
       { key: 'Waldläufer (Gleiter)', label: 'Gleiter', data: 'Waldläufer (Gleiter)' },
-      { key: 'Waldläufer (Monsterhetzer)', label: 'Monsterhetzer', data: 'Waldläufer (Monsterhetzer)' },
-      { key: 'Waldläufer (Fey-Wanderer)', label: 'Fey-Wanderer', data: 'Waldläufer (Fey-Wanderer)' },
-      { key: 'Waldläufer (Schwarmwächter)', label: 'Schwarmwächter', data: 'Waldläufer (Schwarmwächter)' },
-      { key: 'Waldläufer (Drakonischer Wanderer)', label: 'Drakonischer Wanderer', data: 'Waldläufer (Drakonischer Wanderer)' },
+      {
+        key: 'Waldläufer (Monsterhetzer)',
+        label: 'Monsterhetzer',
+        data: 'Waldläufer (Monsterhetzer)',
+      },
+      {
+        key: 'Waldläufer (Fey-Wanderer)',
+        label: 'Fey-Wanderer',
+        data: 'Waldläufer (Fey-Wanderer)',
+      },
+      {
+        key: 'Waldläufer (Schwarmwächter)',
+        label: 'Schwarmwächter',
+        data: 'Waldläufer (Schwarmwächter)',
+      },
+      {
+        key: 'Waldläufer (Drakonischer Wanderer)',
+        label: 'Drakonischer Wanderer',
+        data: 'Waldläufer (Drakonischer Wanderer)',
+      },
     ],
   },
   {
-    key: 'Zauberer', label: 'Zauberer', data: 'Zauberer', selectable: true, children: [
-      { key: 'Zauberer (Drakonisches Blut)', label: 'Drakonisches Blut', data: 'Zauberer (Drakonisches Blut)' },
+    key: 'Zauberer',
+    label: 'Zauberer',
+    data: 'Zauberer',
+    selectable: true,
+    children: [
+      {
+        key: 'Zauberer (Drakonisches Blut)',
+        label: 'Drakonisches Blut',
+        data: 'Zauberer (Drakonisches Blut)',
+      },
       { key: 'Zauberer (Wilde Magie)', label: 'Wilde Magie', data: 'Zauberer (Wilde Magie)' },
-      { key: 'Zauberer (Göttliche Seele)', label: 'Göttliche Seele', data: 'Zauberer (Göttliche Seele)' },
+      {
+        key: 'Zauberer (Göttliche Seele)',
+        label: 'Göttliche Seele',
+        data: 'Zauberer (Göttliche Seele)',
+      },
       { key: 'Zauberer (Schattenmagie)', label: 'Schattenmagie', data: 'Zauberer (Schattenmagie)' },
       { key: 'Zauberer (Sturmzauberei)', label: 'Sturmzauberei', data: 'Zauberer (Sturmzauberei)' },
       { key: 'Zauberer (Aberrant Mind)', label: 'Aberrant Mind', data: 'Zauberer (Aberrant Mind)' },
       { key: 'Zauberer (Uhrmacher)', label: 'Uhrmacher', data: 'Zauberer (Uhrmacher)' },
-      { key: 'Zauberer (Lunarer Zauberer)', label: 'Lunarer Zauberer', data: 'Zauberer (Lunarer Zauberer)' },
+      {
+        key: 'Zauberer (Lunarer Zauberer)',
+        label: 'Lunarer Zauberer',
+        data: 'Zauberer (Lunarer Zauberer)',
+      },
     ],
   },
 ];
@@ -647,8 +843,9 @@ export function createDefaultCharacter(): DndCharacter {
     hitPointsMax: 10,
     hitPointsCurrent: 10,
     hitPointsTemp: 0,
-    hitDiceTotal: '1W10',
-    hitDiceUsed: 0,
+    hitDice: 'W10',
+    hitDiceCurrent: 0,
+    hitDiceMax: 1,
     deathSaves: { successes: 0, failures: 0 },
     proficiencyBonusOverride: null,
     personalityTraits: '',

@@ -2,7 +2,6 @@ import { type MarkedExtension, type Tokens } from 'marked';
 import { SKILL_LABELS } from '../models/character.model';
 import { CharacterService } from '../services/character.service';
 
-
 /**
  * Custom marked inline extension for character-value placeholders.
  *
@@ -25,34 +24,34 @@ import { CharacterService } from '../services/character.service';
 // ---------------------------------------------------------------------------
 
 const ABILITY_PLACEHOLDER_MAP: Record<string, string> = {
-  'stä': 'str',
-  'ges': 'dex',
-  'kon': 'con',
-  'int': 'int',
-  'wei': 'wis',
-  'cha': 'cha',
+  stä: 'str',
+  ges: 'dex',
+  kon: 'con',
+  int: 'int',
+  wei: 'wis',
+  cha: 'cha',
 };
 
 const ABILITY_TOOLTIP: Record<string, string> = {
-  'stä': 'Stärke',
-  'ges': 'Geschicklichkeit',
-  'kon': 'Konstitution',
-  'int': 'Intelligenz',
-  'wei': 'Weisheit',
-  'cha': 'Charisma',
+  stä: 'Stärke',
+  ges: 'Geschicklichkeit',
+  kon: 'Konstitution',
+  int: 'Intelligenz',
+  wei: 'Weisheit',
+  cha: 'Charisma',
 };
 
 const SPECIAL_TOOLTIP: Record<string, string> = {
-  'üb': 'Übungsbonus',
-  'rk': 'Rüstungsklasse',
-  'br': 'Bewegungsrate',
-  'ini': 'Initiative',
-  'tp': 'Trefferpunkte',
-  'maxtp': 'Maximale Trefferpunkte',
-  'tw': 'Trefferwürfel',
-  'zsg': 'Zauber-SG',
-  'zattk': 'Zauberangriff',
-  'lvl': 'Level',
+  üb: 'Übungsbonus',
+  rk: 'Rüstungsklasse',
+  br: 'Bewegungsrate',
+  ini: 'Initiative',
+  tp: 'Trefferpunkte',
+  maxtp: 'Maximale Trefferpunkte',
+  tw: 'Trefferwürfel',
+  zsg: 'Zauber-SG',
+  zattk: 'Zauberangriff',
+  lvl: 'Level',
 };
 
 /** Reverse map: German skill label (lowercase) → internal skill key. */
@@ -66,7 +65,7 @@ for (const [key, label] of Object.entries(SKILL_LABELS)) {
 // ---------------------------------------------------------------------------
 
 function formatModifier(value: number): string {
-  return `${ value }`;
+  return `${value}`;
 }
 
 function escapeHtml(text: string): string {
@@ -115,7 +114,7 @@ function resolvePlaceholder(
     case 'maxtp':
       return { value: String(char.hitPointsMax), tooltip: SPECIAL_TOOLTIP[key] };
     case 'tw':
-      return { value: char.hitDiceTotal || '—', tooltip: SPECIAL_TOOLTIP[key] };
+      return { value: char.hitDice ? '1' + char.hitDice : '—', tooltip: SPECIAL_TOOLTIP[key] };
     case 'zsg':
       return { value: String(cs.getSpellSaveDC()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'zattk':
