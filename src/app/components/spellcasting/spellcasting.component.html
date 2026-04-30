@@ -79,9 +79,9 @@
   <!-- Spell Slots -->
   <p-divider><span class="font-bold">Zauberplätze</span></p-divider>
   <div>
-    <div class="grid grid-cols-9 gap-1 mt-1">
+    <div class="grid grid-cols-9 gap-1 mt-1 select-none">
       @for (level of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track level) {
-        <div class="flex flex-col items-center text-xs">
+        <div class="flex flex-col items-center text-xs not-last:border-r border-slate-300 dark:border-slate-600">
           <span class="font-bold text-slate-700 dark:text-slate-300 mb-0.5">{{ level }}</span>
           <p-input-number
             [showButtons]="false"
@@ -92,18 +92,20 @@
             [ngModel]="getSlotMax(level)"
             (ngModelChange)="updateSlotMax(level, $event)"
           />
-          <div class="flex flex-wrap justify-center gap-1 mt-1">
+          <div class="flex flex-wrap justify-center gap-1 mt-3">
             @for (i of getSlotRange(level); track i) {
               <span
-                class="w-5 h-5 rounded-full border cursor-pointer flex items-center justify-center text-[0.5rem]"
-                [class.bg-orange-500]="i < getSlotUsed(level)"
-                [class.border-orange-700]="i < getSlotUsed(level)"
-                [class.bg-transparent]="i >= getSlotUsed(level)"
-                [class.border-slate-400]="i >= getSlotUsed(level)"
+                class="cursor-pointer text-xl"
                 [pTooltip]="i < getSlotUsed(level) ? 'Verbraucht' : 'Verfügbar'"
                 tooltipPosition="top"
                 (click)="toggleSlotUsed(level, i)"
-              ></span>
+              >
+                @if (i < getSlotUsed(level)) {
+                  🔴
+                } @else {
+                  🔵
+                }
+              </span>
             }
           </div>
         </div>
@@ -125,7 +127,7 @@
       tooltipPosition="top"
       (onClick)="expandAll()"
     >
-      <fa-icon [icon]="fasDownLeftAndUpRightToCenter"/>
+      <fa-icon [icon]="fasDownLeftAndUpRightToCenter" />
     </p-button>
     <p-button
       size="small"
@@ -134,7 +136,7 @@
       tooltipPosition="top"
       (onClick)="collapseAll()"
     >
-      <fa-icon [icon]="fasUpRightAndDownLeftFromCenter"/>
+      <fa-icon [icon]="fasUpRightAndDownLeftFromCenter" />
     </p-button>
     <p-button
       [text]="true"
