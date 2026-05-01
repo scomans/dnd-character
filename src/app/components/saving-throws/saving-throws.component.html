@@ -1,20 +1,4 @@
-<p-fieldset class="relative">
-  <ng-template #header>
-    <div class="flex items-center gap-2 w-full">
-      <span class="font-bold">Rettungswürfe</span>
-      <p-button
-        icon="fa"
-        [rounded]="true"
-        [text]="true"
-        size="small"
-        (onClick)="editing.set(!editing())"
-        [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
-        tooltipPosition="top"
-      >
-        <fa-icon [icon]="editing() ? fasCheck : fasPencil" class="mr-1" />
-      </p-button>
-    </div>
-  </ng-template>
+<p-fieldset legend="Rettungswürfe" class="relative">
   <div class="space-y-0.5">
     @for (ability of abilities; track ability) {
       <div class="flex items-center gap-1.5 text-sm">
@@ -22,7 +6,7 @@
           [ngModel]="isProficient(ability)"
           (ngModelChange)="toggleProficiency(ability, $event)"
           [binary]="true"
-          [disabled]="!editing()"
+          [disabled]="!editMode.isEditMode()"
         />
         <span class="font-bold w-6 text-right text-slate-700 dark:text-slate-300">
           {{ cs.getSavingThrowModifier(ability) >= 0 ? '+' : '' }}{{ cs.getSavingThrowModifier(ability) }}

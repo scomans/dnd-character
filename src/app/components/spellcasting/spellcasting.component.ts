@@ -10,9 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
   faBars,
-  faCheck,
   faDownLeftAndUpRightToCenter,
-  faPencil,
   faPlus,
   faTrash,
   faUpRightAndDownLeftFromCenter,
@@ -32,6 +30,7 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_LABELS, Spell, SPELLCASTING_CLASSES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
 @Component({
@@ -67,18 +66,15 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 export class SpellcastingComponent {
   protected readonly cs = inject(CharacterService);
   private readonly confirmationService = inject(ConfirmationService);
+  protected readonly editMode = inject(EditModeService);
   protected readonly fasBars = faBars;
-  protected readonly fasCheck = faCheck;
   protected readonly fasDownLeftAndUpRightToCenter = faDownLeftAndUpRightToCenter;
-  protected readonly fasPencil = faPencil;
   protected readonly fasPlus = faPlus;
   protected readonly fasTrash = faTrash;
   protected readonly fasUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   protected spellcastingClasses = SPELLCASTING_CLASSES;
   protected newSpellLevel = 0;
   protected showPreparedOnly = false;
-  protected readonly editingField = signal<string | null>(null);
-  protected readonly editing = signal(false);
   protected readonly expandedPanels = signal<string[]>([]);
 
   abilityOptions = [
@@ -191,12 +187,10 @@ export class SpellcastingComponent {
       updates['spellcastingAbility'] = found.ability;
     }
     this.cs.update(updates);
-    this.editingField.set(null);
   }
 
   onSpellAbilityChange(value: string): void {
     this.cs.update({ spellcastingAbility: value });
-    this.editingField.set(null);
   }
 
   addSpell(): void {

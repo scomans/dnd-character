@@ -21,6 +21,8 @@ import {
   faExclamationTriangle,
   faFileCirclePlus,
   faFolderOpen,
+  faLock,
+  faLockOpen,
   faMoon,
   faRefresh,
   faSave,
@@ -36,6 +38,7 @@ import { Menu } from 'primeng/menu';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
 import '@googleworkspace/drive-picker-element';
@@ -63,6 +66,7 @@ import { DrivePickerElement } from '@googleworkspace/drive-picker-element';
 export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly cs = inject(CharacterService);
   protected readonly drive = inject(GoogleDriveService);
+  protected readonly editMode = inject(EditModeService);
   protected readonly theme = inject(ThemeService);
   protected readonly fasCheck = faCheck;
   protected readonly fasRefresh = faRefresh;
@@ -76,6 +80,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly fasFolderOpen = faFolderOpen;
   protected readonly fasFilePlus = faFileCirclePlus;
   protected readonly fasEllipsisV = faEllipsisV;
+  protected readonly fasLock = faLock;
+  protected readonly fasLockOpen = faLockOpen;
 
   protected readonly drivePickerRef = viewChild<ElementRef<DrivePickerElement>>('drivePicker');
 

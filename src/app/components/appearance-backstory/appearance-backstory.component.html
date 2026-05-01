@@ -19,13 +19,12 @@
         </p-iftalabel>
         <!-- Hintergrund -->
         <p-iftalabel>
-          @if (editingField() === 'background') {
+          @if (editMode.isEditMode()) {
             <p-auto-complete
               [ngModel]="cs.character().background"
               (ngModelChange)="cs.update({ background: $event })"
               [suggestions]="filteredBackgrounds"
               (completeMethod)="filterBackgrounds($event)"
-              (onSelect)="editingField.set(null)"
               [dropdown]="true"
               [forceSelection]="false"
               placeholder=" "
@@ -38,9 +37,8 @@
             <input
               pInputText
               [value]="cs.character().background || ''"
-              (click)="editingField.set('background')"
               readonly
-              class="w-full text-xs cursor-pointer"
+              class="w-full text-xs"
               id="merkmale-bg"
             />
           }
@@ -48,13 +46,12 @@
         </p-iftalabel>
         <!-- Volk -->
         <p-iftalabel>
-          @if (editingField() === 'race') {
+          @if (editMode.isEditMode()) {
             <p-auto-complete
               [ngModel]="cs.character().race"
               (ngModelChange)="cs.update({ race: $event })"
               [suggestions]="filteredRaces"
               (completeMethod)="filterRaces($event)"
-              (onSelect)="editingField.set(null)"
               [dropdown]="true"
               [forceSelection]="false"
               placeholder=" "
@@ -67,9 +64,8 @@
             <input
               pInputText
               [value]="cs.character().race || ''"
-              (click)="editingField.set('race')"
               readonly
-              class="w-full text-xs cursor-pointer"
+              class="w-full text-xs"
               id="merkmale-race"
             />
           }
@@ -77,7 +73,7 @@
         </p-iftalabel>
         <!-- Gesinnung -->
         <p-iftalabel>
-          @if (editingField() === 'alignment') {
+          @if (editMode.isEditMode()) {
             <p-select
               [ngModel]="cs.character().alignment"
               (ngModelChange)="onAlignmentChange($event)"
@@ -93,9 +89,8 @@
             <input
               pInputText
               [value]="getAlignmentLabel() || ''"
-              (click)="editingField.set('alignment')"
               readonly
-              class="w-full text-xs cursor-pointer"
+              class="w-full text-xs"
               id="merkmale-alignment"
             />
           }

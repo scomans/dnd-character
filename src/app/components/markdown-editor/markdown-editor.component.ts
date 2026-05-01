@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,27 +5,22 @@ import {
   input,
   output,
   SecurityContext,
-  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Marked } from 'marked';
-import { ClickOutside } from 'ngxtension/click-outside';
-import { Button } from 'primeng/button';
 import { Textarea } from 'primeng/textarea';
-import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
 import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
-import { faCheck, faPencil } from '@fortawesome/free-solid-svg-icons';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-markdown-editor',
   templateUrl: './markdown-editor.component.html',
   styleUrl: './markdown-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FaIconComponent, FormsModule, NgClass, Textarea, ClickOutside, Button, Tooltip],
+  imports: [FormsModule, Textarea],
 })
 export class MarkdownEditorComponent {
   value = input<string>('');
@@ -35,10 +29,7 @@ export class MarkdownEditorComponent {
   readonly = input<boolean>(false);
   valueChange = output<string>();
 
-  editing = signal(false);
-
-  public readonly fasCheck = faCheck;
-  public readonly fasPencil = faPencil;
+  protected readonly editMode = inject(EditModeService);
 
   private readonly sanitizer = inject(DomSanitizer);
   private readonly cs = inject(CharacterService);

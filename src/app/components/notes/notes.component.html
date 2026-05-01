@@ -154,7 +154,7 @@
       </div>
       <!-- Editor area -->
       <div class="flex-1 flex flex-col overflow-hidden">
-        @if (editingContent()) {
+        @if (editMode.isEditMode()) {
           <textarea
             pTextarea
             [autoResize]="false"
@@ -164,32 +164,11 @@
             style="min-height: 100%; outline: none;"
             placeholder="Markdown-Inhalt hier eingeben..."
           ></textarea>
-          <div class="flex justify-end px-3 py-1 border-t border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
-            <p-button
-              icon="fa"
-              label="Vorschau"
-              [text]="true"
-              size="small"
-              (onClick)="editingContent.set(false)"
-            >
-              <fa-icon [icon]="fasEye"/>
-            </p-button>
-          </div>
         } @else {
           <div
             class="flex-1 overflow-y-auto p-3 text-sm leading-relaxed markdown-content"
             [innerHTML]="renderedHtml()"
           ></div>
-          <div class="flex justify-end px-3 py-1 border-t border-slate-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-700">
-            <p-button
-              label="Bearbeiten"
-              [text]="true"
-              size="small"
-              (onClick)="editingContent.set(true)"
-            >
-              <fa-icon [icon]="fasPencil" class="mr-1"/>
-            </p-button>
-          </div>
         }
       </div>
     } @else {
