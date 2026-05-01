@@ -80,7 +80,7 @@
     <div class="grid grid-cols-9 gap-1 mt-1 select-none">
       @for (level of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track level) {
         <div class="flex flex-col items-center text-xs not-last:border-r border-slate-300 dark:border-slate-600">
-          <span class="font-bold text-slate-700 dark:text-slate-300 mb-0.5">{{ level }}</span>
+          <span class="font-bold text-slate-700 dark:text-slate-300 mb-0.5">Stufe {{ level }}</span>
           @if (editMode.isEditMode()) {
             <p-input-number
               [showButtons]="false"
@@ -92,7 +92,8 @@
               (ngModelChange)="updateSlotMax(level, $event)"
             />
           } @else {
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ getSlotMax(level) }}</span>
+            @let lvl = getSlotMax(level);
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ lvl > 0 ? lvl : '-' }}</span>
           }
           <div class="flex flex-wrap justify-center gap-1 mt-3">
             @for (i of getSlotRange(level); track i) {
