@@ -33,6 +33,15 @@
   >
     <fa-icon [icon]="theme.darkMode() ? fasSun : fasMoon"/>
   </p-button>
+
+  <!-- Wake Lock (Always On) Toggle -->
+  @if (wakeLock.supported) {
+    <span class="flex items-center gap-1 ml-1" pTooltip="Bildschirm aktiv halten" tooltipPosition="bottom">
+      <p-toggleswitch [ngModel]="wakeLock.enabled()" (ngModelChange)="wakeLock.toggle()"/>
+      <span class="text-xs hidden md:inline">Always On</span>
+    </span>
+  }
+
   <span class="border-l border-slate-500 h-6 mx-1"></span>
 
   <!-- Google Drive Section -->

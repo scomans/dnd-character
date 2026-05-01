@@ -37,10 +37,12 @@ import { InputText } from 'primeng/inputtext';
 import { Menu } from 'primeng/menu';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
+import { WakeLockService } from '../../services/wake-lock.service';
 import '@googleworkspace/drive-picker-element';
 import { Ripple } from 'primeng/ripple';
 import { DrivePickerElement } from '@googleworkspace/drive-picker-element';
@@ -60,6 +62,7 @@ import { DrivePickerElement } from '@googleworkspace/drive-picker-element';
     Menu,
     Ripple,
     Textarea,
+    ToggleSwitch,
     Tooltip,
   ],
 })
@@ -68,6 +71,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly drive = inject(GoogleDriveService);
   protected readonly editMode = inject(EditModeService);
   protected readonly theme = inject(ThemeService);
+  protected readonly wakeLock = inject(WakeLockService);
   protected readonly fasCheck = faCheck;
   protected readonly fasRefresh = faRefresh;
   protected readonly fabGoogle = faGoogle;
