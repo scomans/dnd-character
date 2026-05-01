@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Fieldset } from 'primeng/fieldset';
@@ -14,6 +14,7 @@ import {
   DND_RACES,
 } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ImagePickerComponent } from '../image-picker/image-picker.component';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
@@ -37,6 +38,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 })
 export class AppearanceBackstoryComponent {
   cs = inject(CharacterService);
+  protected readonly editMode = inject(EditModeService);
 
   alignments = ALIGNMENTS;
   classTree = DND_CLASS_TREE;
@@ -44,7 +46,6 @@ export class AppearanceBackstoryComponent {
   allBackgrounds = DND_BACKGROUNDS;
   filteredRaces: string[] = [];
   filteredBackgrounds: string[] = [];
-  editingField = signal<string | null>(null);
   selectedClassNode = model<any | null>(null);
 
   sizeCategories = [
@@ -85,6 +86,11 @@ export class AppearanceBackstoryComponent {
     return this.alignments.find((a) => a.value === value)?.label ?? value;
   }
 
+  getSizeCategoryLabel(): string {
+    const value = this.cs.character().sizeCategory;
+    return this.sizeCategories.find((s) => s.value === value)?.label ?? value;
+  }
+
   onClassNodeSelect(nodeKey: any): void {
     this.selectedClassNode.set(nodeKey);
     if (nodeKey?.data && typeof nodeKey.data === 'string') {
@@ -96,7 +102,6 @@ export class AppearanceBackstoryComponent {
 
   onAlignmentChange(value: string): void {
     this.cs.update({ alignment: value });
-    this.editingField.set(null);
   }
 
   filterRaces(event: { query: string }): void {

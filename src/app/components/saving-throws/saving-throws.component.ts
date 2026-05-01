@@ -1,28 +1,23 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faCheck as fasCheck, faPencil as fasPencil } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Fieldset } from 'primeng/fieldset';
 import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_SHORT_LABELS } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({
   selector: 'app-saving-throws',
   templateUrl: './saving-throws.component.html',
   styleUrl: './saving-throws.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, Checkbox, Button, Fieldset, Tooltip, FaIconComponent],
+  imports: [FormsModule, Checkbox, Fieldset, Tooltip],
 })
 export class SavingThrowsComponent {
   cs = inject(CharacterService);
+  protected readonly editMode = inject(EditModeService);
   abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-  editing = signal(false);
-
-  protected readonly fasCheck = fasCheck;
-  protected readonly fasPencil = fasPencil;
 
   private abilityLabels: Record<string, string> = {
     str: 'Stärke',

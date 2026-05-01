@@ -3,7 +3,7 @@
   <!-- Spellcasting Header -->
   <div class="grid grid-cols-4 gap-2">
     <p-iftalabel>
-      @if (editingField() === 'spellClass') {
+      @if (editMode.isEditMode()) {
         <p-select
           [ngModel]="cs.character().spellcastingClass"
           (ngModelChange)="onSpellcastingClassChange($event)"
@@ -19,16 +19,15 @@
         <input
           pInputText
           [value]="getSpellcastingClassLabel() || ''"
-          (click)="editingField.set('spellClass')"
           readonly
-          class="w-full text-sm cursor-pointer"
+          class="w-full text-sm"
           id="spell-class"
         />
       }
       <label for="spell-class">Zauberwirkende Klasse</label>
     </p-iftalabel>
     <p-iftalabel>
-      @if (editingField() === 'spellAbility') {
+      @if (editMode.isEditMode()) {
         <p-select
           [ngModel]="cs.character().spellcastingAbility"
           (ngModelChange)="onSpellAbilityChange($event)"
@@ -44,9 +43,8 @@
         <input
           pInputText
           [value]="getAbilityLabel(cs.character().spellcastingAbility) || ''"
-          (click)="editingField.set('spellAbility')"
           readonly
-          class="w-full text-sm cursor-pointer"
+          class="w-full text-sm"
           id="spell-ability"
         />
       }
@@ -82,16 +80,21 @@
     <div class="grid grid-cols-9 gap-1 mt-1 select-none">
       @for (level of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track level) {
         <div class="flex flex-col items-center text-xs not-last:border-r border-slate-300 dark:border-slate-600">
-          <span class="font-bold text-slate-700 dark:text-slate-300 mb-0.5">{{ level }}</span>
-          <p-input-number
-            [showButtons]="false"
-            [min]="0"
-            [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.7rem' }"
-            pTooltip="Max. Plätze"
-            tooltipPosition="top"
-            [ngModel]="getSlotMax(level)"
-            (ngModelChange)="updateSlotMax(level, $event)"
-          />
+          <span class="font-bold text-slate-700 dark:text-slate-300 mb-0.5">Stufe {{ level }}</span>
+          @if (editMode.isEditMode()) {
+            <p-input-number
+              [showButtons]="false"
+              [min]="0"
+              [inputStyle]="{ width: '2.5rem', textAlign: 'center', fontSize: '0.7rem' }"
+              pTooltip="Max. Plätze"
+              tooltipPosition="top"
+              [ngModel]="getSlotMax(level)"
+              (ngModelChange)="updateSlotMax(level, $event)"
+            />
+          } @else {
+            @let lvl = getSlotMax(level);
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ lvl > 0 ? lvl : '-' }}</span>
+          }
           <div class="flex flex-wrap justify-center gap-1 mt-3">
             @for (i of getSlotRange(level); track i) {
               <span
@@ -138,15 +141,6 @@
     >
       <fa-icon [icon]="fasUpRightAndDownLeftFromCenter" />
     </p-button>
-    <p-button
-      [text]="true"
-      size="small"
-      [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
-      tooltipPosition="top"
-      (onClick)="editing.set(!editing())"
-    >
-      <fa-icon [icon]="editing() ? fasCheck : fasPencil" />
-    </p-button>
   </div>
 
   <!-- Spells List with Accordions -->
@@ -161,11 +155,11 @@
             (cdkDropListDropped)="dropSpell($event, levelGroup.level)"
           >
             @for (spell of getFilteredSpellsForLevel(levelGroup.level); track $index) {
-              <div cdkDrag [cdkDragData]="spell" [cdkDragDisabled]="!editing()" cdkDragLockAxis="y">
+              <div cdkDrag [cdkDragData]="spell" [cdkDragDisabled]="!editMode.isEditMode()" cdkDragLockAxis="y">
                 <p-accordion-panel [value]="'spell-' + levelGroup.level + '-' + $index">
                   <p-accordion-header>
                     <div class="flex items-center gap-1 w-full text-xs">
-                      @if (editing()) {
+                      @if (editMode.isEditMode()) {
                         <fa-icon [icon]="fasBars" class="text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></fa-icon>
                       }
                       @if (levelGroup.level > 0) {
@@ -183,7 +177,7 @@
                   </p-accordion-header>
                   <p-accordion-content>
                     <div class="p-2 space-y-2">
-                      @if (editing()) {
+                      @if (editMode.isEditMode()) {
                         <div class="flex items-center gap-2">
                           <input
                             pInputText
@@ -210,7 +204,7 @@
                         (valueChange)="spell.description = $event; updateSpells()"
                         placeholder="Beschreibung eingeben..."
                         [minRows]="3"
-                        [readonly]="!editing()"
+                        [readonly]="!editMode.isEditMode()"
                       />
                     </div>
                   </p-accordion-content>
@@ -221,7 +215,7 @@
         </p-accordion>
       </div>
     }
-    @if (editing()) {
+    @if (editMode.isEditMode()) {
       <p-divider />
       <div class="flex gap-2 mt-8 justify-center">
         <p-select

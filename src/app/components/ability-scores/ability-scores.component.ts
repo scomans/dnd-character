@@ -1,24 +1,23 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ClickOutside } from 'ngxtension/click-outside';
 import { Checkbox } from 'primeng/checkbox';
 import { InputNumber } from 'primeng/inputnumber';
 import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_LABELS } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({
   selector: 'app-ability-scores',
   templateUrl: './ability-scores.component.html',
   styleUrl: './ability-scores.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ClickOutside, FormsModule, InputNumber, Checkbox, Tooltip],
+  imports: [FormsModule, InputNumber, Checkbox, Tooltip],
 })
 export class AbilityScoresComponent {
   cs = inject(CharacterService);
+  protected readonly editMode = inject(EditModeService);
   abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-  editingAbility = signal<string | null>(null);
-  editingProficiency = signal(false);
 
   getLabel(ability: string): string {
     return ABILITY_LABELS[ability] || ability;

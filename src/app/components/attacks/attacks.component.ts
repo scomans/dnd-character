@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faCheck, faPencil, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
@@ -14,6 +14,7 @@ import { Select } from 'primeng/select';
 import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_SHORT_LABELS, DAMAGE_TYPES, WEAPON_MASTERIES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
 @Component({
@@ -40,7 +41,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 export class AttacksComponent {
   cs = inject(CharacterService);
   private confirmationService = inject(ConfirmationService);
-  editing = signal(false);
+  protected readonly editMode = inject(EditModeService);
 
   damageTypes = DAMAGE_TYPES;
   masteries = WEAPON_MASTERIES;
@@ -54,8 +55,6 @@ export class AttacksComponent {
     { label: 'Charisma', value: 'cha' },
   ];
 
-  public readonly fasCheck = faCheck;
-  public readonly fasPencil = faPencil;
   public readonly fasPlus = faPlus;
   public readonly fasTrash = faTrash;
 

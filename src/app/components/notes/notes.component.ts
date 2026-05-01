@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faEye, faPencil, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPencil, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Marked } from 'marked';
 import { ConfirmationService, MenuItem, TreeNode } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -24,6 +24,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { Tree } from 'primeng/tree';
 import { NoteNode } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
 import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
 import { Ripple } from 'primeng/ripple';
@@ -105,7 +106,6 @@ function cloneNotes(notes: NoteNode[]): NoteNode[] {
 export class NotesComponent {
   protected readonly farFileEdit = faFile;
   protected readonly fasBars = faBars;
-  protected readonly fasEye = faEye;
   protected readonly fasPencil = faPencil;
   protected readonly fasPlus = faPlus;
   protected readonly fasTrash = faTrash;
@@ -113,11 +113,11 @@ export class NotesComponent {
   private cs = inject(CharacterService);
   private sanitizer = inject(DomSanitizer);
   private confirmationService = inject(ConfirmationService);
+  protected readonly editMode = inject(EditModeService);
   private marked = new Marked(markedAccordionExtension(), markedPlaceholderExtension(this.cs));
 
   selectedTreeNode: TreeNode | null = null;
   selectedNote = signal<NoteNode | null>(null);
-  editingContent = signal(false);
   renamingNote = signal(false);
   sidebarVisible = signal(false);
   renameValue = '';
@@ -162,7 +162,6 @@ export class NotesComponent {
     }
     const noteData = node.data as NoteNode;
     this.selectedNote.set(noteData);
-    this.editingContent.set(false);
     this.renamingNote.set(false);
     this.sidebarVisible.set(false);
   }
@@ -257,7 +256,6 @@ export class NotesComponent {
     this.cs.updateNested('notes', notes);
     this.selectedNote.set(null);
     this.selectedTreeNode = null;
-    this.editingContent.set(false);
   }
 
   startRename(): void {
@@ -309,7 +307,6 @@ export class NotesComponent {
     if (note) {
       this.selectedNote.set(note);
       this.selectedTreeNode = { key: id, label: note.label, data: note };
-      this.editingContent.set(false);
     }
   }
 }

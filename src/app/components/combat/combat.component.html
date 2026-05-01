@@ -3,8 +3,8 @@
   <div class="flex flex-wrap flex-row max-sm:flex-col gap-4 max-md:w-full">
     <p-fieldset legend="Rüstungsklasse" class="flex-1 text-center">
       <div class="flex flex-col items-center">
-        @if (editingAC()) {
-          <div class="flex flex-col items-center gap-1" (clickOutside)="editingAC.set(false)">
+        @if (editMode.isEditMode()) {
+          <div class="flex flex-col items-center gap-1">
             <p-input-number
               [ngModel]="cs.character().armorValue"
               (ngModelChange)="cs.update({ armorValue: $event ?? 10 })"
@@ -22,10 +22,9 @@
           </div>
         } @else {
           <span
-            class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
-            pTooltip="Rüstungsklasse (klicken zum Bearbeiten)"
+            class="text-2xl font-bold text-slate-700 dark:text-slate-300"
+            pTooltip="Rüstungsklasse"
             tooltipPosition="top"
-            (click)="editingAC.set(true)"
           >{{ cs.getComputedArmorClass() }}</span>
         }
       </div>
@@ -43,8 +42,8 @@
     </p-fieldset>
     <p-fieldset legend="Bewegungsrate" class="text-center">
       <div class="flex flex-col items-center">
-        @if (editingSpeed()) {
-          <p-input-group class="justify-center" (clickOutside)="editingSpeed.set(false)">
+        @if (editMode.isEditMode()) {
+          <p-input-group class="justify-center">
             <p-input-number
               [ngModel]="cs.character().speed"
               (ngModelChange)="cs.update({ speed: $event ?? 30 })"
@@ -55,8 +54,7 @@
           </p-input-group>
         } @else {
           <span
-            class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
-            (click)="editingSpeed.set(true)"
+            class="text-2xl font-bold text-slate-700 dark:text-slate-300"
           >{{ cs.character().speed }} m</span>
         }
       </div>
@@ -86,8 +84,8 @@
           </ng-template>
         </p-input-number>
         <span class="text-xl font-bold text-gray-400 dark:text-gray-500">/</span>
-        @if (editingMaxHP()) {
-          <div (clickOutside)="editingMaxHP.set(false)">
+        @if (editMode.isEditMode()) {
+          <div>
             <p-input-number
               [ngModel]="cs.character().hitPointsMax"
               (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
@@ -98,10 +96,9 @@
           </div>
         } @else {
           <span
-            class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
-            pTooltip="Max. TP (klicken zum Bearbeiten)"
+            class="text-2xl font-bold text-slate-700 dark:text-slate-300"
+            pTooltip="Max. TP"
             tooltipPosition="top"
-            (click)="editingMaxHP.set(true)"
           >{{ cs.character().hitPointsMax }}</span>
         }
       </div>
@@ -132,8 +129,8 @@
     <!-- Hit Dice & Death Saves -->
     <p-fieldset legend="Trefferwürfel" class="flex-1">
       <div class="flex items-center justify-center">
-        @if (editingMaxHitDice()) {
-          <div class="flex items-center justify-center gap-2" (clickOutside)="editingMaxHitDice.set(false)">
+        @if (editMode.isEditMode()) {
+          <div class="flex items-center justify-center gap-2">
             Max:
             <p-input-number
               [ngModel]="cs.character().hitDiceMax"
@@ -178,10 +175,7 @@
               </ng-template>
             </p-input-number>
             <span
-              class="text-2xl font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:text-slate-500"
-              pTooltip="Klicken zum Bearbeiten"
-              tooltipPosition="top"
-              (click)="editingMaxHitDice.set(true)"
+              class="text-2xl font-bold text-slate-700 dark:text-slate-300"
             >{{ cs.character().hitDice }}</span>
           </div>
         }

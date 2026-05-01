@@ -1,13 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faCheck as fasCheck, faPencil as fasPencil } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Fieldset } from 'primeng/fieldset';
 import { InputText } from 'primeng/inputtext';
-import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
 @Component({
@@ -16,22 +13,16 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
   styleUrl: './proficiencies-languages.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    Button,
     Checkbox,
-    FaIconComponent,
     Fieldset,
     FormsModule,
     InputText,
     MarkdownEditorComponent,
-    Tooltip,
   ],
 })
 export class ProficienciesLanguagesComponent {
   cs = inject(CharacterService);
-  editing = signal(false);
-
-  protected readonly fasCheck = fasCheck;
-  protected readonly fasPencil = fasPencil;
+  protected readonly editMode = inject(EditModeService);
 
   updateArmor(key: string, value: boolean): void {
     const char = this.cs.character();

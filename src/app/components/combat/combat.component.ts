@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ClickOutside } from 'ngxtension/click-outside';
 import { Checkbox } from 'primeng/checkbox';
 import { Fieldset } from 'primeng/fieldset';
 import { InputGroup } from 'primeng/inputgroup';
@@ -12,6 +11,7 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { Select } from 'primeng/select';
 import { DICE_TYPES } from '../../models/character.model';
+import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({
   selector: 'app-combat',
@@ -20,7 +20,6 @@ import { DICE_TYPES } from '../../models/character.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     Checkbox,
-    ClickOutside,
     CountersComponent,
     FaIconComponent,
     Fieldset,
@@ -33,10 +32,7 @@ import { DICE_TYPES } from '../../models/character.model';
 })
 export class CombatComponent {
   protected readonly cs = inject(CharacterService);
-  protected readonly editingAC = signal(false);
-  protected readonly editingSpeed = signal(false);
-  protected readonly editingMaxHP = signal(false);
-  protected readonly editingMaxHitDice = signal(false);
+  protected readonly editMode = inject(EditModeService);
   protected readonly fasPlus = faPlus;
   protected readonly fasMinus = faMinus;
   protected readonly diceTypes = DICE_TYPES;

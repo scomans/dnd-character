@@ -1,20 +1,4 @@
-<p-fieldset class="relative">
-  <ng-template #header>
-    <div class="flex items-center gap-2 w-full">
-      <span class="font-bold">Fertigkeiten</span>
-      <p-button
-        icon="fa"
-        [rounded]="true"
-        [text]="true"
-        size="small"
-        (onClick)="editing.set(!editing())"
-        [pTooltip]="editing() ? 'Bearbeitung beenden' : 'Bearbeiten'"
-        tooltipPosition="top"
-      >
-        <fa-icon [icon]="editing() ? fasCheck : fasPencil" />
-      </p-button>
-    </div>
-  </ng-template>
+<p-fieldset legend="Fertigkeiten" class="relative">
   <div class="space-y-0.5">
     @for (skill of skillKeys; track skill) {
       <div class="flex items-center gap-1 text-sm">
@@ -23,13 +7,13 @@
           (ngModelChange)="toggleExpertise(skill, $event)"
           [binary]="true"
           class="scale-75"
-          [disabled]="!editing()"
+          [disabled]="!editMode.isEditMode()"
         />
         <p-checkbox
           [ngModel]="isProficient(skill)"
           (ngModelChange)="toggleProficiency(skill, $event)"
           [binary]="true"
-          [disabled]="!editing()"
+          [disabled]="!editMode.isEditMode()"
         />
         <span class="font-bold w-6 text-right text-slate-700 dark:text-slate-300">
           {{ cs.getSkillModifier(skill) >= 0 ? '+' : '' }}{{ cs.getSkillModifier(skill) }}
