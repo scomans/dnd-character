@@ -1,0 +1,15 @@
+.toggle-lock {
+  .on-hover {
+    @apply hidden;
+  }
+
+  &:hover {
+    .on-hover {
+      @apply inline;
+    }
+
+    .default {
+      @apply hidden;
+    }
+  }
+}
