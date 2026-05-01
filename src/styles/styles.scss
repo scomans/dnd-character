@@ -1,9 +1,6 @@
 @use "includes/markdown";
 @use "includes/font";
 
-/* Configure Tailwind dark mode to use .dark-mode selector (matching PrimeNG config) */
-@custom-variant dark (&:where(.dark-mode, .dark-mode *));
-
 /* DnD Character Sheet Theme */
 :root {
   --dnd-bg: #f5f5f5;

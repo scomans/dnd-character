@@ -1,1 +1,4 @@
 @import "tailwindcss";
+
+/* Configure Tailwind dark mode to use .dark-mode selector (matching PrimeNG config) */
+@custom-variant dark (&:where(.dark-mode, .dark-mode *));
