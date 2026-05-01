@@ -1,21 +1,24 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { InputText } from 'primeng/inputtext';
 import { Fieldset } from 'primeng/fieldset';
 import { Select } from 'primeng/select';
 import { Tooltip } from 'primeng/tooltip';
 import { LIFESTYLES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({
   selector: 'app-lifestyle-jump',
   templateUrl: './lifestyle-jump.component.html',
   styleUrl: './lifestyle-jump.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, FormsModule, Fieldset, Select, Tooltip],
+  imports: [DecimalPipe, FormsModule, Fieldset, InputText, Select, Tooltip],
 })
 export class LifestyleJumpComponent {
   cs = inject(CharacterService);
+  protected readonly editMode = inject(EditModeService);
   lifestyles = LIFESTYLES;
 
   private readonly FT_TO_M = 0.3;
@@ -24,6 +27,12 @@ export class LifestyleJumpComponent {
     const lifestyle = this.cs.character().lifestyle;
     const found = this.lifestyles.find((l) => l.value === lifestyle);
     return found?.cost ?? '-';
+  }
+
+  getLifestyleLabel(): string {
+    const lifestyle = this.cs.character().lifestyle;
+    const found = this.lifestyles.find((l) => l.value === lifestyle);
+    return found?.label ?? lifestyle ?? '';
   }
 
   getHighJumpRunning(): number {

@@ -34,25 +34,33 @@
     <!-- Stufe & EP on the right -->
     <div class="shrink-0 flex gap-2 items-end">
       <p-ifta-label>
-        <p-input-number
-          [ngModel]="cs.character().level"
-          (ngModelChange)="cs.update({ level: $event ?? 1 })"
-          [min]="1"
-          [max]="20"
-          [showButtons]="false"
-          [inputStyle]="{ width: '4rem', fontSize: '0.85rem' }"
-          inputId="header-level"
-        />
+        @if (editMode.isEditMode()) {
+          <p-input-number
+            [ngModel]="cs.character().level"
+            (ngModelChange)="cs.update({ level: $event ?? 1 })"
+            [min]="1"
+            [max]="20"
+            [showButtons]="false"
+            [inputStyle]="{ width: '4rem', fontSize: '0.85rem' }"
+            inputId="header-level"
+          />
+        } @else {
+          <input pInputText [value]="cs.character().level" readonly class="text-center" [style]="{ width: '4rem', fontSize: '0.85rem' }" id="header-level" />
+        }
         <label for="header-level">Stufe</label>
       </p-ifta-label>
       <p-ifta-label>
-        <p-input-number
-          [ngModel]="cs.character().experiencePoints"
-          (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
-          [useGrouping]="false"
-          [inputStyle]="{ width: '5rem', fontSize: '0.85rem' }"
-          inputId="header-xp"
-        />
+        @if (editMode.isEditMode()) {
+          <p-input-number
+            [ngModel]="cs.character().experiencePoints"
+            (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
+            [useGrouping]="false"
+            [inputStyle]="{ width: '5rem', fontSize: '0.85rem' }"
+            inputId="header-xp"
+          />
+        } @else {
+          <input pInputText [value]="cs.character().experiencePoints" readonly class="text-center" [style]="{ width: '5rem', fontSize: '0.85rem' }" id="header-xp" />
+        }
         <label for="header-xp">EP</label>
       </p-ifta-label>
     </div>

@@ -5,16 +5,26 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-3">
         <!-- Klasse -->
         <p-iftalabel>
-          <p-tree-select
-            [ngModel]="selectedClassNode()"
-            (ngModelChange)="onClassNodeSelect($event)"
-            [options]="classTree"
-            ariaLabel="Klasse"
-            [style]="{ width: '100%', fontSize: '0.75rem' }"
-            appendTo="body"
-            [showClear]="false"
-            id="merkmale-class"
-          />
+          @if (editMode.isEditMode()) {
+            <p-tree-select
+              [ngModel]="selectedClassNode()"
+              (ngModelChange)="onClassNodeSelect($event)"
+              [options]="classTree"
+              ariaLabel="Klasse"
+              [style]="{ width: '100%', fontSize: '0.75rem' }"
+              appendTo="body"
+              [showClear]="false"
+              id="merkmale-class"
+            />
+          } @else {
+            <input
+              pInputText
+              [value]="cs.character().className || ''"
+              readonly
+              class="w-full text-xs"
+              id="merkmale-class"
+            />
+          }
           <label for="merkmale-class">Klasse</label>
         </p-iftalabel>
         <!-- Hintergrund -->
@@ -99,83 +109,117 @@
       </div>
       <div class="grid grid-cols-3 gap-2 text-xs">
         <p-iftalabel>
-          <p-input-number
-            [ngModel]="cs.character().age"
-            (ngModelChange)="cs.update({ age: $event })"
-            [showButtons]="false"
-            [min]="0"
-            [minFractionDigits]="0"
-            [maxFractionDigits]="0"
-            class="w-full text-xs"
-            id="phys-age"
-            size="small"
-          />
+          @if (editMode.isEditMode()) {
+            <p-input-number
+              [ngModel]="cs.character().age"
+              (ngModelChange)="cs.update({ age: $event })"
+              [showButtons]="false"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="0"
+              class="w-full text-xs"
+              id="phys-age"
+              size="small"
+            />
+          } @else {
+            <input pInputText [value]="cs.character().age || ''" readonly class="w-full text-xs" id="phys-age" />
+          }
           <label for="phys-age">Alter</label>
         </p-iftalabel>
         <p-iftalabel>
-          <p-input-number
-            [ngModel]="cs.character().height"
-            (ngModelChange)="cs.update({ height: $event })"
-            [showButtons]="false"
-            [min]="0"
-            [minFractionDigits]="0"
-            [maxFractionDigits]="2"
-            class="w-full text-xs"
-            id="phys-height"
-            suffix="m"
-            size="small"
-          />
+          @if (editMode.isEditMode()) {
+            <p-input-number
+              [ngModel]="cs.character().height"
+              (ngModelChange)="cs.update({ height: $event })"
+              [showButtons]="false"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="2"
+              class="w-full text-xs"
+              id="phys-height"
+              suffix="m"
+              size="small"
+            />
+          } @else {
+            <input pInputText [value]="cs.character().height ? cs.character().height + ' m' : ''" readonly class="w-full text-xs" id="phys-height" />
+          }
           <label for="phys-height">Größe (m)</label>
         </p-iftalabel>
         <p-iftalabel>
-          <p-input-number
-            [ngModel]="cs.character().weight"
-            (ngModelChange)="cs.update({ weight: $event })"
-            [showButtons]="false"
-            [min]="0"
-            [minFractionDigits]="0"
-            [maxFractionDigits]="2"
-            class="w-full text-xs"
-            id="phys-weight"
-            suffix="kg"
-            size="small"
-          />
+          @if (editMode.isEditMode()) {
+            <p-input-number
+              [ngModel]="cs.character().weight"
+              (ngModelChange)="cs.update({ weight: $event })"
+              [showButtons]="false"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="2"
+              class="w-full text-xs"
+              id="phys-weight"
+              suffix="kg"
+              size="small"
+            />
+          } @else {
+            <input pInputText [value]="cs.character().weight ? cs.character().weight + ' kg' : ''" readonly class="w-full text-xs" id="phys-weight" />
+          }
           <label for="phys-weight">Gewicht</label>
         </p-iftalabel>
         <p-iftalabel>
-          <input pInputText [ngModel]="cs.character().eyes" (ngModelChange)="cs.update({ eyes: $event })" class="w-full text-xs" id="phys-eyes" />
+          @if (editMode.isEditMode()) {
+            <input pInputText [ngModel]="cs.character().eyes" (ngModelChange)="cs.update({ eyes: $event })" class="w-full text-xs" id="phys-eyes" />
+          } @else {
+            <input pInputText [value]="cs.character().eyes || ''" readonly class="w-full text-xs" id="phys-eyes" />
+          }
           <label for="phys-eyes">Augenfarbe</label>
         </p-iftalabel>
         <p-iftalabel>
-          <input pInputText [ngModel]="cs.character().skin" (ngModelChange)="cs.update({ skin: $event })" class="w-full text-xs" id="phys-skin" />
+          @if (editMode.isEditMode()) {
+            <input pInputText [ngModel]="cs.character().skin" (ngModelChange)="cs.update({ skin: $event })" class="w-full text-xs" id="phys-skin" />
+          } @else {
+            <input pInputText [value]="cs.character().skin || ''" readonly class="w-full text-xs" id="phys-skin" />
+          }
           <label for="phys-skin">Hautfarbe</label>
         </p-iftalabel>
         <p-iftalabel>
-          <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" id="phys-hair" />
+          @if (editMode.isEditMode()) {
+            <input pInputText [ngModel]="cs.character().hair" (ngModelChange)="cs.update({ hair: $event })" class="w-full text-xs" id="phys-hair" />
+          } @else {
+            <input pInputText [value]="cs.character().hair || ''" readonly class="w-full text-xs" id="phys-hair" />
+          }
           <label for="phys-hair">Haarfarbe</label>
         </p-iftalabel>
         <p-iftalabel>
-          <input
-            pInputText [ngModel]="cs.character().gender" (ngModelChange)="cs.update({ gender: $event })" class="w-full text-xs" id="phys-gender"
-          />
+          @if (editMode.isEditMode()) {
+            <input pInputText [ngModel]="cs.character().gender" (ngModelChange)="cs.update({ gender: $event })" class="w-full text-xs" id="phys-gender" />
+          } @else {
+            <input pInputText [value]="cs.character().gender || ''" readonly class="w-full text-xs" id="phys-gender" />
+          }
           <label for="phys-gender">Geschlecht</label>
         </p-iftalabel>
         <p-iftalabel>
-          <input pInputText [ngModel]="cs.character().faith" (ngModelChange)="cs.update({ faith: $event })" class="w-full text-xs" id="phys-faith" />
+          @if (editMode.isEditMode()) {
+            <input pInputText [ngModel]="cs.character().faith" (ngModelChange)="cs.update({ faith: $event })" class="w-full text-xs" id="phys-faith" />
+          } @else {
+            <input pInputText [value]="cs.character().faith || ''" readonly class="w-full text-xs" id="phys-faith" />
+          }
           <label for="phys-faith">Glaube / Gottheit</label>
         </p-iftalabel>
         <p-iftalabel>
-          <p-select
-            [ngModel]="cs.character().sizeCategory"
-            (ngModelChange)="cs.update({ sizeCategory: $event })"
-            [options]="sizeCategories"
-            optionLabel="label"
-            optionValue="value"
-            placeholder=" "
-            [style]="{ width: '100%', fontSize: '0.75rem' }"
-            appendTo="body"
-            inputId="phys-size"
-          />
+          @if (editMode.isEditMode()) {
+            <p-select
+              [ngModel]="cs.character().sizeCategory"
+              (ngModelChange)="cs.update({ sizeCategory: $event })"
+              [options]="sizeCategories"
+              optionLabel="label"
+              optionValue="value"
+              placeholder=" "
+              [style]="{ width: '100%', fontSize: '0.75rem' }"
+              appendTo="body"
+              inputId="phys-size"
+            />
+          } @else {
+            <input pInputText [value]="getSizeCategoryLabel() || ''" readonly class="w-full text-xs" id="phys-size" />
+          }
           <label for="phys-size">Größenkategorie</label>
         </p-iftalabel>
       </div>

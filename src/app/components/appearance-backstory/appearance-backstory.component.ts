@@ -86,6 +86,11 @@ export class AppearanceBackstoryComponent {
     return this.alignments.find((a) => a.value === value)?.label ?? value;
   }
 
+  getSizeCategoryLabel(): string {
+    const value = this.cs.character().sizeCategory;
+    return this.sizeCategories.find((s) => s.value === value)?.label ?? value;
+  }
+
   onClassNodeSelect(nodeKey: any): void {
     this.selectedClassNode.set(nodeKey);
     if (nodeKey?.data && typeof nodeKey.data === 'string') {

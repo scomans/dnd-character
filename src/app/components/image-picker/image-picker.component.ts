@@ -13,6 +13,7 @@ import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'primeng/button';
 import { Image as PrimeImage } from 'primeng/image';
+import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({
   selector: 'app-image-picker',
@@ -24,6 +25,7 @@ import { Image as PrimeImage } from 'primeng/image';
 export class ImagePickerComponent {
   protected readonly farImage = faImage;
   protected readonly fasTrash = faTrash;
+  protected readonly editMode = inject(EditModeService);
   private ngZone = inject(NgZone);
   imageData = input<string>('');
   alt = input<string>('Bild');

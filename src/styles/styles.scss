@@ -44,6 +44,25 @@ html.dark-mode .p-textarea {
   border-color: var(--dnd-border);
 }
 
+/* Light mode overrides for better contrast */
+html:not(.dark-mode) .p-inputtext,
+html:not(.dark-mode) .p-inputnumber-input,
+html:not(.dark-mode) .p-textarea {
+  background: #ffffff;
+  color: var(--dnd-text);
+  border-color: #d1d5db;
+}
+
+html:not(.dark-mode) .p-fieldset,
+html:not(.dark-mode) .p-panel {
+  background: #ffffff;
+}
+
+html:not(.dark-mode) .p-tree {
+  background: #ffffff;
+  color: var(--dnd-text);
+}
+
 .p-checkbox .p-checkbox-box {
   width: 1.1rem !important;
   height: 1.1rem !important;
