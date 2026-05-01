@@ -73,9 +73,13 @@ export class WakeLockService implements OnDestroy {
 
   private loadInitialState(): boolean {
     if (!this.isBrowser) return false;
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored !== null) {
-      return JSON.parse(stored) === true;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored !== null) {
+        return JSON.parse(stored) === true;
+      }
+    } catch {
+      // Ignore corrupted localStorage value
     }
     return false;
   }
