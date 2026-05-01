@@ -443,13 +443,13 @@ html.dark-mode .markdown-content {
     cursor: pointer;
     padding: 0.3em 0.5em;
     font-weight: 600;
-    background: var(--dnd-bg-dark);
+    background: var(--dnd-bg);
     user-select: none;
     list-style: revert;
   }
 
   details.accordion > .accordion-header:hover {
-    background: var(--dnd-border);
+    background: var(--dnd-bg-dark);
   }
 
   details.accordion > .accordion-content {
