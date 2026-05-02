@@ -24,13 +24,13 @@ import {
   faLock,
   faLockOpen,
   faMoon,
+  faPlus,
   faRefresh,
   faSave,
   faSun,
   faSync,
   faUpload,
   faUsers,
-  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -42,11 +42,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
-import {
-  GoogleDriveService,
-  DriveFileInfo,
-  CharacterFileEntry,
-} from '../../services/google-drive.service';
+import { CharacterFileEntry, GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
 import { WakeLockService } from '../../services/wake-lock.service';
 import '@googleworkspace/drive-picker-element';
@@ -302,6 +298,14 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cs.update({ version: currentVersion + 1 });
       const json = this.cs.exportJSON();
       await this.drive.saveFile(currentFile.id, json, currentFile.name);
+
+      // Update the character name in the file list
+      this.drive.addOrUpdateCharacterEntry({
+        id: currentFile.id,
+        fileName: currentFile.name,
+        characterName: this.cs.character().characterName || currentFile.name,
+      });
+
       // Clear any remote update notification after successful save
       this.drive.remoteUpdateAvailable.set(null);
     } catch (err) {
