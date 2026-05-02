@@ -9,6 +9,12 @@ export interface DriveFileInfo {
   name: string;
 }
 
+export interface CharacterFileEntry {
+  id: string;
+  fileName: string;
+  characterName: string;
+}
+
 export interface RemoteVersionInfo {
   remoteVersion: number;
   localVersion: number;
@@ -25,6 +31,7 @@ const APP_ID = CLIENT_ID.split('-')[0];
 const STORAGE_FILE_ID_KEY = 'gdrive-file-id';
 const STORAGE_FILE_NAME_KEY = 'gdrive-file-name';
 const STORAGE_ACCESS_TOKEN_KEY = 'gdrive-access-token';
+const STORAGE_CHARACTER_LIST_KEY = 'gdrive-character-list';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +44,7 @@ export class GoogleDriveService {
   readonly loading = signal(false);
   readonly tokenExpired = signal(false);
   readonly remoteUpdateAvailable = signal<RemoteVersionInfo | null>(null);
+  readonly characterList = signal<CharacterFileEntry[]>([]);
 
   /** Always configured since the Client ID is embedded */
   readonly configured = signal(true);
@@ -71,6 +79,15 @@ export class GoogleDriveService {
           this.handleTokenExpired();
         }
       });
+    }
+    // Load character list from localStorage
+    try {
+      const saved = localStorage.getItem(STORAGE_CHARACTER_LIST_KEY);
+      if (saved) {
+        this.characterList.set(JSON.parse(saved));
+      }
+    } catch {
+      // ignore parse errors
     }
   }
 
@@ -242,29 +259,31 @@ export class GoogleDriveService {
   }
 
   /**
-   * List all JSON files accessible by the app in Google Drive.
-   * Uses the drive.file scope, so only files created by or opened with this app are visible.
+   * Add or update a character entry in the local character list.
    */
-  async listFiles(): Promise<DriveFileInfo[]> {
-    if (!this._accessToken) return [];
-    try {
-      const query = encodeURIComponent("mimeType='application/json' and trashed=false");
-      const resp = await fetch(
-        `${DRIVE_API_BASE}/files?q=${query}&fields=files(id,name)&orderBy=name`,
-        {
-          headers: { Authorization: `Bearer ${this._accessToken}` },
-        },
-      );
-      if (resp.status === 401) {
-        this.handleTokenExpired();
-        return [];
+  addOrUpdateCharacterEntry(entry: CharacterFileEntry): void {
+    this.characterList.update(list => {
+      const idx = list.findIndex(e => e.id === entry.id);
+      if (idx >= 0) {
+        const updated = [...list];
+        updated[idx] = entry;
+        return updated;
       }
-      if (!resp.ok) return [];
-      const data = await resp.json();
-      return (data.files ?? []) as DriveFileInfo[];
-    } catch {
-      return [];
-    }
+      return [...list, entry];
+    });
+    this.saveCharacterList();
+  }
+
+  /**
+   * Remove a character entry from the local character list.
+   */
+  removeCharacterEntry(fileId: string): void {
+    this.characterList.update(list => list.filter(e => e.id !== fileId));
+    this.saveCharacterList();
+  }
+
+  private saveCharacterList(): void {
+    localStorage.setItem(STORAGE_CHARACTER_LIST_KEY, JSON.stringify(this.characterList()));
   }
 
   clearCredentials(): void {

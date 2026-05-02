@@ -54,8 +54,7 @@
       pTooltip="Charakter wechseln"
       tooltipPosition="bottom"
     >
-      <fa-icon [icon]="fasUsers" class="mr-1"/>
-      <span class="hidden md:inline">Charakter</span>
+      <fa-icon [icon]="fasUsers"/>
     </p-button>
 
     @if (drive.currentFile()) {
@@ -263,22 +262,20 @@
 <!-- Character List Dialog -->
 <p-dialog header="Charakter wechseln" [(visible)]="showCharacterList" [modal]="true" [style]="{ width: '450px' }">
   <div class="space-y-3">
-    @if (characterListLoading()) {
-      <p class="text-sm text-gray-500">Lade Charaktere...</p>
-    } @else if (characterFiles().length === 0) {
-      <p class="text-sm text-gray-500">Keine Charakterdateien gefunden.</p>
+    @if (drive.characterList().length === 0) {
+      <p class="text-sm text-gray-500">Keine Charaktere vorhanden.</p>
     } @else {
       <div class="flex flex-col gap-1">
-        @for (file of characterFiles(); track file.id) {
+        @for (entry of drive.characterList(); track entry.id) {
           <button
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer text-left w-full transition-colors"
-            [class.bg-blue-50]="drive.currentFile()?.id === file.id"
-            [class.dark:bg-blue-900]="drive.currentFile()?.id === file.id"
-            (click)="switchCharacter(file)"
+            [class.bg-blue-50]="drive.currentFile()?.id === entry.id"
+            [class.dark:bg-blue-900]="drive.currentFile()?.id === entry.id"
+            (click)="requestSwitchCharacter(entry)"
           >
             <fa-icon [icon]="fabGoogle" class="text-xs text-gray-400"/>
-            <span class="text-sm flex-1">{{ file.name }}</span>
-            @if (drive.currentFile()?.id === file.id) {
+            <span class="text-sm flex-1">{{ entry.characterName }}</span>
+            @if (drive.currentFile()?.id === entry.id) {
               <fa-icon [icon]="fasCheck" class="text-green-500 text-xs"/>
             }
           </button>
@@ -288,9 +285,21 @@
   </div>
   <ng-template #footer>
     <p-button label="Schließen" [text]="true" (onClick)="showCharacterList.set(false)"/>
-    <p-button (onClick)="showAddCharacter.set(true); showCharacterList.set(false)">
+    <p-button (onClick)="openAddCharacter()">
       <fa-icon [icon]="fasPlus" class="mr-1"/>
       Charakter hinzufügen
+    </p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- Save Before Switch Confirmation -->
+<p-dialog header="Änderungen speichern?" [(visible)]="showSaveBeforeSwitch" [modal]="true" [style]="{ width: '400px' }">
+  <p class="text-sm">Möchtest du den aktuellen Charakter vor dem Wechsel in Google Drive speichern?</p>
+  <ng-template #footer>
+    <p-button label="Nicht speichern" [text]="true" (onClick)="switchWithoutSaving()"/>
+    <p-button (onClick)="saveAndSwitch()" [loading]="drive.loading()">
+      <fa-icon [icon]="fasSave" class="mr-1"/>
+      Speichern & Wechseln
     </p-button>
   </ng-template>
 </p-dialog>
@@ -302,12 +311,13 @@
       <label class="text-sm font-bold" for="new-character-name-input">Charaktername</label>
       <input id="new-character-name-input" pInputText [(ngModel)]="newCharacterName" placeholder="Name des Charakters" class="w-full text-sm"/>
     </div>
+    <p class="text-xs text-gray-500">Nach der Eingabe des Namens wird der Google Drive Dateiwähler geöffnet, um die Datei auszuwählen.</p>
   </div>
   <ng-template #footer>
     <p-button label="Abbrechen" [text]="true" (onClick)="showAddCharacter.set(false); newCharacterName.set('')"/>
-    <p-button [loading]="drive.loading()" (onClick)="addCharacter()">
-      <fa-icon [icon]="fasCheck" class="mr-1"/>
-      Charakter hinzufügen
+    <p-button (onClick)="addCharacterPickFile()">
+      <fa-icon [icon]="fasFolderOpen" class="mr-1"/>
+      Datei wählen
     </p-button>
   </ng-template>
 </p-dialog>

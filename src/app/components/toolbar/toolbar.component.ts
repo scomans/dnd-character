@@ -45,6 +45,7 @@ import { EditModeService } from '../../services/edit-mode.service';
 import {
   GoogleDriveService,
   DriveFileInfo,
+  CharacterFileEntry,
 } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
 import { WakeLockService } from '../../services/wake-lock.service';
@@ -102,10 +103,10 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly showPicker = signal(false);
   protected readonly showRemoteUpdate = signal(false);
   protected readonly showCharacterList = signal(false);
-  protected readonly characterFiles = signal<DriveFileInfo[]>([]);
-  protected readonly characterListLoading = signal(false);
   protected readonly showAddCharacter = signal(false);
+  protected readonly showSaveBeforeSwitch = signal(false);
   protected readonly newCharacterName = signal('');
+  protected readonly pendingSwitchEntry = signal<CharacterFileEntry | null>(null);
   protected readonly importText = signal('');
   protected readonly importError = signal('');
   protected readonly newDriveFileName = signal('');
@@ -133,6 +134,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Whether we want to open the picker to select a file (vs auth-only) */
   private wantFilePicker = false;
+  /** Whether the picker is being used to select a file for a new character */
+  private addCharacterMode = false;
   private pickerListenersAttached = false;
 
   ngOnInit(): void {
@@ -160,12 +163,23 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     const detail = (e as CustomEvent).detail;
     if (detail?.docs?.length > 0) {
       const doc = detail.docs[0];
-      this.drive.handleFilePicked(doc.id, doc.name);
-      try {
-        const content = await this.drive.readFile(doc.id);
-        this.cs.importJSON(content);
-      } catch (err) {
-        console.error('Error reading file from Google Drive:', err);
+      if (this.addCharacterMode) {
+        // Adding a new character: save default data to the picked file
+        await this.finishAddCharacterWithFile(doc.id, doc.name);
+      } else {
+        this.drive.handleFilePicked(doc.id, doc.name);
+        try {
+          const content = await this.drive.readFile(doc.id);
+          this.cs.importJSON(content);
+          // Add to character list
+          this.drive.addOrUpdateCharacterEntry({
+            id: doc.id,
+            fileName: doc.name,
+            characterName: this.cs.character().characterName || doc.name,
+          });
+        } catch (err) {
+          console.error('Error reading file from Google Drive:', err);
+        }
       }
     }
     this.closePicker();
@@ -211,6 +225,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showPicker.set(false);
     this.pickerListenersAttached = false;
     this.wantFilePicker = false;
+    this.addCharacterMode = false;
   }
 
   /**
@@ -309,7 +324,13 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       const currentVersion = this.cs.character().version ?? 0;
       this.cs.update({ version: currentVersion + 1 });
       const json = this.cs.exportJSON();
-      await this.drive.createFile(json, fileName);
+      const fileInfo = await this.drive.createFile(json, fileName);
+      // Add to character list
+      this.drive.addOrUpdateCharacterEntry({
+        id: fileInfo.id,
+        fileName: fileInfo.name,
+        characterName: this.cs.character().characterName || fileInfo.name,
+      });
       this.showNewDriveFile.set(false);
       this.newDriveFileName.set('');
     } catch (err) {
@@ -358,38 +379,81 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   // === Character Switching ===
 
   /**
-   * Open the character list dialog and load available files from Google Drive.
+   * Open the character list dialog. Uses the localStorage-based list.
    */
-  async openCharacterList(): Promise<void> {
+  openCharacterList(): void {
     this.showCharacterList.set(true);
-    this.characterListLoading.set(true);
-    try {
-      const files = await this.drive.listFiles();
-      this.characterFiles.set(files);
-    } catch (err) {
-      console.error('Error listing character files:', err);
-      this.characterFiles.set([]);
-    } finally {
-      this.characterListLoading.set(false);
+  }
+
+  /**
+   * Initiate switching to a different character. Asks to save first if connected to a file.
+   */
+  requestSwitchCharacter(entry: CharacterFileEntry): void {
+    if (this.drive.currentFile()) {
+      // Ask if user wants to save current state first
+      this.pendingSwitchEntry.set(entry);
+      this.showCharacterList.set(false);
+      this.showSaveBeforeSwitch.set(true);
+    } else {
+      void this.doSwitchCharacter(entry);
     }
   }
 
   /**
-   * Switch to a different character file from Google Drive.
+   * Save current character then switch.
    */
-  async switchCharacter(file: DriveFileInfo): Promise<void> {
+  async saveAndSwitch(): Promise<void> {
+    this.showSaveBeforeSwitch.set(false);
+    await this.saveToDrive();
+    const entry = this.pendingSwitchEntry();
+    if (entry) {
+      // Update the character name in the list before switching away
+      this.drive.addOrUpdateCharacterEntry({
+        id: this.drive.currentFile()!.id,
+        fileName: this.drive.currentFile()!.name,
+        characterName: this.cs.character().characterName || this.drive.currentFile()!.name,
+      });
+      await this.doSwitchCharacter(entry);
+    }
+    this.pendingSwitchEntry.set(null);
+  }
+
+  /**
+   * Switch without saving.
+   */
+  async switchWithoutSaving(): Promise<void> {
+    this.showSaveBeforeSwitch.set(false);
+    const entry = this.pendingSwitchEntry();
+    if (entry) {
+      await this.doSwitchCharacter(entry);
+    }
+    this.pendingSwitchEntry.set(null);
+  }
+
+  /**
+   * Actually switch to a different character file from Google Drive.
+   */
+  private async doSwitchCharacter(entry: CharacterFileEntry): Promise<void> {
     this.showCharacterList.set(false);
     try {
       // Reset current state to avoid data leakage
       this.cs.resetCharacter();
       // Update the current file reference
-      this.drive.handleFilePicked(file.id, file.name);
+      this.drive.handleFilePicked(entry.id, entry.fileName);
       // Load the file content
-      const content = await this.drive.readFile(file.id);
+      const content = await this.drive.readFile(entry.id);
       this.cs.importJSON(content);
+      // Update character name in the list from loaded data
+      const loadedName = this.cs.character().characterName || entry.fileName;
+      if (loadedName !== entry.characterName) {
+        this.drive.addOrUpdateCharacterEntry({
+          ...entry,
+          characterName: loadedName,
+        });
+      }
       // Check for remote version updates
       const localVersion = this.cs.character().version ?? 0;
-      await this.drive.checkRemoteVersion(file.id, localVersion);
+      await this.drive.checkRemoteVersion(entry.id, localVersion);
       if (this.drive.remoteUpdateAvailable()) {
         this.showRemoteUpdate.set(true);
       }
@@ -399,28 +463,46 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Add a new character: create a new file in Google Drive with default data.
+   * Start the "add character" flow: prompt for name, then open Drive picker.
    */
-  async addCharacter(): Promise<void> {
+  openAddCharacter(): void {
+    this.showCharacterList.set(false);
+    this.showAddCharacter.set(true);
+  }
+
+  /**
+   * After entering a character name, open the Drive picker to select the file.
+   */
+  addCharacterPickFile(): void {
     const name = this.newCharacterName().trim();
     if (!name) return;
-    const fileName = name.endsWith('.json') ? name : `${name}.json`;
+    this.showAddCharacter.set(false);
+    // Open the picker in "add character" mode
+    this.addCharacterMode = true;
+    this.openPickerForFile();
+  }
+
+  /**
+   * Called after a file is picked in "add character" mode.
+   * Saves default character data to the selected file and adds it to the list.
+   */
+  private async finishAddCharacterWithFile(fileId: string, fileName: string): Promise<void> {
+    const characterName = this.newCharacterName().trim();
     try {
       // Reset state to avoid data leakage
       this.cs.resetCharacter();
       // Set the character name
-      this.cs.update({ characterName: name.replace(/\.json$/, ''), version: 1 });
+      this.cs.update({ characterName, version: 1 });
       const json = this.cs.exportJSON();
-      const fileInfo = await this.drive.createFile(json, fileName);
-      this.showAddCharacter.set(false);
+      // Save to the selected file
+      await this.drive.saveFile(fileId, json, fileName);
+      // Update current file reference
+      this.drive.handleFilePicked(fileId, fileName);
+      // Add to character list
+      this.drive.addOrUpdateCharacterEntry({ id: fileId, fileName, characterName });
       this.newCharacterName.set('');
-      // Refresh the character list if open
-      this.characterFiles.update(files => [...files, fileInfo]);
     } catch (err) {
       console.error('Error creating new character:', err);
-      if (this.drive.tokenExpired()) {
-        this.showAddCharacter.set(false);
-      }
     }
   }
 }
