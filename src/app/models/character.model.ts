@@ -790,7 +790,7 @@ export const SPELLCASTING_CLASSES: { value: string; label: string; ability: stri
 export function createDefaultCharacter(): DndCharacter {
   return {
     version: 1,
-    characterName: '',
+    characterName: 'Neuer Charakter',
     className: '',
     level: 1,
     playerName: '',

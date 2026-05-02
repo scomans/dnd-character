@@ -9,17 +9,6 @@ export interface DriveFileInfo {
   name: string;
 }
 
-export interface CharacterFileEntry {
-  id: string;
-  fileName: string;
-  characterName: string;
-}
-
-export interface RemoteVersionInfo {
-  remoteVersion: number;
-  localVersion: number;
-}
-
 /**
  * Public OAuth Client ID for the Google Drive Picker.
  * This is NOT a secret - it is restricted by authorized JavaScript origins
@@ -27,11 +16,7 @@ export interface RemoteVersionInfo {
  */
 const CLIENT_ID = '736326091345-7if9d7vta2l4ove33j4o359sjppavgi2.apps.googleusercontent.com';
 const APP_ID = CLIENT_ID.split('-')[0];
-
-const STORAGE_FILE_ID_KEY = 'gdrive-file-id';
-const STORAGE_FILE_NAME_KEY = 'gdrive-file-name';
 const STORAGE_ACCESS_TOKEN_KEY = 'gdrive-access-token';
-const STORAGE_CHARACTER_LIST_KEY = 'gdrive-character-list';
 
 @Injectable({
   providedIn: 'root',
@@ -40,14 +25,8 @@ export class GoogleDriveService {
   private _accessToken = '';
 
   readonly connected = signal(false);
-  readonly currentFile = signal<DriveFileInfo | null>(null);
   readonly loading = signal(false);
   readonly tokenExpired = signal(false);
-  readonly remoteUpdateAvailable = signal<RemoteVersionInfo | null>(null);
-  readonly characterList = signal<CharacterFileEntry[]>([]);
-
-  /** Always configured since the Client ID is embedded */
-  readonly configured = signal(true);
 
   /** The Client ID for the drive-picker element */
   get clientId(): string {
@@ -64,30 +43,16 @@ export class GoogleDriveService {
   }
 
   constructor() {
-    const savedFileId = localStorage.getItem(STORAGE_FILE_ID_KEY);
-    const savedFileName = localStorage.getItem(STORAGE_FILE_NAME_KEY);
-    if (savedFileId && savedFileName) {
-      this.currentFile.set({ id: savedFileId, name: savedFileName });
-    }
     const savedToken = localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY);
     if (savedToken) {
       this._accessToken = savedToken;
       this.connected.set(true);
       // Validate the restored token in the background
-      this.validateToken().then(valid => {
+      this.validateToken().then((valid) => {
         if (!valid) {
           this.handleTokenExpired();
         }
       });
-    }
-    // Load character list from localStorage
-    try {
-      const saved = localStorage.getItem(STORAGE_CHARACTER_LIST_KEY);
-      if (saved) {
-        this.characterList.set(JSON.parse(saved));
-      }
-    } catch {
-      // ignore parse errors
     }
   }
 
@@ -101,14 +66,8 @@ export class GoogleDriveService {
     localStorage.setItem(STORAGE_ACCESS_TOKEN_KEY, token);
   }
 
-  /**
-   * Called when the drive-picker element emits a picked file via picker-picked
-   */
-  handleFilePicked(fileId: string, fileName: string): void {
-    const info: DriveFileInfo = { id: fileId, name: fileName };
-    this.currentFile.set(info);
-    localStorage.setItem(STORAGE_FILE_ID_KEY, fileId);
-    localStorage.setItem(STORAGE_FILE_NAME_KEY, fileName);
+  isConnected(): boolean {
+    return !!this._accessToken;
   }
 
   /**
@@ -173,17 +132,14 @@ export class GoogleDriveService {
         content +
         `\r\n--${boundary}--`;
 
-      const resp = await fetch(
-        `${DRIVE_UPLOAD_BASE}/files/${fileId}?uploadType=multipart`,
-        {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${this._accessToken}`,
-            'Content-Type': `multipart/related; boundary="${boundary}"`,
-          },
-          body,
+      const resp = await fetch(`${DRIVE_UPLOAD_BASE}/files/${fileId}?uploadType=multipart`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${this._accessToken}`,
+          'Content-Type': `multipart/related; boundary="${boundary}"`,
         },
-      );
+        body,
+      });
       if (resp.status === 401) {
         this.handleTokenExpired();
         throw new Error('Access token expired. Please re-authenticate with Google.');
@@ -210,89 +166,30 @@ export class GoogleDriveService {
         content +
         `\r\n--${boundary}--`;
 
-      const resp = await fetch(
-        `${DRIVE_UPLOAD_BASE}/files?uploadType=multipart`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${this._accessToken}`,
-            'Content-Type': `multipart/related; boundary="${boundary}"`,
-          },
-          body,
+      const resp = await fetch(`${DRIVE_UPLOAD_BASE}/files?uploadType=multipart`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this._accessToken}`,
+          'Content-Type': `multipart/related; boundary="${boundary}"`,
         },
-      );
+        body,
+      });
       if (resp.status === 401) {
         this.handleTokenExpired();
         throw new Error('Access token expired. Please re-authenticate with Google.');
       }
       if (!resp.ok) throw new Error(`Drive API error: ${resp.status}`);
       const result = await resp.json();
-      const fileInfo: DriveFileInfo = { id: result.id, name: fileName };
-      this.currentFile.set(fileInfo);
-      localStorage.setItem(STORAGE_FILE_ID_KEY, fileInfo.id);
-      localStorage.setItem(STORAGE_FILE_NAME_KEY, fileInfo.name);
-      return fileInfo;
+      return { id: result.id, name: fileName };
     } finally {
       this.loading.set(false);
     }
   }
 
-  /**
-   * Check the remote file version against the local version.
-   * Sets remoteUpdateAvailable signal if remote is newer.
-   */
-  async checkRemoteVersion(fileId: string, localVersion: number): Promise<void> {
-    if (!this._accessToken) return;
-    try {
-      const content = await this.readFile(fileId);
-      const parsed = JSON.parse(content);
-      const remoteVersion = parsed.version ?? 0;
-      if (remoteVersion > localVersion) {
-        this.remoteUpdateAvailable.set({ remoteVersion, localVersion });
-      } else {
-        this.remoteUpdateAvailable.set(null);
-      }
-    } catch (e) {
-      // Log but don't bubble up check failures (e.g. network errors, expired tokens)
-      console.warn('Failed to check remote version:', e);
-    }
-  }
-
-  /**
-   * Add or update a character entry in the local character list.
-   */
-  addOrUpdateCharacterEntry(entry: CharacterFileEntry): void {
-    this.characterList.update(list => {
-      const idx = list.findIndex(e => e.id === entry.id);
-      if (idx >= 0) {
-        const updated = [...list];
-        updated[idx] = entry;
-        return updated;
-      }
-      return [...list, entry];
-    });
-    this.saveCharacterList();
-  }
-
-  /**
-   * Remove a character entry from the local character list.
-   */
-  removeCharacterEntry(fileId: string): void {
-    this.characterList.update(list => list.filter(e => e.id !== fileId));
-    this.saveCharacterList();
-  }
-
-  private saveCharacterList(): void {
-    localStorage.setItem(STORAGE_CHARACTER_LIST_KEY, JSON.stringify(this.characterList()));
-  }
-
   clearCredentials(): void {
-    localStorage.removeItem(STORAGE_FILE_ID_KEY);
-    localStorage.removeItem(STORAGE_FILE_NAME_KEY);
     localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY);
     this._accessToken = '';
     this.connected.set(false);
-    this.currentFile.set(null);
     this.tokenExpired.set(false);
   }
 

@@ -29,7 +29,8 @@
     "primeicons": "^7.0.0",
     "primeng": "^21.1.6",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@angular/build": "^21.2.9",
@@ -39,6 +40,7 @@
     "postcss": "^8.5.12",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.2.4",
+    "type-fest": "^5.6.0",
     "typescript": "~5.9.2"
   }
 }
