@@ -1,4 +1,4 @@
-<div class="space-y-2">
+<div class="space-y-2 w-36">
   <!-- Inspiration -->
   <div class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2">
     <p-checkbox
@@ -11,46 +11,63 @@
 
   <!-- Proficiency Bonus -->
   <div
-    class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2 overflow-hidden" pTooltip="Übungsbonus" tooltipPosition="right"
+    class="flex flex-col items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2 overflow-hidden"
+    pTooltip="Übungsbonus"
+    tooltipPosition="right"
   >
-    @if (editMode.isEditMode()) {
+    <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400">
+        Übungsbonus
+    </span>
+    @if (isEditMode()) {
       <p-input-number
         [ngModel]="cs.character().proficiencyBonusOverride ?? cs.getProficiencyBonus()"
         (ngModelChange)="updateProficiency($event)"
         [min]="1"
-        [max]="10"
-        [showButtons]="false"
-        [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
-        class="w-full"
-      />
+        [max]="6"
+        [showButtons]="true"
+        buttonLayout="horizontal"
+        inputStyleClass="text-center font-bold w-full"
+      >
+        <ng-template #incrementbuttonicon>
+          <fa-icon [icon]="fasPlus"/>
+        </ng-template>
+        <ng-template #decrementbuttonicon>
+          <fa-icon [icon]="fasMinus"/>
+        </ng-template>
+      </p-input-number>
     } @else {
       <span
         class="text-xl font-bold text-slate-700 dark:text-slate-300 w-10 text-center"
       >+{{ cs.getProficiencyBonus() }}</span>
-    }
-    @if (!editMode.isEditMode()) {
-      <span class="text-xs font-bold">Übungsb.</span>
     }
   </div>
 
   <!-- Ability Scores -->
   <div class="grid grid-cols-2 sm:grid-cols-1 gap-2">
     @for (ability of abilities; track ability) {
-      <div class="bg-white dark:bg-gray-800 border-2 border-slate-700 dark:border-slate-500 rounded-lg p-2 flex flex-col items-center">
+      <div class="bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2 flex flex-col items-center">
         <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400">{{ getLabel(ability) }}</span>
         <span class="text-3xl font-bold text-slate-700 dark:text-slate-300">
           {{ cs.getAbilityModifier(ability) >= 0 ? '+' : '' }}{{ cs.getAbilityModifier(ability) }}
         </span>
         <div class="mt-1">
-          @if (editMode.isEditMode()) {
+          @if (isEditMode()) {
             <p-input-number
               [ngModel]="getAbilityBase(ability)"
               (ngModelChange)="updateAbility(ability, $event)"
               [min]="1"
               [max]="30"
               [showButtons]="true"
-              [inputStyle]="{ width: '100%', textAlign: 'center', fontSize: '0.85rem' }"
-            />
+              buttonLayout="horizontal"
+              inputStyleClass="text-center font-bold w-full"
+            >
+              <ng-template #incrementbuttonicon>
+                <fa-icon [icon]="fasPlus"/>
+              </ng-template>
+              <ng-template #decrementbuttonicon>
+                <fa-icon [icon]="fasMinus"/>
+              </ng-template>
+            </p-input-number>
           } @else {
             <span
               class="text-sm font-medium text-gray-700 dark:text-gray-300 border border-transparent rounded px-2 py-0.5"

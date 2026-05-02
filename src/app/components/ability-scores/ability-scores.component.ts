@@ -6,18 +6,23 @@ import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_LABELS } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-ability-scores',
   templateUrl: './ability-scores.component.html',
   styleUrl: './ability-scores.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, InputNumber, Checkbox, Tooltip],
+  imports: [FormsModule, InputNumber, Checkbox, Tooltip, FaIconComponent],
 })
 export class AbilityScoresComponent {
   cs = inject(CharacterService);
-  protected readonly editMode = inject(EditModeService);
+  protected readonly isEditMode = inject(EditModeService).isEditMode;
   abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+
+  protected readonly fasMinus = faMinus;
+  protected readonly fasPlus = faPlus;
 
   getLabel(ability: string): string {
     return ABILITY_LABELS[ability] || ability;
