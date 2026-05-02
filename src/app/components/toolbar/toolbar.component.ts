@@ -404,15 +404,18 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   async saveAndSwitch(): Promise<void> {
     this.showSaveBeforeSwitch.set(false);
+    const currentFile = this.drive.currentFile();
     await this.saveToDrive();
     const entry = this.pendingSwitchEntry();
     if (entry) {
       // Update the character name in the list before switching away
-      this.drive.addOrUpdateCharacterEntry({
-        id: this.drive.currentFile()!.id,
-        fileName: this.drive.currentFile()!.name,
-        characterName: this.cs.character().characterName || this.drive.currentFile()!.name,
-      });
+      if (currentFile) {
+        this.drive.addOrUpdateCharacterEntry({
+          id: currentFile.id,
+          fileName: currentFile.name,
+          characterName: this.cs.character().characterName || currentFile.name,
+        });
+      }
       await this.doSwitchCharacter(entry);
     }
     this.pendingSwitchEntry.set(null);
@@ -489,7 +492,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   private async finishAddCharacterWithFile(fileId: string, fileName: string): Promise<void> {
     const characterName = this.newCharacterName().trim();
     try {
-      // Reset state to avoid data leakage
+      // Reset state to prevent previous character data from persisting
       this.cs.resetCharacter();
       // Set the character name
       this.cs.update({ characterName, version: 1 });
