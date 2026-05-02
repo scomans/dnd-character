@@ -299,8 +299,8 @@
 <p-dialog header="Neuen Charakter erstellen" [(visible)]="showAddCharacter" [modal]="true" [style]="{ width: '400px' }">
   <div class="space-y-3">
     <div class="flex flex-col gap-1">
-      <label class="text-sm font-bold">Charaktername</label>
-      <input pInputText [(ngModel)]="newCharacterName" placeholder="Name des Charakters" class="w-full text-sm"/>
+      <label class="text-sm font-bold" for="new-character-name-input">Charaktername</label>
+      <input id="new-character-name-input" pInputText [(ngModel)]="newCharacterName" placeholder="Name des Charakters" class="w-full text-sm"/>
     </div>
   </div>
   <ng-template #footer>
