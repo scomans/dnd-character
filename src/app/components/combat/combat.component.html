@@ -64,35 +64,45 @@
   <div class="flex flex-wrap flex-row max-sm:flex-col gap-4 max-md:w-full">
     <!-- Hit Points: combined current/max + temp side by side -->
 
-    <p-fieldset legend="Trefferpunkte" class="flex-1">
+    <p-fieldset [legend]="(editMode.isEditMode() ? 'Max. ' : '') + 'Trefferpunkte'" class="flex-1">
       <div class="flex items-center justify-center gap-1">
-        <p-input-number
-          [ngModel]="cs.character().hitPointsCurrent"
-          (ngModelChange)="cs.update({ hitPointsCurrent: $event ?? 0 })"
-          [showButtons]="true"
-          buttonLayout="horizontal"
-          [min]="0"
-          [max]="cs.character().hitPointsMax"
-          [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
-          size="small"
-        >
-          <ng-template #incrementbuttonicon>
-            <fa-icon [icon]="fasPlus"/>
-          </ng-template>
-          <ng-template #decrementbuttonicon>
-            <fa-icon [icon]="fasMinus"/>
-          </ng-template>
-        </p-input-number>
-        <span class="text-xl font-bold text-gray-400 dark:text-gray-500">/</span>
+        @if (!editMode.isEditMode()) {
+          <p-input-number
+            [ngModel]="cs.character().hitPointsCurrent"
+            (ngModelChange)="cs.update({ hitPointsCurrent: $event ?? 0 })"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            [min]="0"
+            [max]="cs.character().hitPointsMax"
+            [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
+            size="small"
+          >
+            <ng-template #incrementbuttonicon>
+              <fa-icon [icon]="fasPlus"/>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <fa-icon [icon]="fasMinus"/>
+            </ng-template>
+          </p-input-number>
+          <span class="text-xl font-bold text-gray-400 dark:text-gray-500">/</span>
+        }
         @if (editMode.isEditMode()) {
           <div>
             <p-input-number
               [ngModel]="cs.character().hitPointsMax"
               (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
-              [showButtons]="false"
+              [showButtons]="true"
+              buttonLayout="horizontal"
               [min]="1"
               [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"
-            />
+            >
+              <ng-template #incrementbuttonicon>
+                <fa-icon [icon]="fasPlus"/>
+              </ng-template>
+              <ng-template #decrementbuttonicon>
+                <fa-icon [icon]="fasMinus"/>
+              </ng-template>
+            </p-input-number>
           </div>
         } @else {
           <span
