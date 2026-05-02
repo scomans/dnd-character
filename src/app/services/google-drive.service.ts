@@ -241,6 +241,32 @@ export class GoogleDriveService {
     }
   }
 
+  /**
+   * List all JSON files accessible by the app in Google Drive.
+   * Uses the drive.file scope, so only files created by or opened with this app are visible.
+   */
+  async listFiles(): Promise<DriveFileInfo[]> {
+    if (!this._accessToken) return [];
+    try {
+      const query = encodeURIComponent("mimeType='application/json' and trashed=false");
+      const resp = await fetch(
+        `${DRIVE_API_BASE}/files?q=${query}&fields=files(id,name)&orderBy=name`,
+        {
+          headers: { Authorization: `Bearer ${this._accessToken}` },
+        },
+      );
+      if (resp.status === 401) {
+        this.handleTokenExpired();
+        return [];
+      }
+      if (!resp.ok) return [];
+      const data = await resp.json();
+      return (data.files ?? []) as DriveFileInfo[];
+    } catch {
+      return [];
+    }
+  }
+
   clearCredentials(): void {
     localStorage.removeItem(STORAGE_FILE_ID_KEY);
     localStorage.removeItem(STORAGE_FILE_NAME_KEY);

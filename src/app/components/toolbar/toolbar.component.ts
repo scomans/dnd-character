@@ -29,6 +29,8 @@ import {
   faSun,
   faSync,
   faUpload,
+  faUsers,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -40,7 +42,10 @@ import { Tooltip } from 'primeng/tooltip';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
-import { GoogleDriveService } from '../../services/google-drive.service';
+import {
+  GoogleDriveService,
+  DriveFileInfo,
+} from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
 import { WakeLockService } from '../../services/wake-lock.service';
 import '@googleworkspace/drive-picker-element';
@@ -86,6 +91,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly fasEllipsisV = faEllipsisV;
   protected readonly fasLock = faLock;
   protected readonly fasLockOpen = faLockOpen;
+  protected readonly fasUsers = faUsers;
+  protected readonly fasPlus = faPlus;
 
   protected readonly drivePickerRef = viewChild<ElementRef<DrivePickerElement>>('drivePicker');
 
@@ -94,6 +101,11 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly showNewDriveFile = signal(false);
   protected readonly showPicker = signal(false);
   protected readonly showRemoteUpdate = signal(false);
+  protected readonly showCharacterList = signal(false);
+  protected readonly characterFiles = signal<DriveFileInfo[]>([]);
+  protected readonly characterListLoading = signal(false);
+  protected readonly showAddCharacter = signal(false);
+  protected readonly newCharacterName = signal('');
   protected readonly importText = signal('');
   protected readonly importError = signal('');
   protected readonly newDriveFileName = signal('');
@@ -340,6 +352,75 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showRemoteUpdate.set(false);
     } catch (err) {
       console.error('Error reloading from Google Drive:', err);
+    }
+  }
+
+  // === Character Switching ===
+
+  /**
+   * Open the character list dialog and load available files from Google Drive.
+   */
+  async openCharacterList(): Promise<void> {
+    this.showCharacterList.set(true);
+    this.characterListLoading.set(true);
+    try {
+      const files = await this.drive.listFiles();
+      this.characterFiles.set(files);
+    } catch (err) {
+      console.error('Error listing character files:', err);
+      this.characterFiles.set([]);
+    } finally {
+      this.characterListLoading.set(false);
+    }
+  }
+
+  /**
+   * Switch to a different character file from Google Drive.
+   */
+  async switchCharacter(file: DriveFileInfo): Promise<void> {
+    this.showCharacterList.set(false);
+    try {
+      // Reset current state to avoid data leakage
+      this.cs.resetCharacter();
+      // Update the current file reference
+      this.drive.handleFilePicked(file.id, file.name);
+      // Load the file content
+      const content = await this.drive.readFile(file.id);
+      this.cs.importJSON(content);
+      // Check for remote version updates
+      const localVersion = this.cs.character().version ?? 0;
+      await this.drive.checkRemoteVersion(file.id, localVersion);
+      if (this.drive.remoteUpdateAvailable()) {
+        this.showRemoteUpdate.set(true);
+      }
+    } catch (err) {
+      console.error('Error switching character:', err);
+    }
+  }
+
+  /**
+   * Add a new character: create a new file in Google Drive with default data.
+   */
+  async addCharacter(): Promise<void> {
+    const name = this.newCharacterName().trim();
+    if (!name) return;
+    const fileName = name.endsWith('.json') ? name : `${name}.json`;
+    try {
+      // Reset state to avoid data leakage
+      this.cs.resetCharacter();
+      // Set the character name
+      this.cs.update({ characterName: name.replace(/\.json$/, ''), version: 1 });
+      const json = this.cs.exportJSON();
+      const fileInfo = await this.drive.createFile(json, fileName);
+      this.showAddCharacter.set(false);
+      this.newCharacterName.set('');
+      // Refresh the character list if open
+      this.characterFiles.update(files => [...files, fileInfo]);
+    } catch (err) {
+      console.error('Error creating new character:', err);
+      if (this.drive.tokenExpired()) {
+        this.showAddCharacter.set(false);
+      }
     }
   }
 }
