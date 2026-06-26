@@ -23,8 +23,8 @@
   }
 
   &.active {
-    background: #ef4444;
-    border-color: #dc2626;
+    background: var(--p-red-500);
+    border-color: var(--p-red-600);
     color: white;
   }
 }

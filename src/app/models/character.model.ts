@@ -294,7 +294,7 @@ export const EXHAUSTION_EFFECTS: string[] = [
   'Erschöpfung 1: Nachteil auf Attributswürfe',
   'Erschöpfung 2: Geschwindigkeit halbiert',
   'Erschöpfung 3: Nachteil auf Angriffswürfe und Rettungswürfe',
-  'Erschöpfung 4: Trefferpunktemaximum halbiert',
+  'Erschöpfung 4: Trefferpunkte-Maximum halbiert',
   'Erschöpfung 5: Geschwindigkeit auf 0',
   'Erschöpfung 6: Tod',
 ];
