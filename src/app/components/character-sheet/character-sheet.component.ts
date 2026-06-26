@@ -4,6 +4,7 @@ import { AbilityScoresComponent } from '../ability-scores/ability-scores.compone
 import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
 import { AttacksComponent } from '../attacks/attacks.component';
 import { CombatComponent } from '../combat/combat.component';
+import { ConditionTrackerComponent } from '../condition-tracker/condition-tracker.component';
 import { EquipmentComponent } from '../equipment/equipment.component';
 import { FeaturesComponent } from '../features/features.component';
 import { HeaderComponent } from '../header/header.component';
@@ -33,6 +34,7 @@ import { NotesComponent } from '../notes/notes.component';
     SavingThrowsComponent,
     SkillsComponent,
     CombatComponent,
+    ConditionTrackerComponent,
     PersonalityComponent,
     AttacksComponent,
     ProficienciesLanguagesComponent,

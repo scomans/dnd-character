@@ -1,0 +1,30 @@
+.condition-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border: 2px solid var(--dnd-border);
+  border-radius: 0.5rem;
+  background: var(--dnd-section-bg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+
+  &:hover {
+    border-color: var(--p-primary-color);
+    transform: scale(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--p-primary-color);
+    outline-offset: 2px;
+  }
+
+  &.active {
+    background: #ef4444;
+    border-color: #dc2626;
+    color: white;
+  }
+}

@@ -119,6 +119,207 @@ export interface Counter {
   currentValue: number;
 }
 
+export type Condition =
+  | 'blind'
+  | 'charmed'
+  | 'deaf'
+  | 'frightened'
+  | 'grappled'
+  | 'incapacitated'
+  | 'invisible'
+  | 'paralyzed'
+  | 'petrified'
+  | 'poisoned'
+  | 'prone'
+  | 'restrained'
+  | 'stunned'
+  | 'unconscious'
+  | 'zeroHp';
+
+export type Environment = 'dim' | 'lightlyObscured';
+
+export interface ConditionInfo {
+  key: Condition;
+  label: string;
+  icon: string;
+  effects: string[];
+}
+
+export interface EnvironmentInfo {
+  key: Environment;
+  label: string;
+  icon: string;
+  effects: string[];
+}
+
+export const CONDITIONS: ConditionInfo[] = [
+  {
+    key: 'blind',
+    label: 'Blind',
+    icon: '🙈',
+    effects: [
+      'Attributswürfe haben Nachteil',
+      'Angriffswürfe haben Nachteil',
+      'Angriffswürfe gegen dich haben Vorteil',
+    ],
+  },
+  {
+    key: 'charmed',
+    label: 'Bezaubert',
+    icon: '😍',
+    effects: ['Kann den Verzauberer nicht angreifen oder mit Fähigkeiten schaden'],
+  },
+  {
+    key: 'deaf',
+    label: 'Taub',
+    icon: '🔇',
+    effects: ['Automatisches Fehlschlagen bei Würfen, die Hören erfordern'],
+  },
+  {
+    key: 'frightened',
+    label: 'Verängstigt',
+    icon: '😨',
+    effects: [
+      'Attributswürfe haben Nachteil, solange die Quelle der Furcht in Sichtlinie ist',
+      'Kann sich nicht willentlich zur Quelle der Furcht bewegen',
+    ],
+  },
+  {
+    key: 'grappled',
+    label: 'Gepackt',
+    icon: '🤼',
+    effects: ['Geschwindigkeit auf 0'],
+  },
+  {
+    key: 'incapacitated',
+    label: 'Kampfunfähig',
+    icon: '🚫',
+    effects: ['Aktionen unmöglich', 'Reaktionen unmöglich'],
+  },
+  {
+    key: 'invisible',
+    label: 'Unsichtbar',
+    icon: '👻',
+    effects: [
+      'Angriffswürfe haben Vorteil',
+      'Angriffswürfe gegen dich haben Nachteil',
+    ],
+  },
+  {
+    key: 'paralyzed',
+    label: 'Gelähmt',
+    icon: '⚡',
+    effects: [
+      'Kampfunfähig',
+      'Rettungswürfe mit Geschicklichkeit schlagen fehl',
+      'Rettungswürfe mit Stärke schlagen fehl',
+      'Angriffswürfe gegen dich haben Vorteil',
+      'Jeder Treffer innerhalb von 1,5m ist ein kritischer Treffer',
+    ],
+  },
+  {
+    key: 'petrified',
+    label: 'Versteinert',
+    icon: '🗿',
+    effects: [
+      'Kampfunfähig',
+      'Angriffswürfe gegen dich haben Vorteil',
+      'Rettungswürfe mit Geschicklichkeit schlagen fehl',
+      'Rettungswürfe mit Stärke schlagen fehl',
+      'Resistenz gegen allen Schaden',
+      'Immun gegen Gift und Krankheit',
+    ],
+  },
+  {
+    key: 'poisoned',
+    label: 'Vergiftet',
+    icon: '🤢',
+    effects: ['Attributswürfe haben Nachteil', 'Angriffswürfe haben Nachteil'],
+  },
+  {
+    key: 'prone',
+    label: 'Liegend',
+    icon: '🛌',
+    effects: [
+      'Angriffswürfe haben Nachteil',
+      'Angriffswürfe gegen dich haben Vorteil (innerhalb 1,5m), sonst Nachteil',
+    ],
+  },
+  {
+    key: 'restrained',
+    label: 'Festgesetzt',
+    icon: '⛓️',
+    effects: [
+      'Geschwindigkeit auf 0',
+      'Angriffswürfe haben Nachteil',
+      'Rettungswürfe mit Geschicklichkeit haben Nachteil',
+      'Angriffswürfe gegen dich haben Vorteil',
+    ],
+  },
+  {
+    key: 'stunned',
+    label: 'Betäubt',
+    icon: '💫',
+    effects: [
+      'Kampfunfähig',
+      'Du kannst nicht sprechen',
+      'Rettungswürfe mit Geschicklichkeit schlagen fehl',
+      'Rettungswürfe mit Stärke schlagen fehl',
+      'Angriffswürfe gegen dich haben Vorteil',
+    ],
+  },
+  {
+    key: 'unconscious',
+    label: 'Bewusstlos',
+    icon: '😵',
+    effects: [
+      'Kampfunfähig',
+      'Du kannst nicht sprechen',
+      'Geschwindigkeit auf 0',
+      'Rettungswürfe mit Geschicklichkeit schlagen fehl',
+      'Rettungswürfe mit Stärke schlagen fehl',
+      'Angriffswürfe gegen dich haben Vorteil',
+      'Jeder Treffer innerhalb von 1,5m ist ein kritischer Treffer',
+    ],
+  },
+  {
+    key: 'zeroHp',
+    label: '0 TP',
+    icon: '💀',
+    effects: ['Bewusstlos oder sofort tot (bei massivem Schaden)'],
+  },
+];
+
+export const EXHAUSTION_EFFECTS: string[] = [
+  'Erschöpfung 1: Nachteil auf Attributswürfe',
+  'Erschöpfung 2: Geschwindigkeit halbiert',
+  'Erschöpfung 3: Nachteil auf Angriffswürfe und Rettungswürfe',
+  'Erschöpfung 4: Trefferpunktemaximum halbiert',
+  'Erschöpfung 5: Geschwindigkeit auf 0',
+  'Erschöpfung 6: Tod',
+];
+
+export const ENVIRONMENTS: EnvironmentInfo[] = [
+  {
+    key: 'dim',
+    label: 'Dämmrig',
+    icon: '🌑',
+    effects: [
+      'Weisheit (Wahrnehmung)-Würfe haben Nachteil',
+      'Passive Wahrnehmung erhält einen Abzug von 5',
+    ],
+  },
+  {
+    key: 'lightlyObscured',
+    label: 'Leicht verschleiert',
+    icon: '🌫️',
+    effects: [
+      'Weisheit (Wahrnehmung)-Würfe haben Nachteil',
+      'Passive Wahrnehmung erhält einen Abzug von 5',
+    ],
+  },
+];
+
 export interface Currency {
   cp: number;
   sp: number;
@@ -270,6 +471,11 @@ export interface DndCharacter {
 
   // Counters / Trackers
   counters: Counter[];
+
+  // Conditions & Environment (Zustandstracker)
+  conditions: Condition[];
+  exhaustionLevel: number;
+  environments: Environment[];
 }
 
 export const ABILITY_LABELS: { [key: string]: string } = {
@@ -894,5 +1100,8 @@ export function createDefaultCharacter(): DndCharacter {
     organizationLogo: '',
     notes: [],
     counters: [],
+    conditions: [],
+    exhaustionLevel: 0,
+    environments: [],
   };
 }

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Checkbox } from 'primeng/checkbox';
 import { InputNumber } from 'primeng/inputnumber';
 import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_LABELS } from '../../models/character.model';
@@ -14,7 +13,7 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './ability-scores.component.html',
   styleUrl: './ability-scores.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, InputNumber, Checkbox, Tooltip, FaIconComponent],
+  imports: [FormsModule, InputNumber, Tooltip, FaIconComponent],
 })
 export class AbilityScoresComponent {
   cs = inject(CharacterService);
