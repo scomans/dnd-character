@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Dialog } from 'primeng/dialog';
-import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
 import { CharacterService } from '../../services/character.service';
 import {
@@ -15,7 +14,7 @@ import {
 } from '../../models/character.model';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
-  faExclamationTriangle,
+  faHeartPulse,
   faMinus,
   faPlus,
   faTimes,
@@ -33,7 +32,6 @@ import { InputNumber } from 'primeng/inputnumber';
     FaIconComponent,
     FormsModule,
     InputNumber,
-    Message,
     Tooltip,
   ],
 })
@@ -45,7 +43,7 @@ export class ConditionTrackerComponent {
   protected readonly fasPlus = faPlus;
   protected readonly fasMinus = faMinus;
   protected readonly fasTimes = faTimes;
-  protected readonly fasWarning = faExclamationTriangle;
+  protected readonly fasWarning = faHeartPulse;
 
   showDialog = signal(false);
 

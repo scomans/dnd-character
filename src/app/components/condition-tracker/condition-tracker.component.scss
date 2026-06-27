@@ -3,8 +3,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border: 2px solid var(--dnd-border);
   border-radius: 0.5rem;
   background: var(--dnd-section-bg);
@@ -14,7 +14,6 @@
 
   &:hover {
     border-color: var(--p-primary-color);
-    transform: scale(1.05);
   }
 
   &:focus-visible {

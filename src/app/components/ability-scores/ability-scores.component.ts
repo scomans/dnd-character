@@ -7,13 +7,14 @@ import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { ConditionTrackerComponent } from '../condition-tracker/condition-tracker.component';
 
 @Component({
   selector: 'app-ability-scores',
   templateUrl: './ability-scores.component.html',
   styleUrl: './ability-scores.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, InputNumber, Tooltip, FaIconComponent],
+  imports: [FormsModule, InputNumber, Tooltip, FaIconComponent, ConditionTrackerComponent],
 })
 export class AbilityScoresComponent {
   cs = inject(CharacterService);
