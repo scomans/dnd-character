@@ -2,9 +2,11 @@
 <p-button
   size="small"
   [severity]="hasAnyActive() ? 'warn' : 'secondary'"
-  (onClick)="openDialog()"
   pTooltip="Zustands-Tracker"
   tooltipPosition="bottom"
+  [fluid]="true"
+  class="w-full"
+  (onClick)="openDialog()"
 >
   <fa-icon [icon]="fasWarning" />
   @if (hasAnyActive()) {

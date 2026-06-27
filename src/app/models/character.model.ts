@@ -192,7 +192,7 @@ export const CONDITIONS: ConditionInfo[] = [
   },
   {
     key: 'incapacitated',
-    label: 'Kampfunfähig',
+    label: 'Kampf- unfähig',
     icon: '🚫',
     effects: ['Aktionen unmöglich', 'Reaktionen unmöglich'],
   },
@@ -200,10 +200,7 @@ export const CONDITIONS: ConditionInfo[] = [
     key: 'invisible',
     label: 'Unsichtbar',
     icon: '👻',
-    effects: [
-      'Angriffswürfe haben Vorteil',
-      'Angriffswürfe gegen dich haben Nachteil',
-    ],
+    effects: ['Angriffswürfe haben Vorteil', 'Angriffswürfe gegen dich haben Nachteil'],
   },
   {
     key: 'paralyzed',

@@ -1,10 +1,16 @@
+@reference "tailwindcss";
+
+:host {
+  @apply w-full;
+}
+
 .condition-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 5rem;
+  height: 5rem;
   border: 2px solid var(--dnd-border);
   border-radius: 0.5rem;
   background: var(--dnd-section-bg);
