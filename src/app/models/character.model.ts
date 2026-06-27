@@ -1105,3 +1105,39 @@ export function createDefaultCharacter(): DndCharacter {
     environments: [],
   };
 }
+
+export interface ActiveEffect {
+  severity: 'error' | 'warn' | 'info' | 'secondary';
+  text: string;
+}
+
+export function computeActiveEffects(char: DndCharacter): ActiveEffect[] {
+  const effects: ActiveEffect[] = [];
+
+  const activeConditions = CONDITIONS.filter((c) => (char.conditions ?? []).includes(c.key));
+  for (const cond of activeConditions) {
+    for (const effect of cond.effects) {
+      effects.push({ severity: 'error', text: `${cond.icon} ${cond.label}: ${effect}` });
+    }
+  }
+
+  const exhaustionLevel = char.exhaustionLevel ?? 0;
+  if (exhaustionLevel > 0) {
+    for (const effect of EXHAUSTION_EFFECTS.slice(0, exhaustionLevel)) {
+      effects.push({ severity: 'warn', text: `⚠️ ${effect}` });
+    }
+  }
+
+  const activeEnvironments = ENVIRONMENTS.filter((e) => (char.environments ?? []).includes(e.key));
+  for (const env of activeEnvironments) {
+    for (const effect of env.effects) {
+      effects.push({ severity: 'info', text: `${env.icon} ${env.label}: ${effect}` });
+    }
+  }
+
+  if (char.inspiration) {
+    effects.push({ severity: 'secondary', text: '⭐ Inspiration aktiv' });
+  }
+
+  return effects;
+}
