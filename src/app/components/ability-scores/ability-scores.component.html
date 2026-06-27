@@ -1,12 +1,7 @@
 <div class="space-y-2 w-36">
-  <!-- Inspiration -->
-  <div class="flex items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2">
-    <p-checkbox
-      [ngModel]="cs.character().inspiration"
-      (ngModelChange)="cs.update({ inspiration: $event })"
-      [binary]="true"
-    />
-    <span class="text-xs font-bold">Inspiration</span>
+  <!-- Condition Tracker -->
+  <div class="flex justify-center">
+    <app-condition-tracker />
   </div>
 
   <!-- Proficiency Bonus -->

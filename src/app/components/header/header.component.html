@@ -28,7 +28,8 @@
         >{{ cs.character().characterName || 'Charaktername' }}</span>
       }
       @if (cs.character().className) {
-        <span class="text-sm text-slate-500 dark:text-slate-400">{{ cs.character().className }} - Stufe {{ cs.character().level }}</span>
+        <span class="text-sm text-slate-500 dark:text-slate-400">{{ cs.character().className }}
+          - Stufe {{ cs.character().level }}</span>
       }
     </div>
     <!-- Stufe & EP on the right -->
@@ -45,7 +46,14 @@
             inputId="header-level"
           />
         } @else {
-          <input pInputText [value]="cs.character().level" readonly class="text-center" [style]="{ width: '4rem', fontSize: '0.85rem' }" id="header-level" />
+          <input
+            pInputText
+            [value]="cs.character().level"
+            readonly
+            class="text-center"
+            [style]="{ width: '4rem', fontSize: '0.85rem' }"
+            id="header-level"
+          />
         }
         <label for="header-level">Stufe</label>
       </p-ifta-label>
@@ -59,7 +67,14 @@
             inputId="header-xp"
           />
         } @else {
-          <input pInputText [value]="cs.character().experiencePoints" readonly class="text-center" [style]="{ width: '5rem', fontSize: '0.85rem' }" id="header-xp" />
+          <input
+            pInputText
+            [value]="cs.character().experiencePoints"
+            readonly
+            class="text-center"
+            [style]="{ width: '5rem', fontSize: '0.85rem' }"
+            id="header-xp"
+          />
         }
         <label for="header-xp">EP</label>
       </p-ifta-label>

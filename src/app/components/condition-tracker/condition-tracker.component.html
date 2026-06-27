@@ -1,0 +1,128 @@
+<!-- Trigger button -->
+<p-button
+  size="small"
+  [severity]="hasAnyActive() ? 'warn' : 'secondary'"
+  pTooltip="Zustands-Tracker"
+  tooltipPosition="bottom"
+  [fluid]="true"
+  class="w-full"
+  (onClick)="openDialog()"
+>
+  <fa-icon [icon]="fasWarning" />
+  @if (hasAnyActive()) {
+    <span class="ml-1 text-xs">{{ allActiveEffects().length }}</span>
+  }
+</p-button>
+
+<!-- Modal Dialog -->
+<p-dialog
+  header="Zustands-Tracker"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '95vw', maxWidth: '800px' }"
+>
+  <!-- Conditions Grid -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Zustände</h3>
+    <div class="flex flex-wrap gap-1">
+      @for (cond of conditions; track cond.key) {
+        <button
+          type="button"
+          class="condition-btn"
+          [class.active]="isConditionActive(cond.key)"
+          [pTooltip]="'🔹 ' + cond.effects.join('\n🔹 ')"
+          tooltipPosition="top"
+          (click)="toggleCondition(cond.key)"
+          [attr.aria-pressed]="isConditionActive(cond.key)"
+          [attr.aria-label]="cond.label"
+        >
+          <span class="text-xl">{{ cond.icon }}</span>
+          <span class="text-[0.6rem] leading-tight">{{ cond.label }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Exhaustion -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Erschöpfung: {{ getExhaustionLevel() }}</h3>
+    <div class="flex items-center gap-2">
+      <p-input-number
+        [ngModel]="getExhaustionLevel()"
+        (ngModelChange)="setExhaustionLevel($event ?? 0)"
+        [showButtons]="true"
+        buttonLayout="horizontal"
+        [min]="0"
+        [max]="6"
+        [inputStyle]="{ width: '3rem', textAlign: 'center', fontWeight: 'bold' }"
+        size="small"
+      >
+        <ng-template #incrementbuttonicon>
+          <fa-icon [icon]="fasPlus" />
+        </ng-template>
+        <ng-template #decrementbuttonicon>
+          <fa-icon [icon]="fasMinus" />
+        </ng-template>
+      </p-input-number>
+      <div class="flex flex-col gap-0.5 text-xs">
+        @for (effect of exhaustionEffects; track effect; let i = $index) {
+          <span [class.font-bold]="i < getExhaustionLevel()" [class.opacity-40]="i >= getExhaustionLevel()">
+            {{ effect }}
+          </span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Environment -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Umgebung</h3>
+    <div class="flex flex-wrap gap-1">
+      @for (env of environments; track env.key) {
+        <button
+          type="button"
+          class="condition-btn"
+          [class.active]="isEnvironmentActive(env.key)"
+          [pTooltip]="'🔹 ' + env.effects.join('\n🔹 ')"
+          tooltipPosition="top"
+          (click)="toggleEnvironment(env.key)"
+          [attr.aria-pressed]="isEnvironmentActive(env.key)"
+          [attr.aria-label]="env.label"
+        >
+          <span class="text-xl">{{ env.icon }}</span>
+          <span class="text-[0.6rem] leading-tight">{{ env.label }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Inspiration -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Inspiration</h3>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <p-checkbox
+        [ngModel]="cs.character().inspiration"
+        (ngModelChange)="cs.update({ inspiration: $event })"
+        [binary]="true"
+      />
+      <span class="text-sm">Inspiration aktiv</span>
+    </label>
+  </div>
+
+  <ng-template #footer>
+    <div class="flex justify-between w-full">
+      <p-button
+        size="small"
+        severity="danger"
+        label="Zurücksetzen"
+        (onClick)="resetAll()"
+      />
+      <p-button
+        size="small"
+        label="Schließen"
+        (onClick)="showDialog.set(false)"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
