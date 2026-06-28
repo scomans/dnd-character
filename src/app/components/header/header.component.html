@@ -67,17 +67,56 @@
             inputId="header-xp"
           />
         } @else {
-          <input
-            pInputText
-            [value]="cs.character().experiencePoints"
-            readonly
-            class="text-center"
-            [style]="{ width: '5rem', fontSize: '0.85rem' }"
-            id="header-xp"
-          />
+          <div class="flex items-center gap-1">
+            <input
+              pInputText
+              [value]="cs.character().experiencePoints"
+              readonly
+              class="text-center"
+              [style]="{ width: '5rem', fontSize: '0.85rem' }"
+              id="header-xp"
+            />
+            @if (getNextLevelXP(); as nextXP) {
+              <span
+                class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap"
+                pTooltip="EP für nächste Stufe"
+                tooltipPosition="bottom"
+              >/ {{ nextXP }}</span>
+            }
+            <p-button
+              size="small"
+              [rounded]="true"
+              [text]="true"
+              severity="success"
+              (onClick)="showEpDialog.set(true)"
+              pTooltip="EP hinzufügen"
+              tooltipPosition="bottom"
+            >
+              <fa-icon [icon]="fasPlus"/>
+            </p-button>
+          </div>
         }
         <label for="header-xp">EP</label>
       </p-ifta-label>
     </div>
   </div>
 </div>
+
+<!-- EP Add Dialog -->
+<p-dialog
+  header="Erfahrungspunkte hinzufügen"
+  [(visible)]="showEpDialog"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '350px' }"
+>
+  <div class="flex flex-wrap gap-2 justify-center">
+    @for (amount of epOptions; track amount) {
+      <p-button
+        [label]="'+' + amount"
+        severity="secondary"
+        (onClick)="addEP(amount)"
+      />
+    }
+  </div>
+</p-dialog>

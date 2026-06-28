@@ -22,9 +22,9 @@ import {
   faExclamationTriangle,
   faFileCirclePlus,
   faFolderOpen,
-  faLock,
-  faLockOpen,
   faMoon,
+  faPen,
+  faPlay,
   faPlus,
   faRefresh,
   faSave,
@@ -90,8 +90,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly fasFolderOpen = faFolderOpen;
   protected readonly fasFilePlus = faFileCirclePlus;
   protected readonly fasEllipsisV = faEllipsisV;
-  protected readonly fasLock = faLock;
-  protected readonly fasLockOpen = faLockOpen;
+  protected readonly fasLock = faPen;
+  protected readonly fasLockOpen = faPlay;
   protected readonly fasTrash = faTrash;
   protected readonly fasUsers = faUsers;
   protected readonly fasPlus = faPlus;

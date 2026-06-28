@@ -11,14 +11,8 @@
     (onClick)="editMode.toggle()"
     [pTooltip]="editMode.isEditMode() ? 'Bearbeitung beenden' : 'Bearbeiten'"
     tooltipPosition="bottom"
-    class="toggle-lock"
   >
-    <span class="on-hover">
-      <fa-icon [icon]="editMode.isEditMode() ? fasLock : fasLockOpen"/>
-    </span>
-    <span class="default">
-      <fa-icon [icon]="editMode.isEditMode() ? fasLockOpen : fasLock"/>
-    </span>
+    <fa-icon [icon]="editMode.isEditMode() ? fasLock : fasLockOpen"/>
   </p-button>
 
   <span class="border-l border-slate-500 h-6 mx-1"></span>
