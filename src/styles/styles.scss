@@ -72,12 +72,18 @@ html.dark-mode .p-checkbox.p-disabled .p-checkbox-box {
 }
 
 html.dark-mode .p-checkbox.p-disabled.p-checkbox-checked .p-checkbox-box {
-  background: #4b5563 !important;
-  border-color: #9ca3af !important;
+  background: var(--p-primary-color) !important;
+  border-color: var(--p-primary-color) !important;
 }
 
 html.dark-mode .p-checkbox.p-disabled .p-checkbox-icon {
   color: #d1d5db !important;
+}
+
+/* Disabled checkbox accent color - use theme green */
+.p-checkbox.p-disabled.p-checkbox-checked .p-checkbox-box {
+  background: var(--p-primary-color) !important;
+  border-color: var(--p-primary-color) !important;
 }
 
 /* Custom scrollbar */

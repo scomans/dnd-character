@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { IftaLabel } from 'primeng/iftalabel';
@@ -24,6 +24,7 @@ export class HeaderComponent {
   cs = inject(CharacterService);
   protected readonly editMode = inject(EditModeService);
   protected readonly fasPlus = faPlus;
+  protected readonly fasMinus = faMinus;
   protected readonly showEpDialog = signal(false);
   protected readonly epOptions = [50, 100, 200, 500, 1000, 2000, 5000];
 

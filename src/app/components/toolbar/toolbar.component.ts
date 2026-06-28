@@ -90,8 +90,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly fasFolderOpen = faFolderOpen;
   protected readonly fasFilePlus = faFileCirclePlus;
   protected readonly fasEllipsisV = faEllipsisV;
-  protected readonly fasLock = faPen;
-  protected readonly fasLockOpen = faPlay;
+  protected readonly fasLock = faPlay;
+  protected readonly fasLockOpen = faPen;
   protected readonly fasTrash = faTrash;
   protected readonly fasUsers = faUsers;
   protected readonly fasPlus = faPlus;

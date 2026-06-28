@@ -67,37 +67,47 @@
             inputId="header-xp"
           />
         } @else {
-          <div class="flex items-center gap-1">
-            <input
-              pInputText
-              [value]="cs.character().experiencePoints"
-              readonly
-              class="text-center"
-              [style]="{ width: '5rem', fontSize: '0.85rem' }"
-              id="header-xp"
-            />
-            @if (getNextLevelXP(); as nextXP) {
-              <span
-                class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap"
-                pTooltip="EP für nächste Stufe"
-                tooltipPosition="bottom"
-              >/ {{ nextXP }}</span>
-            }
-            <p-button
-              size="small"
-              [rounded]="true"
-              [text]="true"
-              severity="success"
-              (onClick)="showEpDialog.set(true)"
-              pTooltip="EP hinzufügen"
-              tooltipPosition="bottom"
-            >
+          <p-input-number
+            [ngModel]="cs.character().experiencePoints"
+            (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
+            [useGrouping]="false"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            [min]="0"
+            [inputStyle]="{ width: '5rem', fontSize: '0.85rem' }"
+            inputId="header-xp"
+            size="small"
+          >
+            <ng-template #incrementbuttonicon>
               <fa-icon [icon]="fasPlus"/>
-            </p-button>
-          </div>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <fa-icon [icon]="fasMinus"/>
+            </ng-template>
+          </p-input-number>
         }
         <label for="header-xp">EP</label>
       </p-ifta-label>
+      @if (!editMode.isEditMode() && getNextLevelXP(); as nextXP) {
+        <span
+          class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap"
+          pTooltip="EP für nächste Stufe"
+          tooltipPosition="bottom"
+        >/ {{ nextXP }}</span>
+      }
+      @if (!editMode.isEditMode()) {
+        <p-button
+          size="small"
+          [rounded]="true"
+          [text]="true"
+          severity="success"
+          (onClick)="showEpDialog.set(true)"
+          pTooltip="EP hinzufügen"
+          tooltipPosition="bottom"
+        >
+          <fa-icon [icon]="fasPlus"/>
+        </p-button>
+      }
     </div>
   </div>
 </div>
