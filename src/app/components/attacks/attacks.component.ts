@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
@@ -55,6 +55,7 @@ export class AttacksComponent {
     { label: 'Charisma', value: 'cha' },
   ];
 
+  public readonly fasCheck = faCheck;
   public readonly fasPlus = faPlus;
   public readonly fasTrash = faTrash;
 

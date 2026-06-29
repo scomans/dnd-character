@@ -57,12 +57,8 @@
                   (ngModelChange)="updateAttacks()"
                   [binary]="true"
                 />
-              } @else {
-                <i
-                  class="pi"
-                  [class.pi-check]="attack.proficient"
-                  [class.text-green-600]="attack.proficient"
-                ></i>
+              } @else if (attack.proficient) {
+                <fa-icon [icon]="fasCheck" class="text-green-600" />
               }
             </td>
             <td class="p-1">
