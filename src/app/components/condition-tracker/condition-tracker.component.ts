@@ -1,40 +1,27 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faHeartPulse, faMinus, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Dialog } from 'primeng/dialog';
 import { Tooltip } from 'primeng/tooltip';
-import { CharacterService } from '../../services/character.service';
 import {
+  computeActiveEffects,
   Condition,
   CONDITIONS,
-  computeActiveEffects,
   Environment,
   ENVIRONMENTS,
   EXHAUSTION_EFFECTS,
 } from '../../models/character.model';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import {
-  faHeartPulse,
-  faMinus,
-  faPlus,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import { InputNumber } from 'primeng/inputnumber';
+import { CharacterService } from '../../services/character.service';
+import { NumberInputComponent } from '../number-input/number-input.component';
 
 @Component({
   selector: 'app-condition-tracker',
   templateUrl: './condition-tracker.component.html',
   styleUrl: './condition-tracker.component.scss',
-  imports: [
-    Button,
-    Checkbox,
-    Dialog,
-    FaIconComponent,
-    FormsModule,
-    InputNumber,
-    Tooltip,
-  ],
+  imports: [Button, Checkbox, Dialog, FaIconComponent, FormsModule, NumberInputComponent, Tooltip],
 })
 export class ConditionTrackerComponent {
   protected readonly cs = inject(CharacterService);
@@ -62,9 +49,7 @@ export class ConditionTrackerComponent {
 
   toggleCondition(key: Condition): void {
     const current = this.cs.character().conditions ?? [];
-    const updated = current.includes(key)
-      ? current.filter((c) => c !== key)
-      : [...current, key];
+    const updated = current.includes(key) ? current.filter((c) => c !== key) : [...current, key];
     this.cs.update({ conditions: updated });
   }
 
@@ -74,9 +59,7 @@ export class ConditionTrackerComponent {
 
   toggleEnvironment(key: Environment): void {
     const current = this.cs.character().environments ?? [];
-    const updated = current.includes(key)
-      ? current.filter((e) => e !== key)
-      : [...current, key];
+    const updated = current.includes(key) ? current.filter((e) => e !== key) : [...current, key];
     this.cs.update({ environments: updated });
   }
 

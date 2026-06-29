@@ -1,4 +1,4 @@
-<p-confirmDialog/>
+<p-confirmDialog />
 <div class="space-y-3">
   <p-fieldset legend="Ausrüstung">
     <div class="flex max-sm:flex-col-reverse gap-4">
@@ -41,14 +41,14 @@
                 size="small"
                 (onClick)="confirmRemoveItem(i, item.name)"
               >
-                <fa-icon [icon]="fasTrash"/>
+                <fa-icon [icon]="fasTrash" />
               </p-button>
             </div>
           }
         </div>
         <div class="flex justify-between items-center mt-2">
           <p-button size="small" [outlined]="true" (onClick)="addItem()">
-            <fa-icon [icon]="fasPlus" class="mr-1"/>
+            <fa-icon [icon]="fasPlus" class="mr-1" />
             Hinzufügen
           </p-button>
           <span class="text-xs text-gray-500 dark:text-gray-400">
@@ -67,21 +67,12 @@
               [pTooltip]="coin.tooltip"
               tooltipPosition="left"
             >{{ coin.label }}</span>
-            <p-input-number
+            <app-number-input
+              [readonly]="!isEditMode()"
               [ngModel]="getCurrency(coin.key)"
               (ngModelChange)="updateCurrency(coin.key, $event)"
-              [showButtons]="true"
-              buttonLayout="horizontal"
-              [min]="0"
-              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '0.75rem' }"
-            >
-              <ng-template #incrementbuttonicon>
-                <fa-icon [icon]="fasPlus"/>
-              </ng-template>
-              <ng-template #decrementbuttonicon>
-                <fa-icon [icon]="fasMinus"/>
-              </ng-template>
-            </p-input-number>
+              class="w-36"
+            />
           </div>
         }
       </div>
@@ -93,7 +84,7 @@
       @for (item of cs.character().additionalEquipment; track $index; let i = $index) {
         <div cdkDrag class="flex items-center gap-1 text-xs" cdkDragLockAxis="y">
           <div class="cursor-move mr-1 w-7 h-7 flex justify-center items-cente mr-1r" cdkDragHandle>
-            <fa-icon [icon]="fasBars" class="text-gray-400 dark:text-gray-500 cursor-move"/>
+            <fa-icon [icon]="fasBars" class="text-gray-400 dark:text-gray-500 cursor-move" />
           </div>
           <input
             pInputText
@@ -126,14 +117,14 @@
             size="small"
             (onClick)="confirmRemoveAdditionalItem(i, item.name)"
           >
-            <fa-icon [icon]="fasTrash"/>
+            <fa-icon [icon]="fasTrash" />
           </p-button>
         </div>
       }
     </div>
     <div class="flex justify-between items-center mt-2">
       <p-button size="small" [outlined]="true" (onClick)="addAdditionalItem()">
-        <fa-icon [icon]="fasPlus" class="mr-1"/>
+        <fa-icon [icon]="fasPlus" class="mr-1" />
         Hinzufügen
       </p-button>
       <span class="text-xs text-gray-500 dark:text-gray-400">

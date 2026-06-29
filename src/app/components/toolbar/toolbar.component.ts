@@ -34,23 +34,23 @@ import {
   faUpload,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
+import { DrivePickerElement } from '@googleworkspace/drive-picker-element';
 import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
 import { Menu } from 'primeng/menu';
+import { Ripple } from 'primeng/ripple';
 import { Textarea } from 'primeng/textarea';
-import { Tooltip } from 'primeng/tooltip';
 import { ToggleSwitch } from 'primeng/toggleswitch';
+import { Tooltip } from 'primeng/tooltip';
+import { CharacterFileEntry, CharacterListService } from '../../services/character-list.service';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { GoogleDriveService } from '../../services/google-drive.service';
 import { ThemeService } from '../../services/theme.service';
 import { WakeLockService } from '../../services/wake-lock.service';
 import '@googleworkspace/drive-picker-element';
-import { Ripple } from 'primeng/ripple';
-import { DrivePickerElement } from '@googleworkspace/drive-picker-element';
-import { CharacterFileEntry, CharacterListService } from '../../services/character-list.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -78,23 +78,23 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   protected readonly editMode = inject(EditModeService);
   protected readonly theme = inject(ThemeService);
   protected readonly wakeLock = inject(WakeLockService);
-  protected readonly fasCheck = faCheck;
-  protected readonly fasRefresh = faRefresh;
   protected readonly fabGoogle = faGoogle;
-  protected readonly fasExclamationTriangle = faExclamationTriangle;
+  protected readonly fasCheck = faCheck;
   protected readonly fasCloudDownloadAlt = faCloudDownloadAlt;
-  protected readonly fasSun = faSun;
-  protected readonly fasMoon = faMoon;
-  protected readonly fasSave = faSave;
-  protected readonly fasSync = faSync;
-  protected readonly fasFolderOpen = faFolderOpen;
-  protected readonly fasFilePlus = faFileCirclePlus;
   protected readonly fasEllipsisV = faEllipsisV;
-  protected readonly fasLock = faPlay;
-  protected readonly fasLockOpen = faPen;
+  protected readonly fasExclamationTriangle = faExclamationTriangle;
+  protected readonly fasFilePlus = faFileCirclePlus;
+  protected readonly fasFolderOpen = faFolderOpen;
+  protected readonly fasMoon = faMoon;
+  protected readonly fasPen = faPen;
+  protected readonly fasPlay = faPlay;
+  protected readonly fasPlus = faPlus;
+  protected readonly fasRefresh = faRefresh;
+  protected readonly fasSave = faSave;
+  protected readonly fasSun = faSun;
+  protected readonly fasSync = faSync;
   protected readonly fasTrash = faTrash;
   protected readonly fasUsers = faUsers;
-  protected readonly fasPlus = faPlus;
 
   protected readonly drivePickerRef = viewChild<ElementRef<DrivePickerElement>>('drivePicker');
 

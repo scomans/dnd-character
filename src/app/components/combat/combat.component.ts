@@ -1,24 +1,24 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faBed, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Fieldset } from 'primeng/fieldset';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputNumber } from 'primeng/inputnumber';
-import { Tooltip } from 'primeng/tooltip';
-import { CharacterService } from '../../services/character.service';
-import { CountersComponent } from '../counters/counters.component';
-import { faMinus, faPlus, faRefresh } from '@fortawesome/free-solid-svg-icons';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { Select } from 'primeng/select';
-import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 import { DICE_TYPES } from '../../models/character.model';
+import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
+import { CountersComponent } from '../counters/counters.component';
+import { NumberInputComponent } from '../number-input/number-input.component';
 
 @Component({
   selector: 'app-combat',
   templateUrl: './combat.component.html',
   styleUrl: './combat.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     Button,
     Checkbox,
@@ -28,6 +28,7 @@ import { EditModeService } from '../../services/edit-mode.service';
     FormsModule,
     InputGroup,
     InputNumber,
+    NumberInputComponent,
     Select,
     Tooltip,
   ],
@@ -35,9 +36,8 @@ import { EditModeService } from '../../services/edit-mode.service';
 export class CombatComponent {
   protected readonly cs = inject(CharacterService);
   protected readonly editMode = inject(EditModeService);
+  protected readonly fasBed = faBed;
   protected readonly fasPlus = faPlus;
-  protected readonly fasMinus = faMinus;
-  protected readonly fasRefresh = faRefresh;
   protected readonly diceTypes = DICE_TYPES;
 
   updateDeathSaves(type: 'successes' | 'failures', index: number, checked: boolean): void {
@@ -48,7 +48,13 @@ export class CombatComponent {
   }
 
   resetHitDice(): void {
-    this.cs.update({ hitDiceCurrent: this.cs.character().hitDiceMax });
+    this.cs.update({
+      hitDiceCurrent: Math.min(
+        this.cs.character().hitDiceCurrent +
+          Math.max(Math.floor(this.cs.character().hitDiceMax / 2), 1),
+        this.cs.character().hitDiceMax,
+      ),
+    });
   }
 
   getArmorClassTooltip(): string {
