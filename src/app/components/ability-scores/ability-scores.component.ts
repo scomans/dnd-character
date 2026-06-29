@@ -1,20 +1,19 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InputNumber } from 'primeng/inputnumber';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip } from 'primeng/tooltip';
 import { ABILITY_LABELS } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ConditionTrackerComponent } from '../condition-tracker/condition-tracker.component';
+import { NumberInputComponent } from '../number-input/number-input.component';
 
 @Component({
   selector: 'app-ability-scores',
   templateUrl: './ability-scores.component.html',
   styleUrl: './ability-scores.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, InputNumber, Tooltip, FaIconComponent, ConditionTrackerComponent],
+  imports: [ConditionTrackerComponent, FormsModule, NumberInputComponent, Tooltip],
 })
 export class AbilityScoresComponent {
   cs = inject(CharacterService);

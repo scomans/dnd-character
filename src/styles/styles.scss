@@ -65,6 +65,21 @@ html:not(.dark-mode) .p-tree {
   height: 1.1rem !important;
 }
 
+/* Improve disabled checkbox visibility in dark mode */
+html.dark-mode .p-checkbox.p-disabled .p-checkbox-box {
+  border-color: #6b7280 !important;
+  background: #374151 !important;
+  color: #d1d5db !important;
+}
+
+html.dark-mode .p-checkbox.p-disabled.p-checkbox-checked .p-checkbox-box {
+  border-color: var(--p-primary-color) !important;
+}
+
+html.dark-mode .p-checkbox.p-disabled.p-checkbox-checked .p-checkbox-box .p-checkbox-icon {
+  color: var(--p-primary-color) !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

@@ -1,0 +1,13 @@
+<p-inputgroup>
+  <p-inputgroup-addon>
+    <button type="button" pButton severity="secondary" size="small" iconOnly (click)="update(-step())">
+      <fa-icon [icon]="fasMinus" />
+    </button>
+  </p-inputgroup-addon>
+  <input pInputText [value]="value()" [readonly]="readonly()" type="number" class="text-center font-bold" />
+  <p-inputgroup-addon>
+    <button type="button" pButton severity="secondary" size="small" iconOnly (click)="update(step())">
+      <fa-icon [icon]="fasPlus" />
+    </button>
+  </p-inputgroup-addon>
+</p-inputgroup>

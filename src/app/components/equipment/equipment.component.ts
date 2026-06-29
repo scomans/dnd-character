@@ -9,7 +9,7 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faBars, faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -19,6 +19,8 @@ import { InputText } from 'primeng/inputtext';
 import { Tooltip } from 'primeng/tooltip';
 import { Equipment } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
+import { EditModeService } from '../../services/edit-mode.service';
+import { NumberInputComponent } from '../number-input/number-input.component';
 
 @Component({
   selector: 'app-equipment',
@@ -37,6 +39,7 @@ import { CharacterService } from '../../services/character.service';
     FormsModule,
     InputNumber,
     InputText,
+    NumberInputComponent,
     Tooltip,
   ],
   providers: [ConfirmationService],
@@ -45,9 +48,9 @@ export class EquipmentComponent {
   public readonly fasBars = faBars;
   public readonly fasPlus = faPlus;
   public readonly fasTrash = faTrash;
-  public readonly fasMinus = faMinus;
   protected readonly cs = inject(CharacterService);
   private readonly confirmationService = inject(ConfirmationService);
+  protected readonly isEditMode = inject(EditModeService).isEditMode;
 
   // Reversed order: highest value first
   coins = [

@@ -48,23 +48,13 @@
   <div class="mb-4">
     <h3 class="text-sm font-bold mb-2">Erschöpfung: {{ getExhaustionLevel() }}</h3>
     <div class="flex items-center gap-2">
-      <p-input-number
+      <app-number-input
         [ngModel]="getExhaustionLevel()"
         (ngModelChange)="setExhaustionLevel($event ?? 0)"
-        [showButtons]="true"
-        buttonLayout="horizontal"
         [min]="0"
         [max]="6"
-        [inputStyle]="{ width: '3rem', textAlign: 'center', fontWeight: 'bold' }"
-        size="small"
-      >
-        <ng-template #incrementbuttonicon>
-          <fa-icon [icon]="fasPlus" />
-        </ng-template>
-        <ng-template #decrementbuttonicon>
-          <fa-icon [icon]="fasMinus" />
-        </ng-template>
-      </p-input-number>
+        class="w-36"
+      />
       <div class="flex flex-col gap-0.5 text-xs">
         @for (effect of exhaustionEffects; track effect; let i = $index) {
           <span [class.font-bold]="i < getExhaustionLevel()" [class.opacity-40]="i >= getExhaustionLevel()">

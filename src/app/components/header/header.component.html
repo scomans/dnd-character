@@ -57,27 +57,65 @@
         }
         <label for="header-level">Stufe</label>
       </p-ifta-label>
-      <p-ifta-label>
-        @if (editMode.isEditMode()) {
-          <p-input-number
-            [ngModel]="cs.character().experiencePoints"
-            (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
-            [useGrouping]="false"
-            [inputStyle]="{ width: '5rem', fontSize: '0.85rem' }"
-            inputId="header-xp"
-          />
-        } @else {
-          <input
-            pInputText
-            [value]="cs.character().experiencePoints"
-            readonly
-            class="text-center"
-            [style]="{ width: '5rem', fontSize: '0.85rem' }"
-            id="header-xp"
-          />
+      <p-inputgroup>
+        <p-ifta-label>
+          @if (editMode.isEditMode()) {
+            <p-input-number
+              [ngModel]="cs.character().experiencePoints"
+              (ngModelChange)="cs.update({ experiencePoints: $event ?? 0 })"
+              [useGrouping]="false"
+              [inputStyle]="{ width: '6rem', fontSize: '0.85rem' }"
+              inputId="header-xp"
+            />
+          } @else {
+            @let nextXP = getNextLevelXP();
+            <input
+              pInputText
+              [value]="cs.character().experiencePoints + (nextXP ? ' / ' + nextXP : '')"
+              readonly
+              class="text-center"
+              [style]="{ width: '9rem', fontSize: '0.85rem' }"
+              id="header-xp"
+            />
+          }
+          <label for="header-xp">EP</label>
+        </p-ifta-label>
+
+        @if (!editMode.isEditMode()) {
+          <p-inputgroup-addon>
+            <p-button
+              size="small"
+              [rounded]="true"
+              [text]="true"
+              severity="success"
+              (onClick)="showEpDialog.set(true)"
+              pTooltip="EP hinzufügen"
+              tooltipPosition="bottom"
+            >
+              <fa-icon [icon]="fasPlus" />
+            </p-button>
+          </p-inputgroup-addon>
         }
-        <label for="header-xp">EP</label>
-      </p-ifta-label>
+      </p-inputgroup>
     </div>
   </div>
 </div>
+
+<!-- EP Add Dialog -->
+<p-dialog
+  header="Erfahrungspunkte hinzufügen"
+  [(visible)]="showEpDialog"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '350px' }"
+>
+  <div class="flex flex-wrap gap-2 justify-center">
+    @for (amount of epOptions; track amount) {
+      <p-button
+        [label]="'+' + amount"
+        severity="secondary"
+        (onClick)="addEP(amount)"
+      />
+    }
+  </div>
+</p-dialog>
