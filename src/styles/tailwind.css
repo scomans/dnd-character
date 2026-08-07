@@ -1,4 +1,4 @@
 @import "tailwindcss";
 
-/* Configure Tailwind dark mode to use .dark-mode selector (matching PrimeNG config) */
+/* Configure Tailwind dark mode to use .dark-mode selector (matching Optimus UI config) */
 @custom-variant dark (&:where(.dark-mode, .dark-mode *));

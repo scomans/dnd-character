@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, effect, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AutoComplete } from 'primeng/autocomplete';
-import { Fieldset } from 'primeng/fieldset';
-import { IftaLabel } from 'primeng/iftalabel';
-import { InputNumber } from 'primeng/inputnumber';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { TreeSelect } from 'primeng/treeselect';
+import { AutoComplete } from '@openng/optimus-ui/autocomplete';
+import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { IftaLabel } from '@openng/optimus-ui/iftalabel';
+import { InputNumber } from '@openng/optimus-ui/inputnumber';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Select } from '@openng/optimus-ui/select';
+import { TreeSelect } from '@openng/optimus-ui/treeselect';
 import {
   ALIGNMENTS,
   DND_BACKGROUNDS,

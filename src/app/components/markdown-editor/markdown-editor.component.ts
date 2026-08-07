@@ -9,7 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Marked } from 'marked';
-import { Textarea } from 'primeng/textarea';
+import { Textarea } from '@openng/optimus-ui/textarea';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';

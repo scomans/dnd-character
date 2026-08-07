@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@openng/optimus-ui/tabs';
 import { AbilityScoresComponent } from '../ability-scores/ability-scores.component';
 import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
 import { AttacksComponent } from '../attacks/attacks.component';

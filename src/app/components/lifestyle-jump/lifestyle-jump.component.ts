@@ -1,10 +1,10 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
-import { Fieldset } from 'primeng/fieldset';
-import { Select } from 'primeng/select';
-import { Tooltip } from 'primeng/tooltip';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { Select } from '@openng/optimus-ui/select';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { LIFESTYLES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';

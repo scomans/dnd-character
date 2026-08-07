@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CharacterService } from '../../services/character.service';
-import { Fieldset } from 'primeng/fieldset';
+import { Fieldset } from '@openng/optimus-ui/fieldset';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 
 @Component({

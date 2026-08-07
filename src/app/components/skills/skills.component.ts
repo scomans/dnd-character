@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Checkbox } from 'primeng/checkbox';
-import { Fieldset } from 'primeng/fieldset';
-import { Tooltip } from 'primeng/tooltip';
+import { Checkbox } from '@openng/optimus-ui/checkbox';
+import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import {
   ABILITY_LABELS,
   ABILITY_SHORT_LABELS,

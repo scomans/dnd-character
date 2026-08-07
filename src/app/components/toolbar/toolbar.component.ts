@@ -35,15 +35,15 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { DrivePickerElement } from '@googleworkspace/drive-picker-element';
-import { MenuItem } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { Dialog } from 'primeng/dialog';
-import { InputText } from 'primeng/inputtext';
-import { Menu } from 'primeng/menu';
-import { Ripple } from 'primeng/ripple';
-import { Textarea } from 'primeng/textarea';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { Tooltip } from 'primeng/tooltip';
+import { MenuItem } from '@openng/optimus-ui/api';
+import { Button } from '@openng/optimus-ui/button';
+import { Dialog } from '@openng/optimus-ui/dialog';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Menu } from '@openng/optimus-ui/menu';
+import { Ripple } from '@openng/optimus-ui/ripple';
+import { Textarea } from '@openng/optimus-ui/textarea';
+import { ToggleSwitch } from '@openng/optimus-ui/toggleswitch';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { CharacterFileEntry, CharacterListService } from '../../services/character-list.service';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';

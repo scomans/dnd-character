@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Checkbox } from 'primeng/checkbox';
-import { Fieldset } from 'primeng/fieldset';
-import { InputText } from 'primeng/inputtext';
+import { Checkbox } from '@openng/optimus-ui/checkbox';
+import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { InputText } from '@openng/optimus-ui/inputtext';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
@@ -12,13 +12,7 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
   templateUrl: './proficiencies-languages.component.html',
   styleUrl: './proficiencies-languages.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    Checkbox,
-    Fieldset,
-    FormsModule,
-    InputText,
-    MarkdownEditorComponent,
-  ],
+  imports: [Checkbox, Fieldset, FormsModule, InputText, MarkdownEditorComponent],
 })
 export class ProficienciesLanguagesComponent {
   cs = inject(CharacterService);

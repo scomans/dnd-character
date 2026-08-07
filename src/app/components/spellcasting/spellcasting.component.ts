@@ -15,19 +15,24 @@ import {
   faTrash,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons';
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
-import { ConfirmationService } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { Divider } from 'primeng/divider';
-import { Fieldset } from 'primeng/fieldset';
-import { IftaLabel } from 'primeng/iftalabel';
-import { InputNumber } from 'primeng/inputnumber';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { ToggleSwitch } from 'primeng/toggleswitch';
-import { Tooltip } from 'primeng/tooltip';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionHeader,
+  AccordionPanel,
+} from '@openng/optimus-ui/accordion';
+import { ConfirmationService } from '@openng/optimus-ui/api';
+import { Button } from '@openng/optimus-ui/button';
+import { Checkbox } from '@openng/optimus-ui/checkbox';
+import { ConfirmDialog } from '@openng/optimus-ui/confirmdialog';
+import { Divider } from '@openng/optimus-ui/divider';
+import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { IftaLabel } from '@openng/optimus-ui/iftalabel';
+import { InputNumber } from '@openng/optimus-ui/inputnumber';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Select } from '@openng/optimus-ui/select';
+import { ToggleSwitch } from '@openng/optimus-ui/toggleswitch';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { ABILITY_LABELS, Spell, SPELLCASTING_CLASSES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';

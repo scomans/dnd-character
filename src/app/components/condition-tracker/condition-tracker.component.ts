@@ -2,10 +2,10 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faHeartPulse, faMinus, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { Dialog } from 'primeng/dialog';
-import { Tooltip } from 'primeng/tooltip';
+import { Button } from '@openng/optimus-ui/button';
+import { Checkbox } from '@openng/optimus-ui/checkbox';
+import { Dialog } from '@openng/optimus-ui/dialog';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import {
   computeActiveEffects,
   Condition,

@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { Message } from 'primeng/message';
+import { Message } from '@openng/optimus-ui/message';
 import { CharacterService } from '../../services/character.service';
 import { computeActiveEffects } from '../../models/character.model';
 

@@ -11,8 +11,8 @@ import {
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'primeng/button';
-import { Image as PrimeImage } from 'primeng/image';
+import { Button } from '@openng/optimus-ui/button';
+import { Image as PrimeImage } from '@openng/optimus-ui/image';
 import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({

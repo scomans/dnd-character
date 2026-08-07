@@ -1,4 +1,4 @@
-import { TreeNode } from 'primeng/api';
+import { TreeNode } from '@openng/optimus-ui/api';
 
 export interface NoteNode {
   id: string;
@@ -563,12 +563,12 @@ export const DICE_TYPES: { value: string; label: string }[] = [
 
 /** DND 2024 (5.5E) XP thresholds per level. Index = level (0 unused). */
 export const XP_THRESHOLDS: number[] = [
-  0,     // Level 0 (unused)
-  0,     // Level 1
-  300,   // Level 2
-  900,   // Level 3
-  2700,  // Level 4
-  6500,  // Level 5
+  0, // Level 0 (unused)
+  0, // Level 1
+  300, // Level 2
+  900, // Level 3
+  2700, // Level 4
+  6500, // Level 5
   14000, // Level 6
   23000, // Level 7
   34000, // Level 8

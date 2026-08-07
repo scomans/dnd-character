@@ -13,27 +13,27 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faEye, faPencil, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Marked } from 'marked';
-import { ConfirmationService, MenuItem, TreeNode } from 'primeng/api';
-import { Button } from 'primeng/button';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { ContextMenu } from 'primeng/contextmenu';
-import { Drawer } from 'primeng/drawer';
-import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
-import { Tooltip } from 'primeng/tooltip';
-import { Tree } from 'primeng/tree';
+import { ConfirmationService, MenuItem, TreeNode } from '@openng/optimus-ui/api';
+import { Button } from '@openng/optimus-ui/button';
+import { ConfirmDialog } from '@openng/optimus-ui/confirmdialog';
+import { ContextMenu } from '@openng/optimus-ui/contextmenu';
+import { Drawer } from '@openng/optimus-ui/drawer';
+import { InputText } from '@openng/optimus-ui/inputtext';
+import { Textarea } from '@openng/optimus-ui/textarea';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
+import { Tree } from '@openng/optimus-ui/tree';
 import { NoteNode } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
 import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
-import { Ripple } from 'primeng/ripple';
+import { Ripple } from '@openng/optimus-ui/ripple';
 import { ClickOutside } from 'ngxtension/click-outside';
 
 function generateId(): string {
   return `note-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
-/** Convert NoteNode[] to PrimeNG TreeNode[] */
+/** Convert NoteNode[] to Optimus UI TreeNode[] */
 function toTreeNodes(notes: NoteNode[]): TreeNode[] {
   return notes.map((n) => ({
     key: n.id,
