@@ -48,13 +48,7 @@ export class CombatComponent {
   }
 
   resetHitDice(): void {
-    this.cs.update({
-      hitDiceCurrent: Math.min(
-        this.cs.character().hitDiceCurrent +
-          Math.max(Math.floor(this.cs.character().hitDiceMax / 2), 1),
-        this.cs.character().hitDiceMax,
-      ),
-    });
+    this.cs.update({ hitDiceCurrent: this.cs.character().hitDiceMax });
   }
 
   getArmorClassTooltip(): string {
