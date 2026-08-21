@@ -14,20 +14,28 @@
     <p-tabpanels>
       <!-- Page 1: Main Character Sheet -->
       <p-tabpanel value="0">
+        @let editMode = isEditMode();
         <div class="grid grid-cols-12 grid-rows-[90px] auto-rows-auto gap-4 overflow-x-hidden">
 
+          @if (!editMode) {
+            <div [class.col-span-2]="isEditMode()">
+              <app-condition-tracker/>
+            </div>
+          }
           <div class="col-span-6" [class.col-span-12]="isEditMode()">
             <app-ability-scores/>
           </div>
-          <div class="col-start-8" [class.col-span-2]="isEditMode()">
+          <div [class.col-span-2]="isEditMode()">
             <app-proficiency/>
           </div>
           <div [class.col-span-2]="isEditMode()">
             <app-walking-speed/>
           </div>
-          <div>
-            <app-initiative/>
-          </div>
+          @if (!editMode) {
+            <div>
+              <app-initiative/>
+            </div>
+          }
           <div class="col-span-2">
             <app-armor-class/>
           </div>

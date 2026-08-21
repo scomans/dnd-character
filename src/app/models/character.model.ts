@@ -279,12 +279,6 @@ export const CONDITIONS: ConditionInfo[] = [
       'Jeder Treffer innerhalb von 1,5m ist ein kritischer Treffer',
     ],
   },
-  {
-    key: 'zeroHp',
-    label: '0 TP',
-    icon: '💀',
-    effects: ['Bewusstlos oder sofort tot (bei massivem Schaden)'],
-  },
 ];
 
 export const EXHAUSTION_EFFECTS: string[] = [

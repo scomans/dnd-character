@@ -1,18 +1,19 @@
 <!-- Trigger button -->
-<p-button
+<button
+  pButton
   size="small"
   [severity]="hasAnyActive() ? 'warn' : 'secondary'"
   pTooltip="Zustands-Tracker"
   tooltipPosition="bottom"
   [fluid]="true"
-  class="w-full"
-  (onClick)="openDialog()"
+  class="w-full h-full"
+  (click)="openDialog()"
 >
   <fa-icon [icon]="fasWarning" />
   @if (hasAnyActive()) {
     <span class="ml-1 text-xs">{{ allActiveEffects().length }}</span>
   }
-</p-button>
+</button>
 
 <!-- Modal Dialog -->
 <p-dialog

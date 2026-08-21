@@ -1,8 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faHeartPulse, faMinus, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@openng/optimus-ui/button';
+import { faHeartPulse, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Button, ButtonDirective } from '@openng/optimus-ui/button';
 import { Checkbox } from '@openng/optimus-ui/checkbox';
 import { Dialog } from '@openng/optimus-ui/dialog';
 import { Tooltip } from '@openng/optimus-ui/tooltip';
@@ -21,7 +21,16 @@ import { NumberInputComponent } from '../number-input/number-input.component';
   selector: 'app-condition-tracker',
   templateUrl: './condition-tracker.component.html',
   styleUrl: './condition-tracker.component.scss',
-  imports: [Button, Checkbox, Dialog, FaIconComponent, FormsModule, NumberInputComponent, Tooltip],
+  imports: [
+    Button,
+    Checkbox,
+    Dialog,
+    FaIconComponent,
+    FormsModule,
+    NumberInputComponent,
+    Tooltip,
+    ButtonDirective,
+  ],
 })
 export class ConditionTrackerComponent {
   protected readonly cs = inject(CharacterService);
@@ -29,8 +38,6 @@ export class ConditionTrackerComponent {
   protected readonly environments = ENVIRONMENTS;
   protected readonly exhaustionEffects = EXHAUSTION_EFFECTS;
   protected readonly fasPlus = faPlus;
-  protected readonly fasMinus = faMinus;
-  protected readonly fasTimes = faTimes;
   protected readonly fasWarning = faHeartPulse;
 
   showDialog = signal(false);

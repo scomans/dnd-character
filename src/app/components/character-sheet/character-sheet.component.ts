@@ -22,6 +22,7 @@ import { WalkingSpeedComponent } from '../walking-speed/walking-speed.component'
 import { InitiativeComponent } from '../initiative/initiative.component';
 import { ArmorClassComponent } from '../armor-class/armor-class.component';
 import { CountersComponent } from '../counters/counters.component';
+import { ConditionTrackerComponent } from '../condition-tracker/condition-tracker.component';
 
 @Component({
   selector: 'app-character-sheet',
@@ -55,6 +56,7 @@ import { CountersComponent } from '../counters/counters.component';
     Tabs,
     ToolbarComponent,
     WalkingSpeedComponent,
+    ConditionTrackerComponent,
   ],
 })
 export class CharacterSheetComponent {
