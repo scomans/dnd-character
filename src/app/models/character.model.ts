@@ -397,7 +397,6 @@ export interface DndCharacter {
   hitPointsTemp: number;
   hitDice: string;
   hitDiceCurrent: number;
-  hitDiceMax: number;
   deathSaves: DeathSaves;
 
   // Proficiency bonus override (null = auto-compute from level)
@@ -477,7 +476,7 @@ export interface DndCharacter {
 
 export const ABILITY_LABELS: { [key: string]: string } = {
   str: 'Stärke',
-  dex: 'Geschicklichkeit',
+  dex: 'Geschicklichk.',
   con: 'Konstitution',
   int: 'Intelligenz',
   wis: 'Weisheit',
@@ -1073,7 +1072,6 @@ export function createDefaultCharacter(): DndCharacter {
     hitPointsTemp: 0,
     hitDice: 'W10',
     hitDiceCurrent: 0,
-    hitDiceMax: 1,
     deathSaves: { successes: 0, failures: 0 },
     proficiencyBonusOverride: null,
     personalityTraits: '',

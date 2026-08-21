@@ -17,6 +17,7 @@ export class NumberInputComponent {
   step = input<number>(1);
   min = input<number | undefined>(undefined);
   max = input<number | undefined>(undefined);
+  vertical = input<boolean>(false);
   readonly = input<boolean>(true);
   value = model<number>(0);
 

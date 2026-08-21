@@ -1,0 +1,181 @@
+<div
+  class="h-full flex flex-col items-center gap-2 bg-white dark:bg-gray-800 border border-slate-700 dark:border-slate-500 rounded-lg p-2 overflow-hidden"
+  pTooltip="Geschicklichkeits-Modifikator"
+  tooltipPosition="top"
+>
+  <span class="text-[0.6rem] font-bold text-gray-600 dark:text-gray-400">
+    Rüstungsklasse
+  </span>
+  <div class="flex flex-col items-center justify-center flex-1">
+    @if (editMode.isEditMode()) {
+      <p-input-number
+        [ngModel]="cs.character().armorValue"
+        (ngModelChange)="cs.update({ armorValue: $event ?? 10 })"
+        [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 'bold' }"
+      />
+    } @else {
+      <div class="flex flex-col items-center gap-1">
+            <span
+              class="text-2xl font-bold text-slate-700 dark:text-slate-300"
+              [pTooltip]="getArmorClassTooltip()"
+              tooltipPosition="top"
+            >{{ cs.getComputedArmorClass() }}</span>
+        <label class="flex items-center gap-1 text-xs">
+          <p-checkbox
+            [ngModel]="cs.character().hasShield"
+            (ngModelChange)="cs.update({ hasShield: $event })"
+            [binary]="true"
+          />
+          Schild (+2)
+        </label>
+      </div>
+    }
+  </div>
+
+</div>
+
+
+<!-- AC / Initiative / Speed Row -->
+<!--<div class="flex flex-col items-stretch gap-4 max-md:w-full">-->
+<!--  <div class="flex flex-wrap flex-row max-sm:flex-col gap-4 max-md:w-full">-->
+<!--    <p-fieldset legend="Rüstungsklasse" class="flex-1 text-center">-->
+<!--      <div class="flex flex-col items-center">-->
+
+<!--      </div>-->
+<!--    </p-fieldset>-->
+<!--    <p-fieldset legend="Initiative" class="flex-1 text-center">-->
+<!--      <div class="flex flex-col items-center">-->
+<!--        <span-->
+<!--          class="text-2xl font-bold text-slate-700 dark:text-slate-300"-->
+<!--          pTooltip="Geschicklichkeits-Modifikator"-->
+<!--          tooltipPosition="top"-->
+<!--        >-->
+<!--          {{ cs.getInitiative() >= 0 ? '+' : '' }}{{ cs.getInitiative() }}-->
+<!--        </span>-->
+<!--      </div>-->
+<!--    </p-fieldset>-->
+<!--    <p-fieldset legend="Bewegungsrate" class="text-center">-->
+<!--      <div class="flex flex-col items-center">-->
+<!--        @if (editMode.isEditMode()) {-->
+<!--          <p-input-group class="justify-center">-->
+<!--            <p-input-number-->
+<!--              [ngModel]="cs.character().speed"-->
+<!--              (ngModelChange)="cs.update({ speed: $event ?? 30 })"-->
+<!--              [inputStyle]="{ width: '3rem', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }"-->
+<!--              suffix=" m"-->
+<!--            />-->
+<!--          </p-input-group>-->
+<!--        } @else {-->
+<!--          <span-->
+<!--            class="text-2xl font-bold text-slate-700 dark:text-slate-300"-->
+<!--          >{{ cs.character().speed }} m</span>-->
+<!--        }-->
+<!--      </div>-->
+<!--    </p-fieldset>-->
+<!--  </div>-->
+
+<!--  <div class="flex flex-wrap flex-row max-sm:flex-col gap-4 max-md:w-full">-->
+<!--    &lt;!&ndash; Hit Points: combined current/max + temp side by side &ndash;&gt;-->
+
+<!--    <p-fieldset [legend]="(editMode.isEditMode() ? 'Max. ' : '') + 'Trefferpunkte'" class="flex-1">-->
+<!--      <div class="flex items-center justify-center gap-1">-->
+<!--        @if (!editMode.isEditMode()) {-->
+<!--          <app-number-input-->
+<!--            [ngModel]="cs.character().hitPointsCurrent"-->
+<!--            (ngModelChange)="cs.update({ hitPointsCurrent: $event ?? 0 })"-->
+<!--            [min]="0"-->
+<!--            [max]="cs.character().hitPointsMax"-->
+<!--            class="w-36"-->
+<!--          />-->
+<!--          <span class="text-xl font-bold text-gray-400 dark:text-gray-500">/</span>-->
+<!--        }-->
+<!--        @if (editMode.isEditMode()) {-->
+<!--          <div>-->
+<!--            <app-number-input-->
+<!--              [ngModel]="cs.character().hitPointsMax"-->
+<!--              (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"-->
+<!--              [min]="1"-->
+<!--              class="w-36"-->
+<!--            />-->
+<!--          </div>-->
+<!--        } @else {-->
+<!--          <span-->
+<!--            class="text-2xl font-bold text-slate-700 dark:text-slate-300"-->
+<!--            pTooltip="Max. TP"-->
+<!--            tooltipPosition="top"-->
+<!--          >{{ cs.character().hitPointsMax }}</span>-->
+<!--        }-->
+<!--      </div>-->
+<!--    </p-fieldset>-->
+
+<!--    <p-fieldset legend="Temporäre TP" pTooltip="Temporäre Trefferpunkte" tooltipPosition="top" class="flex-1">-->
+<!--      <div class="flex items-center justify-center">-->
+<!--        <app-number-input-->
+<!--          [ngModel]="cs.character().hitPointsTemp"-->
+<!--          (ngModelChange)="cs.update({ hitPointsTemp: $event ?? 0 })"-->
+<!--          [min]="0"-->
+<!--          class="w-36"-->
+<!--        />-->
+<!--      </div>-->
+<!--    </p-fieldset>-->
+<!--  </div>-->
+<!--  <div class="flex flex-wrap flex-row max-sm:flex-col gap-4 max-md:w-full">-->
+<!--    &lt;!&ndash; Hit Dice & Death Saves &ndash;&gt;-->
+<!--    <p-fieldset legend="Trefferwürfel" class="flex-1">-->
+<!--      <div class="flex items-center justify-center">-->
+<!--        @if (editMode.isEditMode()) {-->
+<!--          <div class="flex items-center justify-center gap-2">-->
+<!--            <p-select-->
+<!--              size="small"-->
+<!--              [options]="diceTypes"-->
+<!--              [ngModel]="cs.character().hitDice"-->
+<!--              (ngModelChange)="cs.update({ hitDice: $event })"-->
+<!--            />-->
+<!--          </div>-->
+<!--        } @else {-->
+<!--          <div class="flex items-center justify-center gap-2">-->
+<!--            <span-->
+<!--              class="text-2xl font-bold text-slate-700 dark:text-slate-300"-->
+<!--            >{{ cs.character().hitDice }}</span>-->
+<!--            <p-button-->
+<!--              [rounded]="true"-->
+<!--              [text]="true"-->
+<!--              severity="info"-->
+<!--              size="small"-->
+<!--              (onClick)="resetHitDice()"-->
+<!--              pTooltip="Lange Rast"-->
+<!--              tooltipPosition="top"-->
+<!--            >-->
+<!--              <fa-icon [icon]="fasBed"/>-->
+<!--            </p-button>-->
+<!--          </div>-->
+<!--        }-->
+<!--      </div>-->
+<!--    </p-fieldset>-->
+<!--    <p-fieldset legend="Todesrettungen" class="flex-1">-->
+<!--      <div class="text-xs flex flex-col items-center">-->
+<!--        <div class="flex items-center gap-1">-->
+<!--          <span class="text-[0.6rem] w-16">Erfolge</span>-->
+<!--          @for (i of [0, 1, 2]; track i) {-->
+<!--            <p-checkbox-->
+<!--              [ngModel]="cs.character().deathSaves.successes > i"-->
+<!--              (ngModelChange)="updateDeathSaves('successes', i, $event)"-->
+<!--              [binary]="true"-->
+<!--            />-->
+<!--          }-->
+<!--        </div>-->
+<!--        <div class="flex items-center gap-1 mt-1">-->
+<!--          <span class="text-[0.6rem] w-16">Fehlschläge</span>-->
+<!--          @for (i of [0, 1, 2]; track i) {-->
+<!--            <p-checkbox-->
+<!--              [ngModel]="cs.character().deathSaves.failures > i"-->
+<!--              (ngModelChange)="updateDeathSaves('failures', i, $event)"-->
+<!--              [binary]="true"-->
+<!--            />-->
+<!--          }-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </p-fieldset>-->
+<!--  </div>-->
+<!--  <app-counters/>-->
+<!--</div>-->

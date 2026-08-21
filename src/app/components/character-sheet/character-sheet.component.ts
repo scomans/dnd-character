@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@openng/optimus-ui/tabs';
 import { AbilityScoresComponent } from '../ability-scores/ability-scores.component';
 import { AppearanceBackstoryComponent } from '../appearance-backstory/appearance-backstory.component';
 import { AttacksComponent } from '../attacks/attacks.component';
-import { CombatComponent } from '../combat/combat.component';
 import { ConditionEffectsComponent } from '../condition-effects/condition-effects.component';
 import { EquipmentComponent } from '../equipment/equipment.component';
 import { FeaturesComponent } from '../features/features.component';
@@ -16,6 +15,13 @@ import { SkillsComponent } from '../skills/skills.component';
 import { SpellcastingComponent } from '../spellcasting/spellcasting.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { NotesComponent } from '../notes/notes.component';
+import { EditModeService } from '../../services/edit-mode.service';
+import { ProficiencyComponent } from '../proficiency/proficiency.component';
+import { HealthComponent } from '../health/health.component';
+import { WalkingSpeedComponent } from '../walking-speed/walking-speed.component';
+import { InitiativeComponent } from '../initiative/initiative.component';
+import { ArmorClassComponent } from '../armor-class/armor-class.component';
+import { CountersComponent } from '../counters/counters.component';
 
 @Component({
   selector: 'app-character-sheet',
@@ -23,27 +29,34 @@ import { NotesComponent } from '../notes/notes.component';
   styleUrl: './character-sheet.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    Tabs,
-    TabList,
-    Tab,
-    TabPanels,
-    TabPanel,
-    ToolbarComponent,
-    HeaderComponent,
     AbilityScoresComponent,
-    SavingThrowsComponent,
-    SkillsComponent,
-    CombatComponent,
-    ConditionEffectsComponent,
-    PersonalityComponent,
+    AppearanceBackstoryComponent,
+    ArmorClassComponent,
     AttacksComponent,
-    ProficienciesLanguagesComponent,
+    ConditionEffectsComponent,
+    CountersComponent,
     EquipmentComponent,
     FeaturesComponent,
+    HeaderComponent,
+    HealthComponent,
+    InitiativeComponent,
     LifestyleJumpComponent,
-    SpellcastingComponent,
-    AppearanceBackstoryComponent,
     NotesComponent,
+    PersonalityComponent,
+    ProficienciesLanguagesComponent,
+    ProficiencyComponent,
+    SavingThrowsComponent,
+    SkillsComponent,
+    SpellcastingComponent,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    ToolbarComponent,
+    WalkingSpeedComponent,
   ],
 })
-export class CharacterSheetComponent {}
+export class CharacterSheetComponent {
+  protected readonly isEditMode = inject(EditModeService).isEditMode;
+}
