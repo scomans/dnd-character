@@ -78,6 +78,7 @@ export class AttacksComponent {
         attribute: 'str',
         range: '1.5',
         damageDice: '1W8',
+        hasDamageBonus: true,
         damageType: 'Hieb',
         description: '',
         mastery: '',

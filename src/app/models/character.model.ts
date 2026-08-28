@@ -27,6 +27,7 @@ export interface Attack {
   attribute: string; // 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha'
   range: string;
   damageDice: string;
+  hasDamageBonus: boolean;
   damageType: string;
   description: string;
   mastery: string;
