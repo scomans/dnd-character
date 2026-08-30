@@ -10,22 +10,22 @@ import {
   faHourglass,
   faSkull,
 } from '@fortawesome/free-solid-svg-icons';
+import { MenuItem } from '@openng/optimus-ui/api';
 import { ButtonDirective } from '@openng/optimus-ui/button';
+import { ButtonGroup } from '@openng/optimus-ui/buttongroup';
 import { Checkbox } from '@openng/optimus-ui/checkbox';
+import { Dialog } from '@openng/optimus-ui/dialog';
 import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { InputNumber } from '@openng/optimus-ui/inputnumber';
+import { Menu } from '@openng/optimus-ui/menu';
+import { OverlayBadge } from '@openng/optimus-ui/overlaybadge';
 import { Select } from '@openng/optimus-ui/select';
+import { Tag } from '@openng/optimus-ui/tag';
 import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { DICE_TYPES } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { NumberInputComponent } from '../number-input/number-input.component';
-import { Tag } from '@openng/optimus-ui/tag';
-import { ButtonGroup } from '@openng/optimus-ui/buttongroup';
-import { OverlayBadge } from '@openng/optimus-ui/overlaybadge';
-import { Menu } from '@openng/optimus-ui/menu';
-import { MenuItem } from '@openng/optimus-ui/api';
-import { Dialog } from '@openng/optimus-ui/dialog';
-import { InputNumber } from '@openng/optimus-ui/inputnumber';
 
 @Component({
   selector: 'app-health',
@@ -122,10 +122,14 @@ export class HealthComponent {
   }
 
   damageCharacter(amount: number): void {
-    const healthDamage = amount - this.cs.character().hitPointsTemp;
+    const healthDamage =
+      this.cs.character().hitPointsTemp > 0 ? amount - this.cs.character().hitPointsTemp : amount;
     this.cs.update({
       hitPointsTemp: Math.max(this.cs.character().hitPointsTemp - amount, 0),
-      hitPointsCurrent: Math.max(this.cs.character().hitPointsCurrent - healthDamage, 0),
+      hitPointsCurrent: Math.max(
+        this.cs.character().hitPointsCurrent - (healthDamage < 0 ? 0 : healthDamage),
+        0,
+      ),
     });
     this.damageAmount.set(1);
     this.showDamageDialog.set(false);
