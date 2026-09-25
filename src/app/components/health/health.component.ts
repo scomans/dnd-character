@@ -109,6 +109,7 @@ export class HealthComponent {
     this.cs.update({
       hitDiceCurrent: this.cs.character().level,
       hitPointsCurrent: this.cs.character().hitPointsMax,
+      hitPointsTemp: 0,
     });
   }
 
