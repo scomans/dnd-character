@@ -9,18 +9,19 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faBars, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService } from '@openng/optimus-ui/api';
-import { Button } from '@openng/optimus-ui/button';
+import { Button, ButtonDirective } from '@openng/optimus-ui/button';
 import { ConfirmDialog } from '@openng/optimus-ui/confirmdialog';
 import { Fieldset } from '@openng/optimus-ui/fieldset';
+import { InputGroup } from '@openng/optimus-ui/inputgroup';
+import { InputGroupAddon } from '@openng/optimus-ui/inputgroupaddon';
 import { InputNumber } from '@openng/optimus-ui/inputnumber';
 import { InputText } from '@openng/optimus-ui/inputtext';
 import { Tooltip } from '@openng/optimus-ui/tooltip';
-import { Equipment } from '../../models/character.model';
+import { Currency, Equipment } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
-import { NumberInputComponent } from '../number-input/number-input.component';
 
 @Component({
   selector: 'app-equipment',
@@ -29,6 +30,7 @@ import { NumberInputComponent } from '../number-input/number-input.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     Button,
+    ButtonDirective,
     CdkDrag,
     CdkDragHandle,
     CdkDropList,
@@ -37,15 +39,17 @@ import { NumberInputComponent } from '../number-input/number-input.component';
     FaIconComponent,
     Fieldset,
     FormsModule,
+    InputGroup,
+    InputGroupAddon,
     InputNumber,
     InputText,
-    NumberInputComponent,
     Tooltip,
   ],
   providers: [ConfirmationService],
 })
 export class EquipmentComponent {
   public readonly fasBars = faBars;
+  public readonly fasMinus = faMinus;
   public readonly fasPlus = faPlus;
   public readonly fasTrash = faTrash;
   protected readonly cs = inject(CharacterService);
@@ -56,10 +60,17 @@ export class EquipmentComponent {
   coins = [
     { key: 'pp', label: 'PM', tooltip: 'Platinmünzen' },
     { key: 'gp', label: 'GM', tooltip: 'Goldmünzen' },
-    { key: 'ep', label: 'EM', tooltip: 'Elektrummünzen' },
     { key: 'sp', label: 'SM', tooltip: 'Silbermünzen' },
     { key: 'cp', label: 'KM', tooltip: 'Kupfermünzen' },
   ];
+
+  // Value of each coin denomination, expressed in copper pieces
+  private readonly coinValueInCopper: Record<string, number> = {
+    cp: 1,
+    sp: 10,
+    gp: 100,
+    pp: 1000,
+  };
 
   getCurrency(key: string): number {
     const char = this.cs.character();
@@ -68,7 +79,34 @@ export class EquipmentComponent {
 
   updateCurrency(key: string, value: number | null): void {
     const char = this.cs.character();
-    this.cs.update({ currency: { ...char.currency, [key]: value ?? 0 } });
+    this.cs.update({ currency: { ...char.currency, [key]: Math.max(0, value ?? 0) } });
+  }
+
+  onCurrencyInput(key: string, event: Event): void {
+    const raw = (event.target as HTMLInputElement).value;
+    const value = raw === '' ? 0 : Number(raw);
+    if (!Number.isNaN(value)) {
+      this.updateCurrency(key, value);
+    }
+  }
+
+  /** Adjust a coin denomination by one, exchanging into bigger/smaller coins as needed. */
+  adjustCurrency(key: string, direction: 1 | -1): void {
+    const totalCopper = this.getTotalCopper() + direction * this.coinValueInCopper[key];
+    this.cs.update({ currency: this.copperToCurrency(Math.max(0, totalCopper)) });
+  }
+
+  private getTotalCopper(): number {
+    const { cp, sp, gp, pp } = this.cs.character().currency;
+    return cp + sp * 10 + gp * 100 + pp * 1000;
+  }
+
+  private copperToCurrency(totalCopper: number): Currency {
+    const pp = Math.floor(totalCopper / 1000);
+    const gp = Math.floor((totalCopper % 1000) / 100);
+    const sp = Math.floor((totalCopper % 100) / 10);
+    const cp = totalCopper % 10;
+    return { cp, sp, gp, pp };
   }
 
   // === Main Equipment ===

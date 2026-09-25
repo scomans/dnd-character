@@ -315,7 +315,6 @@ export const ENVIRONMENTS: EnvironmentInfo[] = [
 export interface Currency {
   cp: number;
   sp: number;
-  ep: number;
   gp: number;
   pp: number;
 }
@@ -1089,7 +1088,7 @@ export function createDefaultCharacter(): DndCharacter {
     toolsAndOther: '',
     equipment: [],
     additionalEquipment: [],
-    currency: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
+    currency: { cp: 0, sp: 0, gp: 0, pp: 0 },
     featuresAndTraits: '',
     racialTraits: '',
     senses: '',
