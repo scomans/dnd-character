@@ -162,6 +162,17 @@
                       @if (editMode.isEditMode()) {
                         <fa-icon [icon]="fasBars" class="text-gray-400 dark:text-gray-500 cursor-move mr-1" cdkDragHandle></fa-icon>
                       }
+                      <fa-icon
+                        [icon]="spell.favorite ? fasStar : farStar"
+                        class="cursor-pointer text-base mr-2"
+                        [class.text-amber-400]="spell.favorite"
+                        [class.dark:text-amber-300]="spell.favorite"
+                        [class.text-gray-400]="!spell.favorite"
+                        [class.dark:text-gray-500]="!spell.favorite"
+                        pTooltip="Favorit"
+                        tooltipPosition="top"
+                        (click)="$event.stopPropagation(); toggleFavorite(spell)"
+                      ></fa-icon>
                       @if (levelGroup.level > 0) {
                         <p-checkbox
                           [ngModel]="spell.prepared"

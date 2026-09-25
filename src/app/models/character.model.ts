@@ -100,6 +100,7 @@ export interface Spell {
   duration: string;
   description: string;
   prepared: boolean;
+  favorite?: boolean;
 }
 
 export interface Equipment {

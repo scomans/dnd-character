@@ -8,10 +8,12 @@ import {
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 import {
   faBars,
   faDownLeftAndUpRightToCenter,
   faPlus,
+  faStar as fasStar,
   faTrash,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons';
@@ -72,9 +74,11 @@ export class SpellcastingComponent {
   protected readonly cs = inject(CharacterService);
   private readonly confirmationService = inject(ConfirmationService);
   protected readonly editMode = inject(EditModeService);
+  protected readonly farStar = farStar;
   protected readonly fasBars = faBars;
   protected readonly fasDownLeftAndUpRightToCenter = faDownLeftAndUpRightToCenter;
   protected readonly fasPlus = faPlus;
+  protected readonly fasStar = fasStar;
   protected readonly fasTrash = faTrash;
   protected readonly fasUpRightAndDownLeftFromCenter = faUpRightAndDownLeftFromCenter;
   protected spellcastingClasses = SPELLCASTING_CLASSES;
@@ -118,7 +122,10 @@ export class SpellcastingComponent {
   }
 
   getSpellsForLevel(level: number): Spell[] {
-    return this.cs.character().spells.filter((s) => s.level === level);
+    return this.cs
+      .character()
+      .spells.filter((s) => s.level === level)
+      .sort((a, b) => Number(!!b.favorite) - Number(!!a.favorite));
   }
 
   getFilteredSpellsForLevel(level: number): Spell[] {
@@ -210,6 +217,7 @@ export class SpellcastingComponent {
       duration: '',
       description: '',
       prepared: false,
+      favorite: false,
     };
     this.cs.update({ spells: [...char.spells, newSpell] });
   }
@@ -244,9 +252,14 @@ export class SpellcastingComponent {
     this.updateSpells();
   }
 
+  toggleFavorite(spell: Spell): void {
+    spell.favorite = !spell.favorite;
+    this.updateSpells();
+  }
+
   dropSpell(event: CdkDragDrop<number>, level: number): void {
     const char = this.cs.character();
-    const spellsOfLevel = char.spells.filter((s) => s.level === level);
+    const spellsOfLevel = this.getSpellsForLevel(level);
 
     if (event.previousIndex === event.currentIndex) return;
 
