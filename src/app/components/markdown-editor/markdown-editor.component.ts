@@ -4,14 +4,21 @@ import {
   ElementRef,
   inject,
   input,
+  model,
   output,
   SecurityContext,
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
+import { ButtonDirective } from '@openng/optimus-ui/button';
+import { Dialog } from '@openng/optimus-ui/dialog';
 import { Textarea } from '@openng/optimus-ui/textarea';
+import { Tooltip } from '@openng/optimus-ui/tooltip';
 import { Marked } from 'marked';
+import { SKILL_LABELS } from '../../models/character.model';
 import { CharacterService } from '../../services/character.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { markedAccordionExtension } from '../../utils/marked-accordion-extension';
@@ -22,7 +29,7 @@ import { markedPlaceholderExtension } from '../../utils/placeholder-replacer';
   templateUrl: './markdown-editor.component.html',
   styleUrl: './markdown-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, Textarea],
+  imports: [ButtonDirective, Dialog, FaIconComponent, FormsModule, Textarea, Tooltip],
 })
 export class MarkdownEditorComponent {
   value = input<string>('');
@@ -32,6 +39,11 @@ export class MarkdownEditorComponent {
   valueChange = output<string>();
 
   protected readonly editMode = inject(EditModeService);
+  protected readonly fasCircleQuestion = faCircleQuestion;
+  protected readonly showHelpDialog = model(false);
+  protected readonly skillPlaceholders = Object.values(SKILL_LABELS).sort((a, b) =>
+    a.localeCompare(b, 'de'),
+  );
 
   private readonly sanitizer = inject(DomSanitizer);
   private readonly cs = inject(CharacterService);

@@ -1,5 +1,20 @@
 @if (editMode.isEditMode() && !readonly()) {
   <div>
+    <div class="flex justify-end">
+      <button
+        type="button"
+        pButton
+        severity="secondary"
+        size="small"
+        [text]="true"
+        iconOnly
+        pTooltip="Markdown-Hilfe"
+        tooltipPosition="left"
+        (click)="showHelpDialog.set(true)"
+      >
+        <fa-icon [icon]="fasCircleQuestion" />
+      </button>
+    </div>
     <textarea
       #ta
       pTextarea
@@ -28,3 +43,127 @@
     }
   </div>
 }
+
+<p-dialog
+  header="Markdown-Hilfe"
+  [(visible)]="showHelpDialog"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '650px', maxWidth: '95vw' }"
+>
+  <div class="text-sm space-y-4">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="text-left">
+          <th class="pb-1 pr-4 font-semibold">Eingabe</th>
+          <th class="pb-1 font-semibold">Ergebnis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="pr-4 py-1 align-top"><code># Titel</code></td>
+          <td class="py-1 align-top">Überschrift (auch <code>##</code>, <code>###</code>, …)</td>
+        </tr>
+        <tr>
+          <td class="pr-4 py-1 align-top"><code>**fett**</code></td>
+          <td class="py-1 align-top"><strong>fett</strong></td>
+        </tr>
+        <tr>
+          <td class="pr-4 py-1 align-top"><code>*kursiv*</code></td>
+          <td class="py-1 align-top"><em>kursiv</em></td>
+        </tr>
+        <tr>
+          <td class="pr-4 py-1 align-top"><code>- Eintrag</code></td>
+          <td class="py-1 align-top">Aufzählungsliste</td>
+        </tr>
+        <tr>
+          <td class="pr-4 py-1 align-top"><code>1. Eintrag</code></td>
+          <td class="py-1 align-top">Nummerierte Liste</td>
+        </tr>
+        <tr>
+          <td class="pr-4 py-1 align-top"><code>[Text](url)</code></td>
+          <td class="py-1 align-top">Link</td>
+        </tr>
+        <tr>
+          <td class="pr-4 py-1 align-top">Leerzeile</td>
+          <td class="py-1 align-top">Neuer Absatz</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div>
+      <div class="font-semibold mb-1">Ausklappbarer Bereich (Spoiler)</div>
+      <p class="mb-1">Mit <code>++++&#123;title="Titel"&#125;</code> … <code>++++</code> lässt sich ein Textblock einklappen:</p>
+      <pre class="whitespace-pre-wrap text-xs bg-black/5 dark:bg-white/5 rounded p-2">++++&#123;title="Detailbeschreibung"&#125;
+Dieser Text ist standardmäßig eingeklappt.
+++++</pre>
+      <p class="text-xs text-gray-500 mt-1">
+        Mit <code>expanded="true"</code> in den geschweiften Klammern ist der Bereich standardmäßig ausgeklappt.
+      </p>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-1">Platzhalter</div>
+      <p class="mb-1">
+        Mit <code>{{ '{{' }}schlüssel{{ '}}' }}</code> lassen sich Charakterwerte einfügen, die automatisch aktuell gehalten werden.
+      </p>
+      <table class="w-full border-collapse">
+        <tbody>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>stä</code>, <code>ges</code>, <code>kon</code>, <code>int</code>, <code>wei</code>,
+              <code>cha</code></td>
+            <td class="py-1 align-top">Attributsmodifikatoren</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>üb</code></td>
+            <td class="py-1 align-top">Übungsbonus</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>rk</code></td>
+            <td class="py-1 align-top">Rüstungsklasse</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>br</code></td>
+            <td class="py-1 align-top">Bewegungsrate</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>ini</code></td>
+            <td class="py-1 align-top">Initiative</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>tp</code></td>
+            <td class="py-1 align-top">Aktuelle Trefferpunkte</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>maxtp</code></td>
+            <td class="py-1 align-top">Maximale Trefferpunkte</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>tw</code></td>
+            <td class="py-1 align-top">Trefferwürfel</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>zsg</code></td>
+            <td class="py-1 align-top">Zauber-SG</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>zattk</code></td>
+            <td class="py-1 align-top">Zauberangriffsbonus</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top whitespace-nowrap"><code>lvl</code></td>
+            <td class="py-1 align-top">Stufe</td>
+          </tr>
+          <tr>
+            <td class="pr-4 py-1 align-top">Fertigkeitsname (z.B. <code>heimlichkeit</code>)</td>
+            <td class="py-1 align-top">Fertigkeitsmodifikator</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="text-xs text-gray-500 mt-2">
+        Verfügbare Fertigkeiten: {{ skillPlaceholders.join(', ') }}
+      </p>
+    </div>
+  </div>
+</p-dialog>
+
