@@ -1,11 +1,14 @@
 @if (editMode.isEditMode() && !readonly()) {
   <div>
     <textarea
+      #ta
       pTextarea
       [autoResize]="true"
       [rows]="minRows()"
       [ngModel]="value()"
       (ngModelChange)="onValueChange($event)"
+      (beforeinput)="onBeforeInput()"
+      (input)="onInput()"
       class="w-full text-sm"
       [placeholder]="placeholder()"
     ></textarea>
