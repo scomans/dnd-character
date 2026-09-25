@@ -1,7 +1,7 @@
 <div class="max-w-7xl mx-auto p-4">
-  <app-toolbar/>
-  <app-header/>
-  <app-condition-effects/>
+  <app-toolbar />
+  <app-header />
+  <app-condition-effects />
 
   <p-tabs value="0">
     <p-tablist>
@@ -15,58 +15,58 @@
       <!-- Page 1: Main Character Sheet -->
       <p-tabpanel value="0">
         @let editMode = isEditMode();
-        <div class="grid grid-cols-7 md:grid-cols-12 grid-rows-[90px] auto-rows-auto gap-4 overflow-x-hidden">
+        <div class="grid grid-cols-6 lg:grid-cols-12 grid-rows-[90px] auto-rows-auto gap-4 overflow-x-hidden">
 
+          <div class="col-span-6" [class.col-span-12]="isEditMode()">
+            <app-ability-scores />
+          </div>
           @if (!editMode) {
             <div [class.col-span-2]="isEditMode()">
-              <app-condition-tracker/>
+              <app-condition-tracker />
             </div>
           }
-          <div class="col-span-6" [class.col-span-12]="isEditMode()">
-            <app-ability-scores/>
+          <div [class.col-span-2]="isEditMode()">
+            <app-proficiency />
           </div>
           <div [class.col-span-2]="isEditMode()">
-            <app-proficiency/>
-          </div>
-          <div [class.col-span-2]="isEditMode()">
-            <app-walking-speed/>
+            <app-walking-speed />
           </div>
           @if (!editMode) {
             <div>
-              <app-initiative/>
+              <app-initiative />
             </div>
           }
           <div class="col-span-2">
-            <app-armor-class/>
+            <app-armor-class />
           </div>
 
           <div class="col-span-3 row-span-2">
-            <app-saving-throws/>
+            <app-saving-throws />
           </div>
           <div class="col-span-3 row-span-6">
-            <app-skills/>
+            <app-skills />
           </div>
           <div class="col-span-4 md:col-span-6" [class.md:col-span-5]="isEditMode()">
-            <app-health/>
+            <app-health />
           </div>
           <div class="col-span-6 row-span-3">
-            <app-counters/>
+            <app-counters />
           </div>
 
           <div class="col-span-3 row-span-3">
-            <app-proficiencies-languages/>
+            <app-proficiencies-languages />
           </div>
 
-          <div class="col-span-7 md:col-span-12">
-            <app-attacks/>
+          <div class="col-span-6 lg:col-span-12">
+            <app-attacks />
           </div>
 
-          <div class="col-span-7 md:col-span-12">
-            <app-features/>
+          <div class="col-span-6 lg:col-span-12">
+            <app-features />
           </div>
 
-          <div class="col-span-7 md:col-span-12">
-            <app-lifestyle-jump/>
+          <div class="col-span-6 lg:col-span-12">
+            <app-lifestyle-jump />
           </div>
 
         </div>
@@ -75,28 +75,28 @@
       <!-- Page 2: Equipment -->
       <p-tabpanel value="1">
         <div class="mt-4">
-          <app-equipment/>
+          <app-equipment />
         </div>
       </p-tabpanel>
 
       <!-- Page 3: Spellcasting -->
       <p-tabpanel value="2">
         <div class="mt-4">
-          <app-spellcasting/>
+          <app-spellcasting />
         </div>
       </p-tabpanel>
 
       <!-- Page 4: Appearance, Personality & Backstory -->
       <p-tabpanel value="3">
         <div class="mt-4 space-y-4">
-          <app-appearance-backstory/>
-          <app-personality/>
+          <app-appearance-backstory />
+          <app-personality />
         </div>
       </p-tabpanel>
 
       <!-- Page 5: Notes -->
       <p-tabpanel value="4">
-        <app-notes/>
+        <app-notes />
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
