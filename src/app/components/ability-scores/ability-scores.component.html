@@ -9,8 +9,8 @@
       <div class="mt-1">
         @if (isEditMode()) {
           <app-number-input
-            [ngModel]="getAbilityBase(ability)"
-            (ngModelChange)="updateAbility(ability, $event)"
+            [value]="getAbilityBase(ability)"
+            (valueChange)="updateAbility(ability, $event)"
             [min]="1"
             [max]="30"
           />

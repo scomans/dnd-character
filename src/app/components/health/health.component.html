@@ -9,8 +9,8 @@
 
         @if (isEditMode()) {
           <app-number-input
-            [ngModel]="cs.character().hitPointsMax"
-            (ngModelChange)="cs.update({ hitPointsMax: $event ?? 1 })"
+            [value]="cs.character().hitPointsMax"
+            (valueChange)="cs.update({ hitPointsMax: $event ?? 1 })"
             [min]="1"
             class="w-36"
           />

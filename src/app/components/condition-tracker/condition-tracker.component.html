@@ -50,8 +50,8 @@
     <h3 class="text-sm font-bold mb-2">Erschöpfung: {{ getExhaustionLevel() }}</h3>
     <div class="flex items-center gap-2">
       <app-number-input
-        [ngModel]="getExhaustionLevel()"
-        (ngModelChange)="setExhaustionLevel($event ?? 0)"
+        [value]="getExhaustionLevel()"
+        (valueChange)="setExhaustionLevel($event ?? 0)"
         [min]="0"
         [max]="6"
         class="w-36"
