@@ -388,6 +388,7 @@ export interface DndCharacter {
   hasShield: boolean;
   speed: number;
   hitPointsMax: number;
+  hitPointsMaxModifier: number;
   hitPointsCurrent: number;
   hitPointsTemp: number;
   hitDice: string;
@@ -1063,6 +1064,7 @@ export function createDefaultCharacter(): DndCharacter {
     hasShield: false,
     speed: 30,
     hitPointsMax: 10,
+    hitPointsMaxModifier: 0,
     hitPointsCurrent: 10,
     hitPointsTemp: 0,
     hitDice: 'W10',

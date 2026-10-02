@@ -31,8 +31,16 @@
                 pTooltip="Max. TP"
                 tooltipPosition="top"
               >
-                {{ cs.character().hitPointsMax }}
+                {{ cs.getEffectiveMaxHitPoints() }}
               </div>
+              @if (cs.character().hitPointsMaxModifier) {
+                <p-tag
+                  [value]="(cs.character().hitPointsMaxModifier > 0 ? '+' : '') + cs.character().hitPointsMaxModifier"
+                  [severity]="cs.character().hitPointsMaxModifier > 0 ? 'success' : 'danger'"
+                  [pTooltip]="'Max. TP Modifikator (Basis: ' + cs.character().hitPointsMax + ')'"
+                  tooltipPosition="top"
+                />
+              }
               @if (cs.character().hitPointsTemp > 0) {
                 <p-tag
                   [value]="'+' + cs.character().hitPointsTemp"

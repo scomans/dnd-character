@@ -1,9 +1,5 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
-import {
-  DndCharacter,
-  createDefaultCharacter,
-  SKILL_ABILITY_MAP,
-} from '../models/character.model';
+import { effect, Injectable, signal } from '@angular/core';
+import { createDefaultCharacter, DndCharacter, SKILL_ABILITY_MAP } from '../models/character.model';
 
 const STORAGE_KEY = 'dnd-character-data';
 
@@ -62,10 +58,7 @@ export class CharacterService {
     this.character.update((c) => ({ ...c, ...partial }));
   }
 
-  updateNested<K extends keyof DndCharacter>(
-    key: K,
-    value: DndCharacter[K]
-  ): void {
+  updateNested<K extends keyof DndCharacter>(key: K, value: DndCharacter[K]): void {
     this.character.update((c) => ({ ...c, [key]: value }));
   }
 
@@ -89,8 +82,7 @@ export class CharacterService {
   /** Ability modifier = floor((score - 10) / 2) */
   getAbilityModifier(ability: string): number {
     const char = this.character();
-    const score = (char.abilities as Record<string, { base: number }>)[ability]
-      ?.base;
+    const score = (char.abilities as Record<string, { base: number }>)[ability]?.base;
     if (score === undefined) return 0;
     return Math.floor((score - 10) / 2);
   }
@@ -99,9 +91,8 @@ export class CharacterService {
   getSavingThrowModifier(ability: string): number {
     const char = this.character();
     const mod = this.getAbilityModifier(ability);
-    const proficient = (
-      char.savingThrows as Record<string, { proficient: boolean }>
-    )[ability]?.proficient;
+    const proficient = (char.savingThrows as Record<string, { proficient: boolean }>)[ability]
+      ?.proficient;
     return proficient ? mod + this.getProficiencyBonus() : mod;
   }
 
@@ -110,9 +101,9 @@ export class CharacterService {
     const char = this.character();
     const ability = SKILL_ABILITY_MAP[skill];
     const mod = this.getAbilityModifier(ability);
-    const skillData = (
-      char.skills as Record<string, { proficient: boolean; expertise: boolean }>
-    )[skill];
+    const skillData = (char.skills as Record<string, { proficient: boolean; expertise: boolean }>)[
+      skill
+    ];
     if (!skillData) return mod;
     const profBonus = this.getProficiencyBonus();
     if (skillData.expertise) return mod + profBonus * 2;
@@ -132,17 +123,29 @@ export class CharacterService {
     return dexMod + (char.armorValue ?? 10) + (char.hasShield ? 2 : 0);
   }
 
+  /** Effective max HP = base max + modifier (e.g. Aid, max HP drain) */
+  getEffectiveMaxHitPoints(): number {
+    const char = this.character();
+    return Math.max(char.hitPointsMax + (char.hitPointsMaxModifier ?? 0), 1);
+  }
+
+  /** Sets the max HP modifier and caps current HP at the new effective max */
+  setHitPointsMaxModifier(modifier: number): void {
+    const char = this.character();
+    const max = Math.max(char.hitPointsMax + modifier, 1);
+    this.update({
+      hitPointsMaxModifier: modifier,
+      hitPointsCurrent: Math.min(char.hitPointsCurrent, max),
+    });
+  }
+
   /** Passive Perception = 10 + Perception modifier */
   getPassivePerception(): number {
     return 10 + this.getSkillModifier('perception');
   }
 
   /** Attack bonus for a weapon: Ability Modifier + Proficiency Bonus (if proficient) + Magic Bonus */
-  getAttackBonus(attack: {
-    proficient: boolean;
-    attribute: string;
-    magicBonus?: number;
-  }): number {
+  getAttackBonus(attack: { proficient: boolean; attribute: string; magicBonus?: number }): number {
     const mod = this.getAbilityModifier(attack.attribute);
     const prof = attack.proficient ? this.getProficiencyBonus() : 0;
     const magic = attack.magicBonus ?? 0;
@@ -158,21 +161,14 @@ export class CharacterService {
   getSpellSaveDC(): number {
     const char = this.character();
     if (!char.spellcastingAbility) return 0;
-    return (
-      8 +
-      this.getProficiencyBonus() +
-      this.getAbilityModifier(char.spellcastingAbility)
-    );
+    return 8 + this.getProficiencyBonus() + this.getAbilityModifier(char.spellcastingAbility);
   }
 
   /** Spell attack bonus = proficiency + spellcasting ability modifier */
   getSpellAttackBonus(): number {
     const char = this.character();
     if (!char.spellcastingAbility) return 0;
-    return (
-      this.getProficiencyBonus() +
-      this.getAbilityModifier(char.spellcastingAbility)
-    );
+    return this.getProficiencyBonus() + this.getAbilityModifier(char.spellcastingAbility);
   }
 
   // === Export / Import ===

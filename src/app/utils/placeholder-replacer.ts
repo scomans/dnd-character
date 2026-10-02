@@ -112,7 +112,7 @@ function resolvePlaceholder(
     case 'tp':
       return { value: String(char.hitPointsCurrent), tooltip: SPECIAL_TOOLTIP[key] };
     case 'maxtp':
-      return { value: String(char.hitPointsMax), tooltip: SPECIAL_TOOLTIP[key] };
+      return { value: String(cs.getEffectiveMaxHitPoints()), tooltip: SPECIAL_TOOLTIP[key] };
     case 'tw':
       return { value: char.hitDice ? '1' + char.hitDice : '—', tooltip: SPECIAL_TOOLTIP[key] };
     case 'zsg':

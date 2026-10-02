@@ -108,7 +108,7 @@ export class HealthComponent {
   longRest(): void {
     this.cs.update({
       hitDiceCurrent: this.cs.character().level,
-      hitPointsCurrent: this.cs.character().hitPointsMax,
+      hitPointsCurrent: this.cs.getEffectiveMaxHitPoints(),
       hitPointsTemp: 0,
     });
   }
@@ -149,7 +149,7 @@ export class HealthComponent {
       this.cs.update({
         hitPointsCurrent: Math.min(
           this.cs.character().hitPointsCurrent + amount,
-          this.cs.character().hitPointsMax,
+          this.cs.getEffectiveMaxHitPoints(),
         ),
       });
     }

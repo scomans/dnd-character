@@ -45,6 +45,7 @@ export class ConditionTrackerComponent {
   allActiveEffects = computed(() => computeActiveEffects(this.cs.character()));
 
   hasAnyActive = computed(() => this.allActiveEffects().length > 0);
+  protected readonly hasMaxModifier = computed(() => !!this.cs.character().hitPointsMaxModifier);
 
   openDialog(): void {
     this.showDialog.set(true);
@@ -85,5 +86,6 @@ export class ConditionTrackerComponent {
       environments: [],
       inspiration: false,
     });
+    this.cs.setHitPointsMaxModifier(0);
   }
 }
