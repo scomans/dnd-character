@@ -1,0 +1,11 @@
+<p-fieldset legend="Notizen">
+  <textarea
+    pTextarea
+    class="w-full"
+    rows="3"
+    [autoResize]="true"
+    [ngModel]="cs.character().quickNotes"
+    (ngModelChange)="cs.update({ quickNotes: $event })"
+    placeholder="Schnelle Notizen..."
+  ></textarea>
+</p-fieldset>

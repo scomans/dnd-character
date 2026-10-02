@@ -404,6 +404,9 @@ export interface DndCharacter {
   bonds: string;
   flaws: string;
 
+  // Quick notes (Hauptseite)
+  quickNotes: string;
+
   // Attacks
   attacks: Attack[];
 
@@ -1075,6 +1078,7 @@ export function createDefaultCharacter(): DndCharacter {
     ideals: '',
     bonds: '',
     flaws: '',
+    quickNotes: '',
     attacks: [],
     armorProficiencies: {
       light: false,
